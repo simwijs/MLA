@@ -39,6 +39,8 @@ public:
     void create_wait_positions(int current_time_step);
     Position return_position(int id_agent, int time_step);
     void compute_positions_matrix();
+    bool check_solution_feasible();
+    void write();
 
     // Getters
     Instance * get_instance(){ return this->instance;}

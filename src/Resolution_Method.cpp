@@ -94,6 +94,11 @@ void Resolution_Method::apply_random_heuristic(Instance * instance, Solution * s
         // We create the wait positions for the current time step
         solution->create_wait_positions(current_time_step);
     }
+
+    // We create the wait position until the end of the solution's horizon
+    for (int k = current_time_step+1; k < solution->get_list_positions_per_time_step().size()-1; ++k){
+        solution->create_wait_positions(k);
+    }
 }
 
 bool Resolution_Method::check_if_assignment_feasible(Solution * solution, int id_task, int id_agent, int time_step,
@@ -180,12 +185,22 @@ bool Resolution_Method::search_path(Solution * solution, Position & initial_posi
         // We build the corresponding path for the node
         build_path(solution,initial_position.get_id_agent(),id_task,list_checked_nodes,list_new_positions);
 
-        //cout << "End of the search path method" << endl;
+        // We clear the list of nodes created
+        for (Search_Node * node : list_created_nodes){
+            delete node;
+            node = 0;
+        }
 
         // We return true
         return true;
     }
     else {
+
+        // We clear the list of nodes created
+        for (Search_Node * node : list_created_nodes){
+            delete node;
+            node = 0;
+        }
 
         //cout << "End of the search path method" << endl;
 

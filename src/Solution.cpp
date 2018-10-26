@@ -30,7 +30,7 @@ void Solution::apply_assignment(int id_task, int id_agent, vector<Position> & li
     //cout << "Start of the apply assignment " << endl;
 
     // We increase the size of the positions matrix if necessary
-    if (this->list_positions_per_time_step.size() < list_new_positions[list_new_positions.size()-1].get_time_step()){
+    if (this->list_positions_per_time_step.size() < list_new_positions[list_new_positions.size()-1].get_time_step()+1){
 
         // For each uncovered time step
         for (int k = this->list_positions_per_time_step.size();
@@ -197,6 +197,213 @@ void Solution::compute_positions_matrix(){
                 this->positions_matrix[this->positions_matrix.size()-1][agent] =
                         this->positions_matrix[this->positions_matrix.size()-2][agent];
             }
+        }
+    }
+}
+
+bool Solution::check_solution_feasible(){
+
+    // We compute the position matrix for the solution
+    this->compute_positions_matrix();
+
+    // We check that each agent a position for every time step of the horizon
+    for (int agent = 0; agent < this->instance->get_nb_agent(); ++agent) {
+
+        // For each time step of the final horizon
+        for (int time_step = 0; time_step < this->list_positions_per_time_step.size(); ++time_step){
+
+            // We check if a position exists
+            if (this->positions_matrix[time_step][agent] == -1){
+                cout << "Problem, no position for the agent " << agent << " at the time step " << time_step << endl;
+
+                // We return false
+                return false;
+            }
+        }
+    }
+
+    // We check that for each agent, the move are toward successors
+    for (int agent = 0; agent < this->instance->get_nb_agent(); ++agent) {
+
+        // For each time step of the final horizon
+        for (int time_step = 0; time_step < this->list_positions_per_time_step.size()-1; ++time_step){
+
+            // We get the current position
+            int current_node = this->positions_matrix[time_step][agent];
+
+            // We get the next position
+            int next_node = this->positions_matrix[time_step+1][agent];
+
+            // We check that the move is feasible
+            if (find(this->instance->get_list_nodes()[current_node]->get_list_id_nodes_successors().begin(),
+                     this->instance->get_list_nodes()[current_node]->get_list_id_nodes_successors().end(),
+                     next_node) ==
+                    this->instance->get_list_nodes()[current_node]->get_list_id_nodes_successors().end()){
+
+                cout << "Problem, the move is not possible " << endl;
+
+                // We return false
+                return false;
+            }
+        }
+    }
+
+    // We check the vertex constraints
+    for (int time_step = 0; time_step < this->list_positions_per_time_step.size(); ++time_step){
+
+        // For each agent
+        for (int agent = 0; agent < this->instance->get_nb_agent()-1; ++agent) {
+
+            // For each other agent
+            for (int agent2 = agent + 1; agent2 < this->instance->get_nb_agent(); ++agent2) {
+
+                // We check if they are at the same node
+                if (this->positions_matrix[time_step][agent] == this->positions_matrix[time_step][agent2]){
+
+                    cout << "Problem, same vertex used " << endl;
+
+                    // We return false
+                    return false;
+                }
+            }
+        }
+    }
+
+    // We check the edges constraint
+    for (int agent = 0; agent < this->instance->get_nb_agent()-1; ++agent) {
+
+        // For each other agent
+        for (int agent2 = agent + 1; agent2 < this->instance->get_nb_agent(); ++agent2) {
+
+            // For each time step of the final horizon
+            for (int time_step = 0; time_step < this->list_positions_per_time_step.size()-1; ++time_step){
+
+                // We get the current nodes
+                int current_1 = this->positions_matrix[time_step][agent];
+                int current_2 = this->positions_matrix[time_step][agent2];
+
+                // We get the next nodes
+                int next_1 = this->positions_matrix[time_step+1][agent];
+                int next_2 = this->positions_matrix[time_step+1][agent2];
+
+                // We check the constraint
+                if (current_1 == next_2 && current_2 == next_1){
+
+                    cout << "Problem, same edge used " << endl;
+
+                    // We return false
+                    return false;
+                }
+            }
+        }
+    }
+
+    // We check that each task is covered at the assigned date
+    for (Task * task : this->instance->get_list_tasks()){
+
+        // We check that the pickup node is covered
+
+        // We initialize the boolean value
+        bool node_found = false;
+
+        for (int value : this->positions_matrix[task->get_picked_date()]){
+
+            // We check if the nodes correspond
+            if (value == task->get_pickup_node()){
+
+                // We update the boolean value
+                node_found = true;
+
+                // We break the loop
+                break;
+            }
+        }
+
+        if (!node_found){
+
+            cout << "Problem, pickup node not covered" << endl;
+
+            // We return false
+            return false;
+        }
+
+        // We check that the delivery node is covered
+
+        // We re-initialize the boolean value
+        node_found = false;
+
+        for (int value : this->positions_matrix[task->get_delivered_date()]){
+
+            // We check if the nodes correspond
+            if (value == task->get_delivery_node()){
+
+                // We update the boolean value
+                node_found = true;
+
+                // We break the loop
+                break;
+            }
+        }
+
+        if (!node_found){
+
+            cout << "Problem, delivery node not covered" << endl;
+
+            // We return false
+            return false;
+        }
+    }
+
+    // We check that each task is completed by the same agent from the pickup to the delivery node
+
+    for (Task * task : this->instance->get_list_tasks()){
+
+        // We get the assigned agent
+        int assigned_agent = distance(this->positions_matrix[task->get_picked_date()].begin(),
+        find(this->positions_matrix[task->get_picked_date()].begin(),
+             this->positions_matrix[task->get_picked_date()].end(),task->get_pickup_node()));
+
+        // We check that the position of the agent is assigned to the task
+        for (int time_step = task->get_picked_date(); time_step < task->get_delivered_date(); ++ time_step){
+
+            for (Position & position : this->list_positions_per_time_step[time_step]){
+
+                // We check if the agent corresponds
+                if (position.get_id_agent() == assigned_agent){
+
+                    // We check if the assigned task corresponds
+                    if (task->get_id() != position.get_assigned_task()){
+
+                        cout << "Problem, agent not assigned to the task" << endl;
+
+                        // We return false
+                        return false;
+                    }
+                }
+            }
+        }
+
+    }
+
+    // We return true
+    return true;
+}
+
+void Solution::write(){
+
+    cout << endl;
+
+    for (Task * task : this->instance->get_list_tasks()){
+        task->write();
+        cout <<  endl;
+    }
+
+    for (int agent = 0; agent < this->instance->get_nb_agent(); ++agent) {
+
+        for (int time_step = 0; time_step < this->list_positions_per_time_step.size(); ++time_step){
+
+            cout << "Agent " << agent << ", Time step " << time_step << ", Node : " <<
+                 this->positions_matrix[time_step][agent] << endl;
         }
     }
 }

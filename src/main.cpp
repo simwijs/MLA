@@ -28,6 +28,16 @@ int main(int argc, char** argv)
     // We solve the instance
     resolution_method->solve_instance(instance,solution,1);
 
+    // We check if the solution is feasible
+    if (solution->check_solution_feasible()){
+        cout << "Final solution feasible" << endl;
+
+        //solution->write();
+    }
+    else {
+        cout << "Final solution not feasible" << endl;
+    }
+
     // We delete the objects
     delete resolution_method;
     delete data_reader;

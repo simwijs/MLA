@@ -5,7 +5,6 @@
 #ifndef MAPD_TASK_H
 #define MAPD_TASK_H
 
-using namespace std;
 
 class Task {
 
@@ -20,6 +19,9 @@ public:
     Task(int id_,int release_date_,int pickup_node_,int delivery_node_) : id(id_),release_date(release_date_),
                                                                           pickup_node(pickup_node_),
                                                                           delivery_node(delivery_node_) {};
+
+    // General Methods
+    void write();
 
     // Setters
     void set_pickup_node(int value){this->pickup_node = value;}
