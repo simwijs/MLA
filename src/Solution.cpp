@@ -27,6 +27,8 @@ void Solution::update_list_open_tasks(int current_time_step){
 
 void Solution::apply_assignment(int id_task, int id_agent, vector<Position> & list_new_positions){
 
+    //cout << "Start of the apply assignment " << endl;
+
     // We increase the size of the positions matrix if necessary
     if (this->list_positions_per_time_step.size() < list_new_positions[list_new_positions.size()-1].get_time_step()){
 
@@ -76,6 +78,8 @@ void Solution::apply_assignment(int id_task, int id_agent, vector<Position> & li
         current_task->set_picked_date(picked_date);
         current_task->set_delivered_date(delivered_date);
     }
+
+    //cout << "End of the apply assignment " << endl;
 }
 
 void Solution::apply_position(Position & position){

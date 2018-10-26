@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include "../include/Data_Reader.h"
-#include "../include/Solution.h"
+#include "../include/Resolution_Method.h"
 using namespace std;
 
 int main(int argc, char** argv)
@@ -11,7 +11,7 @@ int main(int argc, char** argv)
     srand(123456);
 
     // We initialize the instance
-    Instance * instance = new Instance("instances/kiva-10-500-5.map", "instances/kiva-1.task");
+    Instance * instance = new Instance("instances/kiva-10-500-5.map", "instances/kiva-1-small.task");
 
     // We initialize the solution
     Solution * solution = new Solution(instance);
@@ -22,7 +22,14 @@ int main(int argc, char** argv)
     // We read the instance and initialize the solution
     data_reader->read_instance(instance,solution);
 
+    // We create the solver
+    Resolution_Method * resolution_method = new Resolution_Method();
+
+    // We solve the instance
+    resolution_method->solve_instance(instance,solution,1);
+
     // We delete the objects
+    delete resolution_method;
     delete data_reader;
     delete solution;
     delete instance;
