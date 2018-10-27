@@ -97,8 +97,30 @@ void Solution::apply_position(Position & position){
             existing_position.set_id_node(position.get_id_node());
             existing_position.set_assigned_task(position.get_assigned_task());
 
+            for (int time_s = position.get_time_step()+1; time_s < this->list_positions_per_time_step.size(); ++time_s){
+
+                // We update the corresponding position for the agent
+                for (Position & position1 : list_positions_per_time_step[time_s]){
+
+                    // We check if the agent id corresponds
+                    if (position1.get_id_agent() == position.get_id_agent()){
+
+                        // We set the values
+                        position1.set_assigned_task(-1);
+                        position1.set_id_node(position.get_id_node());
+
+                    }
+                }
+            }
+
             // We update the boolean value
             position_existed = true;
+        }
+        else if (existing_position.get_id_node() == position.get_id_node()){
+
+            cout << "ERROR, position already exist for this time step " << endl;
+
+            getchar();
         }
     }
 
@@ -108,6 +130,23 @@ void Solution::apply_position(Position & position){
         // We create a new position
         this->list_positions_per_time_step[position.get_time_step()].push_back(Position (position.get_id_agent()
                 , position.get_id_node(), position.get_time_step(), position.get_assigned_task()));
+
+        // We update the following positiond for the agent
+        for (int time_s = position.get_time_step()+1; time_s < this->list_positions_per_time_step.size(); ++time_s){
+
+            // We update the corresponding position for the agent
+            for (Position & position1 : list_positions_per_time_step[time_s]){
+
+                // We check if the agent id corresponds
+                if (position1.get_id_agent() == position.get_id_agent()){
+
+                    // We set the values
+                    position1.set_assigned_task(-1);
+                    position1.set_id_node(position.get_id_node());
+
+                }
+            }
+        }
     }
 }
 
@@ -139,6 +178,7 @@ void Solution::create_wait_positions(int current_time_step){
         for (Position & position_next : this->list_positions_per_time_step[current_time_step+1]){
 
             if (position_next.get_id_agent() == agent){
+
                 position_exists = true;
             }
         }
@@ -240,7 +280,19 @@ bool Solution::check_solution_feasible(){
                      next_node) ==
                     this->instance->get_list_nodes()[current_node]->get_list_id_nodes_successors().end()){
 
-                cout << "Problem, the move is not possible " << endl;
+                cout << "Problem, the move is not possible for the agent " << agent << endl;
+
+                cout << "Current node " << current_node << endl;
+                cout << "Next node " << next_node << endl;
+
+                for (Position & position : this->list_positions_per_time_step[time_step]){
+                    position.write();
+                }
+
+                cout << "CURRENT" << endl;
+                for (Position & position : this->list_positions_per_time_step[time_step+1]){
+                    position.write();
+                }
 
                 // We return false
                 return false;
@@ -262,6 +314,17 @@ bool Solution::check_solution_feasible(){
 
                     cout << "Problem, same vertex used " << endl;
 
+                    cout << "Current node 1 : " << this->positions_matrix[time_step][agent] << endl;
+                    cout << "Current node 2 : " << this->positions_matrix[time_step][agent2] << endl;
+
+                    cout << "Time Step : " << time_step << endl;
+
+                    cout << "Agent 1 " << agent << endl;
+                    cout << "Agent 2 " << agent2 << endl;
+
+                    for (Position & position : list_positions_per_time_step[time_step]){
+                        position.write();
+                    }
                     // We return false
                     return false;
                 }

@@ -22,7 +22,8 @@ private:
     bool search_path(Solution * solution, Position & initial_position, int id_task, int id_node_goal,
                      vector<Position> & list_new_positions);
     void expand_node(Solution * solution, int id_agent, Search_Node * node_to_expand,
-                     vector<Search_Node*> & list_open_nodes,vector<Search_Node*> & list_created_nodes);
+                     vector<Search_Node*> & list_open_nodes,vector<Search_Node*> & list_created_nodes,
+                     vector<int> & list_id_node_graph_visited_post_horizon);
     void build_path(Solution * solution, int id_agent, int id_task,
                     vector<Search_Node*> & list_checked_nodes, vector<Position> & list_new_positions);
 public:

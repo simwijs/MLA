@@ -45,7 +45,7 @@ void Resolution_Method::apply_random_heuristic(Instance * instance, Solution * s
         this->get_list_available_agents(solution,current_time_step,list_available_agents);
 
         // While there is a goal to test
-        while (!copy_list_open_tasks.empty()){
+        while (!copy_list_open_tasks.empty() && !list_available_agents.empty()){
 
             // We randomly select a task
             int rdm_task = rand() % copy_list_open_tasks.size();
@@ -85,18 +85,42 @@ void Resolution_Method::apply_random_heuristic(Instance * instance, Solution * s
                     // We increment the number of scheduled task
                     ++ nb_task_scheduled;
 
+                    // We remove the agent from the list of available ones
+                    list_available_agents.erase(find(list_available_agents.begin(),list_available_agents.end(),
+                                                     id_current_agent));
+
+                    // We create the wait position for the agent
+                    int current_size_list = solution->get_list_positions_per_time_step().size();
+
+                    for (int k = current_time_step;
+                         k <= current_size_list; ++k){
+
+                        // We create the wait positions
+                        solution->create_wait_positions(k);
+                    }
+
+                    // We update the positions matrix
+                    solution->compute_positions_matrix();
+
+                    cout << "Nb of task scheduled" << nb_task_scheduled << endl;
+
                     // We stop the search for this task
                     break;
                 }
             }
         }
 
-        // We create the wait positions for the current time step
+        // We create the wait for the current time step
         solution->create_wait_positions(current_time_step);
     }
 
-    // We create the wait position until the end of the solution's horizon
-    for (int k = current_time_step+1; k < solution->get_list_positions_per_time_step().size()-1; ++k){
+    // We create the wait position for the agent
+    int current_size_list = solution->get_list_positions_per_time_step().size();
+
+    for (int k = current_time_step;
+         k <= current_size_list; ++k){
+
+        // We create the wait positions
         solution->create_wait_positions(k);
     }
 }
@@ -116,10 +140,19 @@ bool Resolution_Method::check_if_assignment_feasible(Solution * solution, int id
         // We get the position of the agent
         Position position = list_new_positions[list_new_positions.size()-1];
 
+        // We get the current size of the list
+        int current_size = list_new_positions.size();
+
         // We search the shortest path to the delivery node
         if (search_path(solution,position,id_task,
                         solution->get_instance()->get_list_tasks()[id_task]->get_delivery_node(),
                         list_new_positions)){
+
+            // We remove the doublon
+            list_new_positions.erase(list_new_positions.begin()+current_size);
+
+            // We update the assigned task value at the end of the path
+            list_new_positions[list_new_positions.size()-1].set_assigned_task(-1);
 
             // We return true
             return true;
@@ -145,6 +178,7 @@ bool Resolution_Method::search_path(Solution * solution, Position & initial_posi
     // We create the lists of nodes
     vector<Search_Node*> list_created_nodes;
     vector<Search_Node*> list_open_nodes, list_checked_nodes;
+    vector<int> list_id_node_graph_visited_post_horizon;
 
     // We create the first search node
     list_created_nodes.push_back(new Search_Node (initial_position.get_id_node(),initial_position.get_time_step()));
@@ -176,7 +210,8 @@ bool Resolution_Method::search_path(Solution * solution, Position & initial_posi
         }
 
         // We expand the current node
-        this->expand_node(solution,initial_position.get_id_agent(),current_node,list_open_nodes,list_created_nodes);
+        this->expand_node(solution,initial_position.get_id_agent(),current_node,list_open_nodes,list_created_nodes,
+                          list_id_node_graph_visited_post_horizon);
     }
 
     // We check if the goal node has been reached
@@ -210,9 +245,15 @@ bool Resolution_Method::search_path(Solution * solution, Position & initial_posi
 }
 
 void Resolution_Method::expand_node(Solution * solution, int id_agent, Search_Node * node_to_expand,
-                                    vector<Search_Node*> & list_open_nodes,vector<Search_Node*> & list_created_nodes){
+                                    vector<Search_Node*> & list_open_nodes,vector<Search_Node*> & list_created_nodes,
+                                    vector<int> & list_id_node_graph_visited_post_horizon){
 
     //cout << "Start  of the expand node method" << endl;
+
+    // We check if we can add the current node to the list of checked after horizon
+    if (node_to_expand->time_step >= solution->get_list_positions_per_time_step().size()){
+        list_id_node_graph_visited_post_horizon.push_back(node_to_expand->id_node_graph);
+    }
 
     // For each successor of the current node
     for (int id_successor : solution->get_instance()->get_list_nodes()[
@@ -222,13 +263,17 @@ void Resolution_Method::expand_node(Solution * solution, int id_agent, Search_No
         bool expansion_feasible = true;
 
         // We check if we are still in the moving horizon
-        if (node_to_expand->time_step+1 >= solution->get_list_positions_per_time_step().size()){
+        if (node_to_expand->time_step >= solution->get_list_positions_per_time_step().size()){
 
-            // We check if it's a wait move
-            if (id_successor == node_to_expand->id_node_graph){
+            // We check if the successor has already been visited
+            if (find(list_id_node_graph_visited_post_horizon.begin(),list_id_node_graph_visited_post_horizon.end(),
+            id_successor) != list_id_node_graph_visited_post_horizon.end()){
 
                 // We update the boolean value
                 expansion_feasible = false;
+
+                // We break the process
+                continue;
             }
         }
 
@@ -317,11 +362,6 @@ void Resolution_Method::expand_node(Solution * solution, int id_agent, Search_No
             list_created_nodes.push_back(new Search_Node(id_successor,node_to_expand->time_step+1,
                                                     node_to_expand));
 
-            //cout << "Size of the list created nodes " << list_created_nodes.size() << endl;
-
-            //cout << list_created_nodes[list_created_nodes.size()-1]->id_node_graph << endl;
-            //cout << list_created_nodes[list_created_nodes.size()-1]->time_step << endl;
-
             // We add it in the open list
             list_open_nodes.push_back(list_created_nodes[list_created_nodes.size()-1]);
         }
@@ -335,20 +375,25 @@ void Resolution_Method::build_path(Solution * solution, int id_agent, int id_tas
 
     //cout << "Start of the build path method" << endl;
 
-    // We get the final node of the path
-    Search_Node * current_node = list_checked_nodes[list_checked_nodes.size()-1];
-
     // We get the initial size
     int initial_size = list_new_positions.size();
 
+    // We get the final node of the path
+    Search_Node * current_node = list_checked_nodes[list_checked_nodes.size()-1];
+
+    // We add this node to the list
+    list_new_positions.insert(list_new_positions.begin()+initial_size,
+                              Position (id_agent,current_node->id_node_graph,current_node->time_step,id_task));
+
     while (current_node->parent_node != nullptr){
+
+        // We update the current node
+        current_node = current_node->parent_node;
 
         // We add the new position
         list_new_positions.insert(list_new_positions.begin()+initial_size,
                                   Position (id_agent,current_node->id_node_graph,current_node->time_step,id_task));
 
-        // We update the current node
-        current_node = current_node->parent_node;
     }
 
     //cout << "End of the build path method" << endl;

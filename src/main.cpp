@@ -11,7 +11,7 @@ int main(int argc, char** argv)
     srand(123456);
 
     // We initialize the instance
-    Instance * instance = new Instance("instances/kiva-10-500-5.map", "instances/kiva-1-small.task");
+    Instance * instance = new Instance("instances/kiva-10-500-5.map", "instances/kiva-1.task");
 
     // We initialize the solution
     Solution * solution = new Solution(instance);

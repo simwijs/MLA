@@ -25,6 +25,9 @@ public:
     Position(int id_agent_, int id_node_, int time_step_, int assigned_task_) : id_agent(id_agent_), id_node(id_node_),
                                                             time_step(time_step_), assigned_task(assigned_task_) {};
 
+    // General methods
+    void write();
+
     // Setters
     void set_id_node(int value){this->id_node = value;};
     void set_assigned_task(int value){this->assigned_task = value;};
