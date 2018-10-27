@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <fstream>
 #include "../include/Solution.h"
 
 void Solution::update_list_open_tasks(int current_time_step){
@@ -469,4 +470,32 @@ void Solution::write(){
                  this->positions_matrix[time_step][agent] << endl;
         }
     }
+}
+
+double Solution::compute_average_service_time(){
+
+    double sum = 0;
+    for (Task * task : this->instance->get_list_tasks()){
+        sum += (task->get_delivered_date()-task->get_picked_date());
+    }
+
+    return (sum / (double) this->instance->get_list_tasks().size());
+}
+void Solution::output_solution(){
+
+    // We open the existing file
+    fstream file;
+    file.open ("Instances_Summary.txt", fstream::in | fstream::out | fstream::app);
+
+    // We add the values
+    file << this->instance->get_nb_agent() << ";" ;
+    file << this->instance->get_list_tasks().size() << ";";
+    file << this->list_positions_per_time_step.size() << ";";
+    file << this->computation_time << ";";
+    file << compute_average_service_time() << ";";
+    file << endl;
+
+    // We close the file
+    file.close();
+
 }

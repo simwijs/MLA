@@ -20,9 +20,11 @@ private:
     vector<vector<Position> > list_positions_per_time_step;
     vector<int> list_open_tasks;
     vector<vector<int> > positions_matrix;
+    double computation_time;
 
     // General methods
     void apply_position(Position & position);
+    double compute_average_service_time();
 
 public:
 
@@ -41,6 +43,8 @@ public:
     void compute_positions_matrix();
     bool check_solution_feasible();
     void write();
+    void output_solution();
+    void set_computation_time(double value){this->computation_time = value;}
 
     // Getters
     Instance * get_instance(){ return this->instance;}
