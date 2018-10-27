@@ -9,15 +9,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="04dd8bb8-0006-4472-a5ce-8a6e28368019" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/MAPD" afterPath="$PROJECT_DIR$/bin/MAPD" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obj/Solution.o" afterPath="$PROJECT_DIR$/obj/Solution.o" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obj/main.o" afterPath="$PROJECT_DIR$/obj/main.o" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/Solution.h" afterPath="$PROJECT_DIR$/include/Solution.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Solution.cpp" afterPath="$PROJECT_DIR$/src/Solution.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main.cpp" afterPath="$PROJECT_DIR$/src/main.cpp" />
-    </list>
+    <list default="true" id="04dd8bb8-0006-4472-a5ce-8a6e28368019" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -453,12 +445,12 @@
       <workItem from="1540476198986" duration="13830000" />
       <workItem from="1540523595320" duration="64000" />
       <workItem from="1540562867338" duration="13823000" />
-      <workItem from="1540585162134" duration="4094000" />
+      <workItem from="1540585162134" duration="4166000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="39552000" />
+    <option name="totallyTimeSpent" value="39624000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-269" y="-1057" width="1280" height="1057" extended-state="0" />
