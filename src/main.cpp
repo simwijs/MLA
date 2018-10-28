@@ -8,12 +8,11 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-
     // We set the random seed
-    srand(123456);
+    srand(1243);
 
     // We initialize the instance
-    Instance * instance = new Instance("instances/kiva-10-500-5.map", "instances/kiva-1.task");
+    Instance * instance = new Instance("instances/kiva-10-500-5.map","instances/kiva-1.task");
 
     // We initialize the solution
     Solution * solution = new Solution(instance);

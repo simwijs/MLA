@@ -119,7 +119,22 @@ void Solution::apply_position(Position & position){
         }
         else if (existing_position.get_id_node() == position.get_id_node()){
 
+
             cout << "ERROR, position already exist for this time step " << endl;
+
+            position.write();
+
+            existing_position.write();
+
+            for (int time_step_ = 0; time_step_ < this->list_positions_per_time_step.size(); ++time_step_){
+
+                //cout << "Agent 1 : TS : " << time_step_ << ", Node : " << positions_matrix[time_step_][position.get_id_agent()] << endl;
+            }
+
+            for (int time_step_ = 0; time_step_ < this->list_positions_per_time_step.size(); ++time_step_){
+
+                //cout << "Agent 2 : TS : " << time_step_ << ", Node : " << positions_matrix[time_step_][existing_position.get_id_agent()] << endl;
+            }
 
             getchar();
         }
@@ -283,18 +298,6 @@ bool Solution::check_solution_feasible(){
 
                 cout << "Problem, the move is not possible for the agent " << agent << endl;
 
-                cout << "Current node " << current_node << endl;
-                cout << "Next node " << next_node << endl;
-
-                for (Position & position : this->list_positions_per_time_step[time_step]){
-                    position.write();
-                }
-
-                cout << "CURRENT" << endl;
-                for (Position & position : this->list_positions_per_time_step[time_step+1]){
-                    position.write();
-                }
-
                 // We return false
                 return false;
             }
@@ -315,17 +318,6 @@ bool Solution::check_solution_feasible(){
 
                     cout << "Problem, same vertex used " << endl;
 
-                    cout << "Current node 1 : " << this->positions_matrix[time_step][agent] << endl;
-                    cout << "Current node 2 : " << this->positions_matrix[time_step][agent2] << endl;
-
-                    cout << "Time Step : " << time_step << endl;
-
-                    cout << "Agent 1 " << agent << endl;
-                    cout << "Agent 2 " << agent2 << endl;
-
-                    for (Position & position : list_positions_per_time_step[time_step]){
-                        position.write();
-                    }
                     // We return false
                     return false;
                 }
@@ -481,6 +473,7 @@ double Solution::compute_average_service_time(){
 
     return (sum / (double) this->instance->get_list_tasks().size());
 }
+
 void Solution::output_solution(){
 
     // We open the existing file

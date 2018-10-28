@@ -26,6 +26,10 @@ private:
                      vector<int> & list_id_node_graph_visited_post_horizon);
     void build_path(Solution * solution, int id_agent, int id_task,
                     vector<Search_Node*> & list_checked_nodes, vector<Position> & list_new_positions);
+    bool search_path_endpoint(Solution * solution, Position & initial_position, int id_task, vector<int> ids_node_goal,
+                              vector<Position> & list_new_positions);
+    void return_list_possible_endpoints(Solution * solution, Position & position,
+                                        vector<int> & list_possible_endpoints);
 public:
 
     // Constructor
