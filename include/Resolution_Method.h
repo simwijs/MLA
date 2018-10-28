@@ -16,6 +16,7 @@ private:
 
     // General methods
     void apply_random_heuristic(Instance * instance, Solution * solution);
+    void apply_greedy_goal_algorithm(Instance * instance,Solution * solution);
     void get_list_available_agents(Solution * solution, int current_time_step, vector<int> & list_available_agents);
     bool check_if_assignment_feasible(Solution * solution, int id_task, int id_agent, int time_step,
                                       vector<Position> & list_new_positions);

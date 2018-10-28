@@ -5,7 +5,9 @@
 #include "../include/Resolution_Method.h"
 #include <iostream>
 #include <vector>
+#include <utility>
 #include <stdlib.h>
+#include <limits>
 
 void Resolution_Method::solve_instance(Instance * instance, Solution * solution, int id_heuristic){
 
@@ -14,6 +16,11 @@ void Resolution_Method::solve_instance(Instance * instance, Solution * solution,
 
         // We apply the random heuristic
         this->apply_random_heuristic(instance,solution);
+    }
+    else if (id_heuristic == 2){
+
+        // We apply the greedy goal heuristic
+        this->apply_greedy_goal_algorithm(instance,solution);
     }
     else {
 
@@ -123,6 +130,125 @@ void Resolution_Method::apply_random_heuristic(Instance * instance, Solution * s
 
 }
 
+void Resolution_Method::apply_greedy_goal_algorithm(Instance * instance,Solution * solution){
+
+    // We initialize the values;
+    int nb_task_scheduled = 0, current_time_step = -1;
+
+    // While necessary
+    while (nb_task_scheduled < instance->get_list_tasks().size()){
+
+        // We increment the current time step
+        ++ current_time_step;
+
+        // We update the list of open tasks
+        solution->update_list_open_tasks(current_time_step);
+
+        // We copy the list of open tasks
+        vector<int> copy_list_open_tasks;
+        copy_list_open_tasks.insert(copy_list_open_tasks.begin(),solution->get_list_open_tasks().begin(),
+                                    solution->get_list_open_tasks().end());
+
+        // We get the list of available agents
+        vector<int> list_available_agents;
+        this->get_list_available_agents(solution,current_time_step,list_available_agents);
+
+        // While there is a goal to test
+        while (!copy_list_open_tasks.empty() && !list_available_agents.empty()){
+
+            // We compute the positions matrix in the solution
+            solution->compute_positions_matrix();
+
+            // We get the oldest goal
+            int id_task = copy_list_open_tasks[0];
+
+            // We remove the task from the list
+            copy_list_open_tasks.erase(copy_list_open_tasks.begin());
+
+            // We copy the list of available agents
+            vector<int> copy_list_available_agents;
+
+            // We add all the patients
+            copy_list_available_agents.insert(copy_list_available_agents.begin(), list_available_agents.begin(),
+                                              list_available_agents.end());
+
+            // We initialize the pair agent-path
+            vector<pair<int,vector<Position> > > list_pair_agent_path;
+
+            // We initialize the boolean value
+            bool assignment_found = false;
+
+            // For each agent
+            for (int id_agent : copy_list_available_agents){
+
+                // We add a pair to the list
+                list_pair_agent_path.push_back(pair<int,vector<Position> > (id_agent,vector<Position> ()));
+
+                // We compute the path to the goal
+                if (check_if_assignment_feasible(solution,id_task,id_agent,current_time_step,
+                                                 list_pair_agent_path[list_pair_agent_path.size()-1].second)){
+
+                    // We update the boolean value
+                    assignment_found = true;
+                }
+                else {
+
+                    // We clear the list for the agent
+                    list_pair_agent_path[list_pair_agent_path.size()-1].second.clear();
+                }
+            }
+
+            // We check if an assignment has been found
+            if (assignment_found){
+
+                // We initialize the best values
+                int index_best_agent = -1, shortest_path = numeric_limits<int>::max(), current_index = -1;
+
+                // We get the agent with the shortest path
+                for (pair<int, vector<Position> > & pair : list_pair_agent_path){
+
+                    // We increment the index
+                    ++current_index;
+
+                    // We check if the path is shorter that the shortest one
+                    if (pair.second.size() > 0 && pair.second.size() < shortest_path){
+
+                        // We update the values
+                        index_best_agent = current_index;
+                        shortest_path = pair.second.size();
+                    }
+                }
+
+                // We update the solution (new positions / list open tasks / update of task's dates)
+                solution->apply_assignment(id_task,list_pair_agent_path[index_best_agent].first,
+                                           list_pair_agent_path[index_best_agent].second);
+
+                // We increment the number of scheduled task
+                ++ nb_task_scheduled;
+
+                // We remove the agent from the list of available ones
+                list_available_agents.erase(find(list_available_agents.begin(),list_available_agents.end(),
+                                                 list_pair_agent_path[index_best_agent].first));
+
+                // We create the wait position for the agent
+                int current_size_list = solution->get_list_positions_per_time_step().size();
+
+                for (int k = current_time_step;
+                     k <= current_size_list; ++k){
+
+                    // We create the wait positions
+                    solution->create_wait_positions(k);
+                }
+
+                // We update the positions matrix
+                solution->compute_positions_matrix();
+
+                cout << "Nb of task scheduled : " << nb_task_scheduled << endl;
+            }
+        }
+    }
+}
+
 bool Resolution_Method::check_if_assignment_feasible(Solution * solution, int id_task, int id_agent, int time_step,
                                   vector<Position> & list_new_positions){
 
@@ -173,8 +299,12 @@ bool Resolution_Method::check_if_assignment_feasible(Solution * solution, int id
                     // We remove the doublon
                     list_new_positions.erase(list_new_positions.begin()+current_size);
 
-                    // We update the assigned task value at the end of the path
-                    list_new_positions[list_new_positions.size()-1].set_assigned_task(-1);
+                    // We unassigned the path from the delivery to the endpoint
+                    for (int k = current_size; k < list_new_positions.size(); ++ k){
+
+                        // We update the assigned task value at the end of the path
+                        list_new_positions[k].set_assigned_task(-1);
+                    }
 
                     // We return true
                     return true;

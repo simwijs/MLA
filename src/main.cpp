@@ -8,11 +8,12 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
+
     // We set the random seed
-    srand(1243);
+    srand(124);
 
     // We initialize the instance
-    Instance * instance = new Instance("instances/kiva-10-500-5.map","instances/kiva-1.task");
+    Instance * instance = new Instance("instances/kiva-10-500-5.map","instances/kiva-0.5.task");
 
     // We initialize the solution
     Solution * solution = new Solution(instance);
@@ -31,7 +32,7 @@ int main(int argc, char** argv)
     double computation_time;
 
     // We solve the instance
-    resolution_method->solve_instance(instance,solution,1);
+    resolution_method->solve_instance(instance,solution,2);
 
     // We get the computation time
     computation_time = (std::clock() - start) / (double) (CLOCKS_PER_SEC / 1000);

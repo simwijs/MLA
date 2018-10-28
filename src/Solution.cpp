@@ -74,6 +74,11 @@ void Solution::apply_assignment(int id_task, int id_agent, vector<Position> & li
     // We update the task's dates
     if (picked_date == -1 || delivered_date == -1 || (picked_date > delivered_date) ){
         cout << "Problem, values in the assignment method not correct" << endl;
+
+        cout << "Picked date " << picked_date << endl;
+        cout << "Delivered date " << delivered_date << endl;
+
+        getchar();
     }
     else {
         current_task->set_picked_date(picked_date);
@@ -481,6 +486,8 @@ void Solution::output_solution(){
     file.open ("Instances_Summary.txt", fstream::in | fstream::out | fstream::app);
 
     // We add the values
+    file << this->instance->get_map_file_name() << ";";
+    file << this->instance->get_task_file_name() << ";";
     file << this->instance->get_nb_agent() << ";" ;
     file << this->instance->get_list_tasks().size() << ";";
     file << this->list_positions_per_time_step.size() << ";";
