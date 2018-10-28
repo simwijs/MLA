@@ -11,14 +11,9 @@
   <component name="ChangeListManager">
     <list default="true" id="04dd8bb8-0006-4472-a5ce-8a6e28368019" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/MAPD" afterPath="$PROJECT_DIR$/bin/MAPD" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obj/Resolution_Method.o" afterPath="$PROJECT_DIR$/obj/Resolution_Method.o" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obj/Solution.o" afterPath="$PROJECT_DIR$/obj/Solution.o" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obj/main.o" afterPath="$PROJECT_DIR$/obj/main.o" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Instances_Summary.txt" afterPath="$PROJECT_DIR$/Instances_Summary.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/Resolution_Method.h" afterPath="$PROJECT_DIR$/include/Resolution_Method.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Resolution_Method.cpp" afterPath="$PROJECT_DIR$/src/Resolution_Method.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Solution.cpp" afterPath="$PROJECT_DIR$/src/Solution.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main.cpp" afterPath="$PROJECT_DIR$/src/main.cpp" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
@@ -39,7 +34,7 @@
         <entry file="file://$PROJECT_DIR$/src/Resolution_Method.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="629">
-              <caret line="307" column="0" lean-forward="true" selection-start-line="307" selection-start-column="0" selection-end-line="307" selection-end-column="0" />
+              <caret line="307" column="0" lean-forward="false" selection-start-line="307" selection-start-column="0" selection-end-line="307" selection-end-column="0" />
               <folding>
                 <element signature="e#195#726#0" expanded="false" />
                 <element signature="e#728#5245#0" expanded="false" />
@@ -70,7 +65,7 @@
         <entry file="file://$PROJECT_DIR$/src/Solution.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="510">
-              <caret line="263" column="0" lean-forward="true" selection-start-line="263" selection-start-column="0" selection-end-line="263" selection-end-column="0" />
+              <caret line="263" column="0" lean-forward="false" selection-start-line="263" selection-start-column="0" selection-end-line="263" selection-end-column="0" />
               <folding>
                 <element signature="e#130#636#0" expanded="false" />
                 <element signature="e#2938#6102#0" expanded="false" />
@@ -108,8 +103,8 @@
       <file leaf-file-name="Instances_Summary.txt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Instances_Summary.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+            <state relative-caret-position="180">
+              <caret line="12" column="62" lean-forward="false" selection-start-line="12" selection-start-column="62" selection-end-line="12" selection-end-column="62" />
               <folding />
             </state>
           </provider>
@@ -118,8 +113,18 @@
       <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="34" column="57" lean-forward="false" selection-start-line="34" selection-start-column="57" selection-end-line="34" selection-end-column="57" />
+            <state relative-caret-position="240">
+              <caret line="23" column="6" lean-forward="false" selection-start-line="23" selection-start-column="6" selection-end-line="23" selection-end-column="6" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="makefile" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/makefile">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -456,12 +461,12 @@
       <workItem from="1540476198986" duration="13830000" />
       <workItem from="1540523595320" duration="64000" />
       <workItem from="1540562867338" duration="13823000" />
-      <workItem from="1540585162134" duration="14996000" />
+      <workItem from="1540585162134" duration="16345000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="50454000" />
+    <option name="totallyTimeSpent" value="51803000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-269" y="-1057" width="1280" height="1057" extended-state="0" />
@@ -809,14 +814,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/makefile">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/include/Resolution_Method.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -828,7 +825,7 @@
     <entry file="file://$PROJECT_DIR$/src/Resolution_Method.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="629">
-          <caret line="307" column="0" lean-forward="true" selection-start-line="307" selection-start-column="0" selection-end-line="307" selection-end-column="0" />
+          <caret line="307" column="0" lean-forward="false" selection-start-line="307" selection-start-column="0" selection-end-line="307" selection-end-column="0" />
           <folding>
             <element signature="e#195#726#0" expanded="false" />
             <element signature="e#728#5245#0" expanded="false" />
@@ -863,7 +860,7 @@
     <entry file="file://$PROJECT_DIR$/src/Solution.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="510">
-          <caret line="263" column="0" lean-forward="true" selection-start-line="263" selection-start-column="0" selection-end-line="263" selection-end-column="0" />
+          <caret line="263" column="0" lean-forward="false" selection-start-line="263" selection-start-column="0" selection-end-line="263" selection-end-column="0" />
           <folding>
             <element signature="e#130#636#0" expanded="false" />
             <element signature="e#2938#6102#0" expanded="false" />
@@ -877,18 +874,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/makefile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="34" column="57" lean-forward="false" selection-start-line="34" selection-start-column="57" selection-end-line="34" selection-end-column="57" />
+        <state relative-caret-position="240">
+          <caret line="23" column="6" lean-forward="false" selection-start-line="23" selection-start-column="6" selection-end-line="23" selection-end-column="6" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Instances_Summary.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+        <state relative-caret-position="180">
+          <caret line="12" column="62" lean-forward="false" selection-start-line="12" selection-start-column="62" selection-end-line="12" selection-end-column="62" />
           <folding />
         </state>
       </provider>
