@@ -6,25 +6,30 @@
 #include <iostream>
 #include <fstream>
 
-void Data_Reader::read_instance(Instance * instance, Solution * solution){
+void Data_Reader::read_instance(Instance * instance){
 
     // We read the map of the problem
-    read_map_file(instance,solution);
+    read_map_file(instance);
 
     // We read the tasks of the problem
-    read_task_file(instance,solution);
+    read_task_file(instance);
 
-    // We update the task values with the corresponding associated nodes
-    for (Task * task : instance->get_list_tasks()){
-        task->set_pickup_node(instance->get_list_pair_endpoint_node()[task->get_pickup_node()].second);
-        task->set_delivery_node(instance->get_list_pair_endpoint_node()[task->get_delivery_node()].second);
+    // We compute the h values
+    for (int node = 0; node < instance->get_list_map_nodes().size(); ++node){
+
+        // We create the vector
+        instance->get_h_values_per_node().push_back(vector<int> ());
+
+        // We check if the node is an available point
+        if (instance->get_list_map_nodes()[node]){
+
+            // We compute the h values for that node
+            instance->compute_h_values(instance->get_h_values_per_node()[node],node);
+        }
     }
-
-    // We update the successor lists for the nodes
-    instance->compute_successors_per_node();
 }
 
-void Data_Reader::read_task_file(Instance * instance, Solution * solution){
+void Data_Reader::read_task_file(Instance * instance){
 
     // We open the file
     ifstream file(instance->get_task_file_name());
@@ -59,15 +64,19 @@ void Data_Reader::read_task_file(Instance * instance, Solution * solution){
             file >> value;
 
             // We create a new task in the instance's list
-            instance->get_list_tasks().push_back(new Task(task,release_date,pickup_node,delivery_node));
+            instance->get_list_tasks().push_back(new Task(task,release_date,
+                                                          instance->get_list_pair_node_endpoint()[pickup_node].second,
+                                                          instance->get_list_pair_node_endpoint()[
+                                                                  delivery_node].second));
         }
 
         // We close the file
         file.close();
     }
+
 }
 
-void Data_Reader::read_map_file(Instance * instance, Solution * solution){
+void Data_Reader::read_map_file(Instance * instance){
 
     // We open the file
     ifstream file(instance->get_map_file_name());
@@ -95,7 +104,11 @@ void Data_Reader::read_map_file(Instance * instance, Solution * solution){
         instance->set_nb_agent(nb_agents);
 
         // We read the not used value
-        getline(file,line);
+        file >> value;
+        int max_horizon = stoi(value);
+        instance->set_max_horizon(max_horizon);
+
+        // We read the end of the line
         getline(file,line);
 
         // We initialize the values
@@ -118,40 +131,50 @@ void Data_Reader::read_map_file(Instance * instance, Solution * solution){
 
                 // We get the type of the node
                 if (value == "."){
-                    // We create the free node
-                    instance->get_list_nodes().push_back(new Node (current_node_id,0,row,column));
+
+                    // We update the values for the instance
+                    instance->get_list_map_nodes().push_back(true);
+                    instance->get_list_endpoints().push_back(false);
                 }
                 else if (value == "e"){
-                    // We create the endpoint node
-                    instance->get_list_nodes().push_back(new Node (current_node_id,0,row,column));
 
-                    // We update the list of pair endpoint-node
-                    instance->get_list_pair_endpoint_node().push_back(pair<int,int> (
-                            nb_found_endpoint,current_node_id));
+                    // We update the values for the instance
+                    instance->get_list_map_nodes().push_back(true);
+                    instance->get_list_endpoints().push_back(true);
+
+                    // We add the pair endpoint-node
+                    instance->get_list_pair_node_endpoint().push_back(pair<int,int> (
+                            nb_found_endpoint, row*instance->get_nb_column() + column));
 
                     // We increment the number of found endpoint
                     ++ nb_found_endpoint;
+
                 }
                 else if (value == "r"){
-                    // We create the agent node
-                    instance->get_list_nodes().push_back(new Node (current_node_id,0,row,column));
 
-                    // We add a position in the solution
-                    solution->get_list_positions_per_time_step()[0].push_back(
-                            Position(nb_found_agents,current_node_id,0));
+                    // We update the values for the instance
+                    instance->get_list_map_nodes().push_back(true);
+                    instance->get_list_endpoints().push_back(true);
+
+                    // We create a new agent for the problem
+                    instance->get_list_agents().push_back(new Agent(nb_found_agents,
+                                                                    row*instance->get_nb_column() + column,
+                                                                    max_horizon));
 
                     // We increment the number of found agents
                     ++ nb_found_agents;
                 }
                 else {
-                    // We create the obstacle node
-                    instance->get_list_nodes().push_back(new Node (current_node_id,1,row,column));
+
+                    // We update the values for the instance
+                    instance->get_list_map_nodes().push_back(false);
+                    instance->get_list_endpoints().push_back(false);
                 }
             }
         }
 
         // We check that the number of created agents correspond
-        if (nb_agents != solution->get_list_positions_per_time_step()[0].size()){
+        if (nb_agents != instance->get_nb_agent()){
             cout << "Problem, the number of agents does not correspond" << endl;
             getchar();
         }
@@ -163,7 +186,7 @@ void Data_Reader::read_map_file(Instance * instance, Solution * solution){
         }
 
         // We check that the number of node correspond
-        if (instance->get_nb_row()*instance->get_nb_column() != instance->get_list_nodes().size()){
+        if (instance->get_nb_row()*instance->get_nb_column() != instance->get_list_map_nodes().size()){
             cout << "Problem, the number of nodes does not correspond" << endl;
             getchar();
         }
@@ -171,4 +194,5 @@ void Data_Reader::read_map_file(Instance * instance, Solution * solution){
         // We close the file
         file.close();
     }
+
 }

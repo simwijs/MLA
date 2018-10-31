@@ -10,10 +10,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="04dd8bb8-0006-4472-a5ce-8a6e28368019" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Instances_Summary.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/README.md" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/include/Node.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/include/Position.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/include/Resolution_Method.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/include/Search_Node.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/include/Solution.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/obj/Node.o" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/obj/Position.o" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/obj/Resolution_Method.o" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/obj/Solution.o" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/Node.cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/Position.cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/Resolution_Method.cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/Solution.cpp" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/MAPD" afterPath="$PROJECT_DIR$/bin/MAPD" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obj/Data_Reader.o" afterPath="$PROJECT_DIR$/obj/Data_Reader.o" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obj/Instance.o" afterPath="$PROJECT_DIR$/obj/Instance.o" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obj/main.o" afterPath="$PROJECT_DIR$/obj/main.o" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Instances_Summary.txt" afterPath="$PROJECT_DIR$/Instances_Summary.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/Data_Reader.h" afterPath="$PROJECT_DIR$/include/Data_Reader.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/Instance.h" afterPath="$PROJECT_DIR$/include/Instance.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Data_Reader.cpp" afterPath="$PROJECT_DIR$/src/Data_Reader.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Instance.cpp" afterPath="$PROJECT_DIR$/src/Instance.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main.cpp" afterPath="$PROJECT_DIR$/src/main.cpp" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
@@ -30,61 +51,91 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Resolution_Method.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Resolution_Method.cpp">
+      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="629">
-              <caret line="307" column="0" lean-forward="false" selection-start-line="307" selection-start-column="0" selection-end-line="307" selection-end-column="0" />
-              <folding>
-                <element signature="e#195#726#0" expanded="false" />
-                <element signature="e#728#5245#0" expanded="false" />
-                <element signature="e#3381#3925#0" expanded="false" />
-                <element signature="e#5247#10075#0" expanded="false" />
-                <element signature="e#12972#14434#0" expanded="false" />
-                <element signature="e#16810#19123#0" expanded="false" />
-                <element signature="e#19125#23790#0" expanded="false" />
-                <element signature="e#23792#24906#0" expanded="false" />
-                <element signature="e#24908#25466#0" expanded="false" />
-                <marker date="1540760640000" expanded="false" signature="14654:16808" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Node.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Node.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+            <state relative-caret-position="330">
+              <caret line="22" column="41" lean-forward="true" selection-start-line="22" selection-start-column="41" selection-end-line="22" selection-end-column="41" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Solution.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Solution.cpp">
+      <file leaf-file-name="Task.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/include/Task.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="510">
-              <caret line="263" column="0" lean-forward="false" selection-start-line="263" selection-start-column="0" selection-end-line="263" selection-end-column="0" />
-              <folding>
-                <element signature="e#130#636#0" expanded="false" />
-                <element signature="e#2938#6102#0" expanded="false" />
-                <element signature="e#6104#7599#0" expanded="false" />
-                <element signature="e#7601#8007#0" expanded="false" />
-                <element signature="e#8009#9196#0" expanded="false" />
-                <element signature="e#9198#15571#0" expanded="false" />
-                <element signature="e#15573#16077#0" expanded="false" />
-                <element signature="e#16079#16353#0" expanded="false" />
-              </folding>
+              <caret line="34" column="23" lean-forward="false" selection-start-line="34" selection-start-column="8" selection-end-line="34" selection-end-column="23" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Instance.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Data_Reader.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/include/Data_Reader.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="330">
+              <caret line="22" column="27" lean-forward="false" selection-start-line="22" selection-start-column="27" selection-end-line="22" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Instance.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Instance.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="26" lean-forward="false" selection-start-line="4" selection-start-column="26" selection-end-line="4" selection-end-column="26" />
+            <state relative-caret-position="120">
+              <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Task.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Task.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="17" column="1" lean-forward="true" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Agent.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/include/Agent.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="360">
+              <caret line="24" column="13" lean-forward="false" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="kiva-10-500-5.map" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/instances/kiva-10-500-5.map">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="375">
+              <caret line="25" column="0" lean-forward="true" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Data_Reader.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Data_Reader.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="558">
+              <caret line="178" column="12" lean-forward="false" selection-start-line="178" selection-start-column="12" selection-end-line="178" selection-end-column="12" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="kiva-1.task" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/instances/kiva-1.task">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="15" column="17" lean-forward="true" selection-start-line="15" selection-start-column="17" selection-end-line="15" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -93,48 +144,8 @@
       <file leaf-file-name="Instance.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/include/Instance.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="780">
-              <caret line="60" column="30" lean-forward="false" selection-start-line="60" selection-start-column="13" selection-end-line="60" selection-end-column="30" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Instances_Summary.txt" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Instances_Summary.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="12" column="62" lean-forward="false" selection-start-line="12" selection-start-column="62" selection-end-line="12" selection-end-column="62" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="23" column="6" lean-forward="false" selection-start-line="23" selection-start-column="6" selection-end-line="23" selection-end-column="6" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="makefile" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/makefile">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Resolution_Method.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/include/Resolution_Method.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="18" column="78" lean-forward="false" selection-start-line="18" selection-start-column="78" selection-end-line="18" selection-end-column="78" />
+            <state relative-caret-position="480">
+              <caret line="50" column="70" lean-forward="true" selection-start-line="50" selection-start-column="70" selection-end-line="50" selection-end-column="70" />
               <folding />
             </state>
           </provider>
@@ -144,7 +155,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>302</find>
       <find>307</find>
       <find>nb_found_robots</find>
       <find>robot</find>
@@ -165,6 +175,10 @@
       <find>check_if_goal_available</find>
       <find>-&gt;s</find>
       <find>id_goal</find>
+      <find>Node</find>
+      <find>302</find>
+      <find>301</find>
+      <find>nb_found_endpoint</find>
     </findStrings>
     <replaceStrings>
       <replace>nb_found_agents</replace>
@@ -187,14 +201,10 @@
         <option value="$PROJECT_DIR$/instances/kiva-40-500-5.map" />
         <option value="$PROJECT_DIR$/instances/kiva-50-500-5.map" />
         <option value="$PROJECT_DIR$/include/Solution .h" />
-        <option value="$PROJECT_DIR$/include/Data_Reader.h" />
         <option value="$PROJECT_DIR$/include/Heuristic.h" />
         <option value="$PROJECT_DIR$/src/Heuristic.cpp" />
-        <option value="$PROJECT_DIR$/include/Instance.h" />
         <option value="$PROJECT_DIR$/include/Node.h" />
         <option value="$PROJECT_DIR$/src/Node.cpp" />
-        <option value="$PROJECT_DIR$/src/Instance.cpp" />
-        <option value="$PROJECT_DIR$/src/Data_Reader.cpp" />
         <option value="$PROJECT_DIR$/instances/kiva-1-small.task" />
         <option value="$PROJECT_DIR$/include/Search_Node.h" />
         <option value="$PROJECT_DIR$/include/Task.h" />
@@ -203,11 +213,17 @@
         <option value="$PROJECT_DIR$/src/Position.cpp" />
         <option value="$PROJECT_DIR$/Instance_Summary.txt" />
         <option value="$PROJECT_DIR$/include/Solution.h" />
+        <option value="$PROJECT_DIR$/src/Solution.cpp" />
+        <option value="$PROJECT_DIR$/Instances_Summary.txt" />
         <option value="$PROJECT_DIR$/include/Resolution_Method.h" />
         <option value="$PROJECT_DIR$/src/Resolution_Method.cpp" />
-        <option value="$PROJECT_DIR$/src/Solution.cpp" />
+        <option value="$PROJECT_DIR$/include/Data_Reader.h" />
+        <option value="$PROJECT_DIR$/src/Agent.cpp" />
+        <option value="$PROJECT_DIR$/include/Agent.h" />
+        <option value="$PROJECT_DIR$/include/Instance.h" />
+        <option value="$PROJECT_DIR$/src/Data_Reader.cpp" />
         <option value="$PROJECT_DIR$/src/main.cpp" />
-        <option value="$PROJECT_DIR$/Instances_Summary.txt" />
+        <option value="$PROJECT_DIR$/src/Instance.cpp" />
       </list>
     </option>
   </component>
@@ -245,25 +261,39 @@
         <subPane>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="MAPD" />
+              <option name="myItemId" value="MAPD_V2" />
               <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="MAPD" />
+              <option name="myItemId" value="MAPD_V2" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="MAPD" />
+              <option name="myItemId" value="MAPD_V2" />
               <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="MAPD" />
+              <option name="myItemId" value="MAPD_V2" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MAPD_V2" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MAPD_V2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="include" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -461,20 +491,27 @@
       <workItem from="1540476198986" duration="13830000" />
       <workItem from="1540523595320" duration="64000" />
       <workItem from="1540562867338" duration="13823000" />
-      <workItem from="1540585162134" duration="16345000" />
+      <workItem from="1540585162134" duration="23265000" />
+      <workItem from="1540779951227" duration="3716000" />
+      <workItem from="1540904085488" duration="5391000" />
+      <workItem from="1540928806038" duration="90000" />
+      <workItem from="1540928932036" duration="7000" />
+      <workItem from="1540928943609" duration="6000000" />
+      <workItem from="1540981512287" duration="993000" />
+      <workItem from="1540991966000" duration="3363000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="51803000" />
+    <option name="totallyTimeSpent" value="78283000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-269" y="-1057" width="1280" height="1057" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15859374" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14296874" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13562752" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.0951417" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299595" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -504,13 +541,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/instances/kiva-2.task">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Data_Reader.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
@@ -526,18 +556,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/Node.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="43" lean-forward="false" selection-start-line="14" selection-start-column="43" selection-end-line="14" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/include/Node.h" />
     <entry file="file://$PROJECT_DIR$/include/Task.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="375">
           <caret line="25" column="67" lean-forward="false" selection-start-line="25" selection-start-column="67" selection-end-line="25" selection-end-column="67" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -598,18 +621,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/Node.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="43" lean-forward="false" selection-start-line="14" selection-start-column="43" selection-end-line="14" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/include/Node.h" />
     <entry file="file://$PROJECT_DIR$/include/Task.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="375">
           <caret line="25" column="67" lean-forward="true" selection-start-line="25" selection-start-column="67" selection-end-line="25" selection-end-column="67" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -627,7 +643,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/Agent.h" />
     <entry file="file://$PROJECT_DIR$/instances/kiva-30-500-5.map">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -649,13 +664,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/instances/kiva-20-500-5.map">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="4" lean-forward="true" selection-start-line="3" selection-start-column="4" selection-end-line="3" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/instances/kiva-10.task">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -670,38 +678,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/instances/kiva-0.2.task">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/instances/kiva-2.task">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/instances/kiva-5.task">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
           <caret line="1" column="17" lean-forward="true" selection-start-line="1" selection-start-column="17" selection-end-line="1" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/Data_Reader.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="20" column="44" lean-forward="false" selection-start-line="20" selection-start-column="44" selection-end-line="20" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/instances/kiva-10-500-5.map">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="16" lean-forward="false" selection-start-line="7" selection-start-column="16" selection-end-line="7" selection-end-column="16" />
         </state>
       </provider>
     </entry>
@@ -712,33 +692,46 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/Search_Node.h">
+    <entry file="file://$PROJECT_DIR$/include/Search_Node.h" />
+    <entry file="file://$PROJECT_DIR$/include/Position.h" />
+    <entry file="file://$PROJECT_DIR$/Instance_Summary.txt" />
+    <entry file="file://$PROJECT_DIR$/instances/kiva-0.2-small.task" />
+    <entry file="file://$PROJECT_DIR$/src/Position.cpp" />
+    <entry file="file://$PROJECT_DIR$/README.md" />
+    <entry file="file://$PROJECT_DIR$/src/Node.cpp" />
+    <entry file="file://$PROJECT_DIR$/src/Resolution_Method.cpp" />
+    <entry file="file://$PROJECT_DIR$/src/Solution.cpp" />
+    <entry file="file://$PROJECT_DIR$/Instances_Summary.txt" />
+    <entry file="file://$PROJECT_DIR$/include/Resolution_Method.h" />
+    <entry file="file://$PROJECT_DIR$/makefile">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="95" lean-forward="false" selection-start-line="18" selection-start-column="95" selection-end-line="18" selection-end-column="95" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/Solution.h" />
+    <entry file="file://$PROJECT_DIR$/include/Node.h" />
+    <entry file="file://$PROJECT_DIR$/src/Agent.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="19" lean-forward="false" selection-start-line="5" selection-start-column="19" selection-end-line="5" selection-end-column="19" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Data_Reader.cpp">
+    <entry file="file://$PROJECT_DIR$/instances/kiva-2.task">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="23" column="44" lean-forward="false" selection-start-line="23" selection-start-column="44" selection-end-line="23" selection-end-column="44" />
+        <state relative-caret-position="300">
+          <caret line="20" column="17" lean-forward="true" selection-start-line="20" selection-start-column="17" selection-end-line="20" selection-end-column="17" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/Node.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="33" column="46" lean-forward="false" selection-start-line="33" selection-start-column="18" selection-end-line="33" selection-end-column="46" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/include/Task.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+        <state relative-caret-position="510">
+          <caret line="34" column="23" lean-forward="false" selection-start-line="34" selection-start-column="8" selection-end-line="34" selection-end-column="23" />
           <folding />
         </state>
       </provider>
@@ -746,154 +739,87 @@
     <entry file="file://$PROJECT_DIR$/src/Task.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
-          <caret line="17" column="1" lean-forward="false" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
+          <caret line="17" column="1" lean-forward="true" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/Position.h">
+    <entry file="file://$PROJECT_DIR$/include/Data_Reader.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="32" column="26" lean-forward="false" selection-start-line="32" selection-start-column="9" selection-end-line="32" selection-end-column="26" />
+        <state relative-caret-position="330">
+          <caret line="22" column="27" lean-forward="false" selection-start-line="22" selection-start-column="27" selection-end-line="22" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/instances/kiva-0.2.task">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="17" lean-forward="true" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/instances/kiva-1.task">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="17" lean-forward="true" selection-start-line="18" selection-start-column="17" selection-end-line="18" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Instance_Summary.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="64" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        <state relative-caret-position="225">
+          <caret line="15" column="17" lean-forward="true" selection-start-line="15" selection-start-column="17" selection-end-line="15" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/instances/kiva-0.2-small.task">
+    <entry file="file://$PROJECT_DIR$/include/Agent.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="3" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="3" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Node.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Position.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="1" lean-forward="false" selection-start-line="14" selection-start-column="1" selection-end-line="14" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/Solution.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="27" column="0" lean-forward="true" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/Resolution_Method.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="18" column="78" lean-forward="false" selection-start-line="18" selection-start-column="78" selection-end-line="18" selection-end-column="78" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Resolution_Method.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="307" column="0" lean-forward="false" selection-start-line="307" selection-start-column="0" selection-end-line="307" selection-end-column="0" />
-          <folding>
-            <element signature="e#195#726#0" expanded="false" />
-            <element signature="e#728#5245#0" expanded="false" />
-            <element signature="e#3381#3925#0" expanded="false" />
-            <element signature="e#5247#10075#0" expanded="false" />
-            <element signature="e#12972#14434#0" expanded="false" />
-            <element signature="e#16810#19123#0" expanded="false" />
-            <element signature="e#19125#23790#0" expanded="false" />
-            <element signature="e#23792#24906#0" expanded="false" />
-            <element signature="e#24908#25466#0" expanded="false" />
-            <marker date="1540760640000" expanded="false" signature="14654:16808" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Instance.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="26" lean-forward="false" selection-start-line="4" selection-start-column="26" selection-end-line="4" selection-end-column="26" />
+        <state relative-caret-position="360">
+          <caret line="24" column="13" lean-forward="false" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/include/Instance.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="780">
-          <caret line="60" column="30" lean-forward="false" selection-start-line="60" selection-start-column="13" selection-end-line="60" selection-end-column="30" />
+        <state relative-caret-position="480">
+          <caret line="50" column="70" lean-forward="true" selection-start-line="50" selection-start-column="70" selection-end-line="50" selection-end-column="70" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Solution.cpp">
+    <entry file="file://$PROJECT_DIR$/instances/kiva-20-500-5.map">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="263" column="0" lean-forward="false" selection-start-line="263" selection-start-column="0" selection-end-line="263" selection-end-column="0" />
-          <folding>
-            <element signature="e#130#636#0" expanded="false" />
-            <element signature="e#2938#6102#0" expanded="false" />
-            <element signature="e#6104#7599#0" expanded="false" />
-            <element signature="e#7601#8007#0" expanded="false" />
-            <element signature="e#8009#9196#0" expanded="false" />
-            <element signature="e#9198#15571#0" expanded="false" />
-            <element signature="e#15573#16077#0" expanded="false" />
-            <element signature="e#16079#16353#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="285">
+          <caret line="19" column="35" lean-forward="true" selection-start-line="19" selection-start-column="35" selection-end-line="19" selection-end-column="35" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/makefile">
+    <entry file="file://$PROJECT_DIR$/instances/kiva-10-500-5.map">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="375">
+          <caret line="25" column="0" lean-forward="true" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="23" column="6" lean-forward="false" selection-start-line="23" selection-start-column="6" selection-end-line="23" selection-end-column="6" />
+        <state relative-caret-position="330">
+          <caret line="22" column="41" lean-forward="true" selection-start-line="22" selection-start-column="41" selection-end-line="22" selection-end-column="41" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Instances_Summary.txt">
+    <entry file="file://$PROJECT_DIR$/src/Data_Reader.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="62" lean-forward="false" selection-start-line="12" selection-start-column="62" selection-end-line="12" selection-end-column="62" />
+        <state relative-caret-position="558">
+          <caret line="178" column="12" lean-forward="false" selection-start-line="178" selection-start-column="12" selection-end-line="178" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Instance.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
           <folding />
         </state>
       </provider>

@@ -5,7 +5,7 @@
 #ifndef MAPD_DATA_READER_H
 #define MAPD_DATA_READER_H
 
-#include "Solution.h"
+#include "Instance.h"
 
 using namespace std;
 
@@ -13,11 +13,11 @@ class Data_Reader{
 
 private:
 
-    void read_task_file(Instance * instance, Solution * solution);
-    void read_map_file(Instance * instance, Solution * solution);
+    void read_task_file(Instance * instance);
+    void read_map_file(Instance * instance);
 
 public:
 
-    void read_instance(Instance * instance, Solution * solution);
+    void read_instance(Instance * instance);
 };
 #endif //MAPD_DATA_READER_H

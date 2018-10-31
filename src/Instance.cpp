@@ -1,37 +1,55 @@
 //
 // Created by Florian Grenouilleau on 2018-10-25.
 //
-#include <stdlib.h>
 #include "../include/Instance.h"
+#include <queue>
+#include <iostream>
 
-void Instance::compute_successors_per_node(){
+void Instance::compute_h_values(vector<int> & h_values, int start_location) {
 
-    // For each node
-    for (Node * node_1 : this->list_nodes){
+    // We initialize the values
+    queue<int> Q;
+    vector<bool> status(this->list_map_nodes.size(), false);
+    h_values.resize(this->list_map_nodes.size(),-1);
+    int neighbor[4] = {1,-1,this->nb_column,-(this->nb_column)};
 
-        // We check if the node is an obstacle
-        if (node_1->get_type() == 1) continue;
+    // We update the valeus for the start location
+    status[start_location] = true;
+    h_values[start_location] = 0;
 
-        // We add itself to the list of successors
-        node_1->get_list_id_nodes_successors().push_back(node_1->get_id());
+    // We add the start location to the queue
+    Q.push(start_location);
 
-        for (Node * node_2 : this->list_nodes){
+    while (!Q.empty())
+    {
+        // We get the first value
+        int v = Q.front();
+        Q.pop();
 
-            // We check that we need to check the succession
-            if (node_2 <= node_1) continue;
+        // For each neighbor
+        for (int i = 0; i < 4; i++)
+        {
+            // We check that the neighbor is reachable
+            if (i == 0 && v % (this->nb_column) == this->nb_column-1) continue;
+            if (i == 1 && v % (this->nb_column) == 0) continue;
+            if (i == 2 && v / (this->nb_column) == this->nb_row-1) continue;
+            if (i == 3 && v / (this->nb_column) == 0) continue;
 
-            // We check if the node 2 is an obstacle
-            if (node_2->get_type() == 1) continue;
+            // We get the corresponding value
+            int u = v + neighbor[i];
 
-            // We check if an edge exists between the nodes
-            if ( (node_1->get_coord_y() == node_2->get_coord_y()
-                && abs(node_1->get_coord_x()-node_2->get_coord_x()) == 1) ||
-                    (node_1->get_coord_x() == node_2->get_coord_x()
-                     && abs(node_1->get_coord_y()-node_2->get_coord_y()) == 1)){
+            // We check if this neighbor is accessible
+            if (this->list_map_nodes[u])
+            {
 
-                // We update the nodes successor list
-                node_1->get_list_id_nodes_successors().push_back(node_2->get_id());
-                node_2->get_list_id_nodes_successors().push_back(node_1->get_id());
+                // We check if the new value has been checked
+                if (!status[u])
+                {
+                    // We update the values and add the successor to the queue
+                    status[u] = true;
+                    h_values[u] = h_values[v] + 1;
+                    Q.push(u);
+                }
             }
         }
     }
