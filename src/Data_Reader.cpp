@@ -27,6 +27,9 @@ void Data_Reader::read_instance(Instance * instance){
             instance->compute_h_values(instance->get_h_values_per_node()[node],node);
         }
     }
+
+    // We create the list of task released per time step
+    instance->update_release_tasks_per_time_step();
 }
 
 void Data_Reader::read_task_file(Instance * instance){

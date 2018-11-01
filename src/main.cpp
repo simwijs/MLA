@@ -4,6 +4,7 @@
 #include <ctime>
 #include <string>
 #include "../include/Data_Reader.h"
+#include "../include/Resolution_Method.h"
 
 using namespace std;
 
@@ -22,7 +23,23 @@ int main(int argc, char** argv)
     // We read the instance
     data_reader->read_instance(instance);
 
+    // We create the solver
+    Resolution_Method * resolution_method = new Resolution_Method();
+
+    // We solve the instance
+    resolution_method->solve_instance(instance);
+
+    // We check that the found solution is feasible
+    if (instance->check_solution_feasible()){
+
+        cout << "Final solution feasible" << endl;
+    }
+    else {
+        cout << "Final solution not feasible" << endl;
+    }
+
     // We delete the objects
+    delete resolution_method;
     delete data_reader;
     delete instance;
 

@@ -11,14 +11,15 @@ class Task {
 private:
 
     // Attributes
-    int id, release_date, pickup_node, delivery_node, picked_date, delivered_date;
+    int id, release_date, pickup_node, delivery_node, picked_date = -1, delivered_date = -1, id_assigned_agent = -1;
 
 public:
 
     // Constructor
     Task(int id_,int release_date_,int pickup_node_,int delivery_node_) : id(id_),release_date(release_date_),
                                                                           pickup_node(pickup_node_),
-                                                                          delivery_node(delivery_node_) {};
+                                                                          delivery_node(delivery_node_),
+                                                                          id_assigned_agent(-1) {};
 
     // General Methods
     void write();
@@ -28,6 +29,7 @@ public:
     void set_delivery_node(int value){this->delivery_node = value;}
     void set_picked_date(int value){this->picked_date = value;}
     void set_delivered_date(int value){this->delivered_date = value;}
+    void set_id_assigned_agent(int value){this->id_assigned_agent = value;}
 
     // Getters
     int get_id(){ return this->id;}
@@ -36,6 +38,7 @@ public:
     int get_delivery_node(){ return this->delivery_node;}
     int get_picked_date(){ return this->picked_date;}
     int get_delivered_date(){ return this->delivered_date;}
+    int get_id_assigned_agent(){ return this->id_assigned_agent;}
 };
 
 #endif //MAPD_TASK_H

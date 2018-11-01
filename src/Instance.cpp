@@ -54,3 +54,137 @@ void Instance::compute_h_values(vector<int> & h_values, int start_location) {
         }
     }
 }
+
+void Instance::update_release_tasks_per_time_step(){
+
+    // We resize the matrix
+    this->id_released_tasks_per_time_step.resize(this->max_horizon,vector<int>());
+
+    // For each task
+    for (Task * task : this->list_tasks){
+
+        // We add the task at its time step
+        this->id_released_tasks_per_time_step[task->get_release_date()].push_back(task->get_id());
+    }
+}
+
+bool Instance::check_solution_feasible(){
+
+    // We check that each task has an agent
+    for (Task * task : this->list_tasks){
+
+        // We check if the task is assigned
+        if (task->get_id_assigned_agent() == -1){
+
+            task->write();
+            cout << "Problem, the task is not assigned" << endl;
+            return false;
+        }
+
+        // We check that the pickup and delivery dates are feasible
+        if (task->get_picked_date() >= task->get_delivered_date() ||
+                task->get_picked_date() == -1 || task->get_delivered_date() == -1){
+
+            cout << "Problem, the pickup and/or delivery dates are not feasible" << endl;
+            return false;
+        }
+
+        // We check that the dates correspond to the assigned agent's path
+        if (this->list_agents[task->get_id_assigned_agent()]->get_path()[task->get_picked_date()] !=
+                task->get_pickup_node() ||
+            this->list_agents[task->get_id_assigned_agent()]->get_path()[task->get_delivered_date()] !=
+                task->get_delivery_node()){
+
+            cout << "Problem, the dates do not correspond to the agent's path" << endl;
+            return false;
+        }
+    }
+
+    // We check that the agent's path is feasible
+    for (Agent * agent : this->list_agents){
+
+        for (int time_step = 0; time_step < this->max_horizon; ++time_step){
+
+            // We check that the current node of the agent is an available one
+            if (!this->list_map_nodes[agent->get_path()[time_step]]){
+
+                cout << "Problem, the current node of the agent is not allowed" << endl;
+                return false;
+            }
+
+            // We check that the final position of the agent is an endpoint
+            if (!this->list_endpoints[agent->get_path()[this->max_horizon-1]]){
+
+                cout << "Problem, the final position of the agent is not an endpoint" << endl;
+            }
+
+            if (time_step < this->max_horizon - 1){
+
+                // We get the current node of the agent
+                int current_node = agent->get_path()[time_step];
+
+                // We get the next node of the agent
+                int next_node = agent->get_path()[time_step];
+
+                // We check that the move is feasible
+                if (current_node + 1 != next_node &&
+                        current_node - 1 != next_node &&
+                        current_node + this->nb_column != next_node &&
+                        current_node - this->nb_column != next_node &&
+                        current_node != next_node){
+
+                    cout << "Problem, the move is not feasible for the agent" << endl;
+                    return false;
+                }
+            }
+        }
+    }
+
+    // We check the vertex constraint
+    for (int agent_1 = 0; agent_1 < this->nb_agent - 1; ++agent_1){
+
+        for (int agent_2 = agent_1 + 1; agent_2 < this->nb_agent; ++agent_2){
+
+            // For each time step
+            for (int time_step = 0; time_step < this->max_horizon; ++time_step){
+
+                // We check that their positions are not the same
+                if (this->list_agents[agent_1]->get_path()[time_step] ==
+                        this->list_agents[agent_2]->get_path()[time_step]){
+
+                    cout << "Problem, the agents have the same locations for the time step " << time_step << endl;
+                    return false;
+                }
+            }
+        }
+    }
+
+    // We check the edge constraint
+    for (int agent_1 = 0; agent_1 < this->nb_agent - 1; ++agent_1){
+
+        for (int agent_2 = agent_1 + 1; agent_2 < this->nb_agent; ++agent_2){
+
+            // For each time step
+            for (int time_step = 0; time_step < this->max_horizon - 1; ++time_step){
+
+                // We get the current node
+                int current_node_1 = this->list_agents[agent_1]->get_path()[time_step];
+                int current_node_2 = this->list_agents[agent_2]->get_path()[time_step];
+
+                // We get the next nodes
+                int next_node_1 = this->list_agents[agent_1]->get_path()[time_step + 1];
+                int next_node_2 = this->list_agents[agent_2]->get_path()[time_step + 1];
+
+                // We check that the edge constraint is respected
+                if (current_node_1 == next_node_2 && current_node_2 == next_node_1){
+
+                    cout << "Problem, the edge constraint is not respected" << endl;
+                    return false;
+                }
+            }
+        }
+    }
+
+    // We return true
+    return true;
+}

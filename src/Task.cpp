@@ -15,4 +15,5 @@ void Task::write(){
     cout << "Task delivery node " << this->delivery_node << endl;
     cout << "Task pickup time " << this->picked_date << endl;
     cout << "Task delivery time " << this->delivered_date << endl;
+    cout << "Task Assigned Agent " << this->id_assigned_agent << endl;
 }
