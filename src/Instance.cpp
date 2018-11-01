@@ -209,5 +209,41 @@ void Instance::apply_assignment(int id_agent, int id_task, int arrive_start, int
 
         cout << "Problem, the agent's path does not correspond" << endl;
     }
+}
 
+void Instance::compute_final_makespan(){
+
+    int max_makespan = 0;
+
+    for (Agent * agent : this->list_agents){
+
+        // We get the end location of the agent
+        int end_location = agent->get_path()[this->max_horizon-1];
+        int current_time_step_agent = max_horizon - 1;
+
+        // We go backward until the position change
+        while (true && current_time_step_agent >= 0){
+
+            if (end_location == agent->get_path()[current_time_step_agent - 1]){
+
+                // We update the values
+                -- current_time_step_agent;
+                end_location = agent->get_path()[current_time_step_agent];
+            }
+            else {
+
+                // We stop the process
+                agent->set_finish_time(current_time_step_agent);
+                break;
+            }
+        }
+
+        // We update the max makespan if necessary
+        if (agent->get_finish_time() > max_makespan){
+            max_makespan = agent->get_finish_time();
+        }
+    }
+
+    // We update the current time step value
+    this->current_time_step = max_makespan;
 }

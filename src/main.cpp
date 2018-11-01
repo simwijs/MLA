@@ -14,7 +14,7 @@ int main(int argc, char** argv)
     srand(124);
 
     // We initialize the instance
-    Instance * instance = new Instance("instances/kiva-10-500-5.map",
+    Instance * instance = new Instance("instances/kiva-30-500-5.map",
                                        "instances/kiva-1.task");
 
     // We create the data reader
@@ -28,6 +28,11 @@ int main(int argc, char** argv)
 
     // We solve the instance
     resolution_method->solve_instance(instance);
+
+    // We update the instance's makespan
+    instance->compute_final_makespan();
+
+    cout << "Final makespan " << instance->get_current_time_step() << endl;
 
     // We check that the found solution is feasible
     if (instance->check_solution_feasible()){

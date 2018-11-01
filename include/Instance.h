@@ -53,6 +53,7 @@ public:
     void update_release_tasks_per_time_step();
     bool check_solution_feasible();
     void apply_assignment(int id_agent, int id_task, int arrive_start, int arrive_goal);
+    void compute_final_makespan();
 
     // Setters
     void set_nb_row(int value){this->nb_row = value;}
