@@ -209,6 +209,9 @@ void Instance::apply_assignment(int id_agent, int id_task, int arrive_start, int
 
         cout << "Problem, the agent's path does not correspond" << endl;
     }
+
+    // We increment the number of scheduled task
+    ++ this->nb_task_scheduled;
 }
 
 void Instance::compute_final_makespan(){

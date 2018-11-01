@@ -18,7 +18,7 @@ class Instance {
 private:
 
     // Attributes
-    int nb_row, nb_column, nb_endpoint, nb_agent, max_horizon, current_time_step;
+    int nb_row, nb_column, nb_endpoint, nb_agent, max_horizon, current_time_step, nb_task_scheduled;
     string map_file_name, task_file_name;
     vector<Task*> list_tasks;
     vector<Agent*> list_agents;
@@ -31,7 +31,8 @@ private:
 public:
 
     // Constructor
-    Instance(string map_file_name_, string task_file_name_) : map_file_name(map_file_name_),
+    Instance(string map_file_name_, string task_file_name_) : nb_task_scheduled(0),
+                                                              map_file_name(map_file_name_),
                                                               task_file_name(task_file_name_) {};
 
     // Destructor
@@ -70,6 +71,7 @@ public:
     int get_nb_agent(){ return this->nb_agent;}
     int get_max_horizon(){ return this->max_horizon;}
     int get_current_time_step(){ return this->current_time_step;}
+    int get_nb_task_scheduled(){ return this->nb_task_scheduled;}
     vector<Task*> & get_list_tasks(){ return this->list_tasks;}
     vector<Task*> & get_list_open_tasks(){ return this->list_open_tasks;}
     vector<Agent*> & get_list_agents(){ return this->list_agents;}

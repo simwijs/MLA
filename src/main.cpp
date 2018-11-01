@@ -32,11 +32,11 @@ int main(int argc, char** argv)
     // We update the instance's makespan
     instance->compute_final_makespan();
 
-    cout << "Final makespan " << instance->get_current_time_step() << endl;
 
     // We check that the found solution is feasible
     if (instance->check_solution_feasible()){
         cout << "Final solution feasible" << endl;
+        cout << "Final makespan " << instance->get_current_time_step() << endl;
     }
     else {
         cout << "Final solution not feasible" << endl;

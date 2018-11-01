@@ -15,9 +15,7 @@ void Resolution_Method::solve_TOTP(Instance * instance){
 
     //cout << "Solve the TOTP Algorithm" << endl;
 
-    int nb_scheduled_task = 0;
-
-    while (!instance->get_list_open_tasks().empty() ||
+    while (instance->get_nb_task_scheduled() < instance->get_list_tasks().size() &&
             instance->get_current_time_step() <= instance->get_max_horizon()) {
 
         // pick the first agent in the lis
