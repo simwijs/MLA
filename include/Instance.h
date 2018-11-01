@@ -52,6 +52,7 @@ public:
     void compute_h_values(vector<int> & h_values, int start_location);
     void update_release_tasks_per_time_step();
     bool check_solution_feasible();
+    void apply_assignment(int id_agent, int id_task, int arrive_start, int arrive_goal);
 
     // Setters
     void set_nb_row(int value){this->nb_row = value;}

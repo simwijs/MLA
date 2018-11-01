@@ -166,18 +166,8 @@ bool Resolution_Method::apply_TOTP(Instance * instance, Agent * agent){
         // We update the agent's finish time
         agent->set_finish_time(arrive_goal);
 
-        //cout << "Assign the task " << task->get_id() << " to the agent " << agent->get_id() << " from the time step " <<
-             //arrive_start << " to the time step " << arrive_goal << endl;
-
-        // We update the task values
-        task->set_id_assigned_agent(agent->get_id());
-        task->set_picked_date(arrive_start);
-        task->set_delivered_date(arrive_goal);
-
-        // We remove the task for the open tasks' list
-        instance->get_list_open_tasks().erase(find(instance->get_list_open_tasks().begin(),
-                                                   instance->get_list_open_tasks().end(),
-                                                   task));
+        // We apply the assignment
+        instance->apply_assignment(agent->get_id(), task->get_id(), arrive_start, arrive_goal);
 
         // We return true
         return true;

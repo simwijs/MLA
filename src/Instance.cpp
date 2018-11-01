@@ -188,3 +188,26 @@ bool Instance::check_solution_feasible(){
     // We return true
     return true;
 }
+
+void Instance::apply_assignment(int id_agent, int id_task, int arrive_start, int arrive_goal){
+
+    // We update the assigned agent
+    this->list_tasks[id_task]->set_id_assigned_agent(id_agent);
+
+    // We update the dates
+    this->list_tasks[id_task]->set_picked_date(arrive_start);
+    this->list_tasks[id_task]->set_delivered_date(arrive_goal);
+
+    // We remove the task for the open tasks' list
+    this->get_list_open_tasks().erase(find(this->list_open_tasks.begin(),
+                                           this->list_open_tasks.end(),
+                                           this->list_tasks[id_task]));
+
+    // We check that the agent's path correspond
+    if (this->list_agents[id_agent]->get_path()[arrive_start] != this->list_tasks[id_task]->get_pickup_node() ||
+            this->list_agents[id_agent]->get_path()[arrive_goal] != this->list_tasks[id_task]->get_delivery_node()){
+
+        cout << "Problem, the agent's path does not correspond" << endl;
+    }
+
+}
