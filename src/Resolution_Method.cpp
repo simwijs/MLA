@@ -40,7 +40,13 @@ void Resolution_Method::solve_TOTP(Instance * instance){
         for (unsigned int i = instance->get_current_time_step(); i <= current_agent->get_finish_time(); i++) {
             if (instance->get_id_released_tasks_per_time_step()[i].empty()) continue;
             for (int id_task : instance->get_id_released_tasks_per_time_step()[i]) {
-                instance->get_list_open_tasks().push_back(instance->get_task(id_task));
+                if (find(instance->get_list_open_tasks().begin(),
+                         instance->get_list_open_tasks().end(),
+                         instance->get_list_tasks()[id_task]) == instance->get_list_open_tasks().end() &&
+                        instance->get_list_tasks()[id_task]->get_id_assigned_agent() == -1){
+
+                    instance->get_list_open_tasks().push_back(instance->get_task(id_task));
+                }
             }
         }
 

@@ -31,7 +31,6 @@ int main(int argc, char** argv)
 
     // We check that the found solution is feasible
     if (instance->check_solution_feasible()){
-
         cout << "Final solution feasible" << endl;
     }
     else {
