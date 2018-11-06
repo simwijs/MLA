@@ -9,17 +9,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="04dd8bb8-0006-4472-a5ce-8a6e28368019" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/MAPD" afterPath="$PROJECT_DIR$/bin/MAPD" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obj/Resolution_Method.o" afterPath="$PROJECT_DIR$/obj/Resolution_Method.o" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obj/main.o" afterPath="$PROJECT_DIR$/obj/main.o" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/Agent.h" afterPath="$PROJECT_DIR$/include/Agent.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/Resolution_Method.h" afterPath="$PROJECT_DIR$/include/Resolution_Method.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Instance.cpp" afterPath="$PROJECT_DIR$/src/Instance.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Resolution_Method.cpp" afterPath="$PROJECT_DIR$/src/Resolution_Method.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main.cpp" afterPath="$PROJECT_DIR$/src/main.cpp" />
-    </list>
+    <list default="true" id="04dd8bb8-0006-4472-a5ce-8a6e28368019" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -67,8 +57,8 @@
       <file leaf-file-name="Resolution_Method.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Resolution_Method.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+            <state relative-caret-position="225">
+              <caret line="184" column="0" lean-forward="true" selection-start-line="184" selection-start-column="0" selection-end-line="184" selection-end-column="0" />
               <folding>
                 <element signature="e#155#444#0" expanded="false" />
                 <element signature="e#446#3069#0" expanded="false" />
@@ -497,12 +487,12 @@
       <workItem from="1541162962209" duration="2189000" />
       <workItem from="1541354766102" duration="2981000" />
       <workItem from="1541537806898" duration="3404000" />
-      <workItem from="1541541252836" duration="1508000" />
+      <workItem from="1541541252836" duration="1657000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="110738000" />
+    <option name="totallyTimeSpent" value="110887000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="773" extended-state="6" />
@@ -835,8 +825,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Resolution_Method.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+        <state relative-caret-position="225">
+          <caret line="184" column="0" lean-forward="true" selection-start-line="184" selection-start-column="0" selection-end-line="184" selection-end-column="0" />
           <folding>
             <element signature="e#155#444#0" expanded="false" />
             <element signature="e#446#3069#0" expanded="false" />
