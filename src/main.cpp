@@ -27,11 +27,10 @@ int main(int argc, char** argv)
     Resolution_Method * resolution_method = new Resolution_Method();
 
     // We solve the instance
-    resolution_method->solve_instance(instance);
+    resolution_method->solve_instance(instance,2);
 
     // We update the instance's makespan
     instance->compute_final_makespan();
-
 
     // We check that the found solution is feasible
     if (instance->check_solution_feasible()){

@@ -13,7 +13,7 @@ void Instance::compute_h_values(vector<int> & h_values, int start_location) {
     h_values.resize(this->list_map_nodes.size(),-1);
     int neighbor[4] = {1,-1,this->nb_column,-(this->nb_column)};
 
-    // We update the valeus for the start location
+    // We update the values for the start location
     status[start_location] = true;
     h_values[start_location] = 0;
 

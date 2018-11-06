@@ -21,11 +21,12 @@ private:
     void releaseClosedListNodes(map<unsigned int, Node*> &allNodes_table);
     bool isConstrained(Instance * instance, Agent * agent, int curr_id, int next_id, int next_timestep);
     void solve_TOTP(Instance * instance);
+    void solve_Greedy_Heuristic(Instance * instance);
     bool apply_TOTP(Instance * instance, Agent * agent);
     bool compute_move_to_endpoint(Instance * instance, Agent * agent);
 
 public:
-    void solve_instance(Instance * instance);
+    void solve_instance(Instance * instance, int solver_id);
 };
 
 #endif //MAPD_V2_RESOLUTION_METHOD_H

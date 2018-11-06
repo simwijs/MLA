@@ -4,11 +4,22 @@
 
 #include "../include/Resolution_Method.h"
 #include <queue>
+#include <limits>
+#include <utility>
 
-void Resolution_Method::solve_instance(Instance * instance){
 
-    // We solve the TOTP
-    solve_TOTP(instance);
+void Resolution_Method::solve_instance(Instance * instance, int solver_id){
+
+    if (solver_id == 1){
+
+        // We solve the TOTP
+        solve_TOTP(instance);
+    }
+    else if (solver_id == 2){
+
+        // We solve the Greedy heuristic
+        solve_Greedy_Heuristic(instance);
+    }
 }
 
 void Resolution_Method::solve_TOTP(Instance * instance){
@@ -73,6 +84,103 @@ void Resolution_Method::solve_TOTP(Instance * instance){
     }
 
     //cout << "End of the TOTP Algorithm" << endl;
+}
+
+void Resolution_Method::solve_Greedy_Heuristic(Instance * instance){
+
+    while (instance->get_nb_task_scheduled() < instance->get_list_tasks().size() &&
+           instance->get_current_time_step() <= instance->get_max_horizon()) {
+
+        // We get the list of all the available agents for the current time step
+        vector<Agent *> list_possible_agents;
+        for (int i = 0; i < instance->get_nb_agent(); ++i) {
+
+            // We check if the time step corresponds
+            if (instance->get_agent(i)->get_finish_time() == instance->get_current_time_step()) {
+
+                // We add the agent to the list of possible ones
+                list_possible_agents.push_back(instance->get_agent(i));
+
+            }
+        }
+
+        // We add the new tasks
+        for (unsigned int i = instance->get_current_time_step(); i <= instance->get_current_time_step(); i++) {
+            if (instance->get_id_released_tasks_per_time_step()[i].empty()) continue;
+            for (int id_task : instance->get_id_released_tasks_per_time_step()[i]) {
+                if (find(instance->get_list_open_tasks().begin(),
+                         instance->get_list_open_tasks().end(),
+                         instance->get_list_tasks()[id_task]) == instance->get_list_open_tasks().end() &&
+                    instance->get_list_tasks()[id_task]->get_id_assigned_agent() == -1){
+
+                    // We add the goal to the list of open ones
+                    instance->get_list_open_tasks().push_back(instance->get_task(id_task));
+                }
+            }
+        }
+
+        // We check if the list of possible agents is empty
+        if (!list_possible_agents.empty()){
+
+            // We update the current locations of all the available agents
+            for (Agent * agent : list_possible_agents){
+                agent->set_current_location(agent->get_path()[instance->get_current_time_step()]);
+            }
+
+            while(!list_possible_agents.empty() && !instance->get_list_open_tasks().empty()){
+
+                // We initialize the values
+                int min_h_value = std::numeric_limits<int>::max(), id_agent_min_h_value = -1;
+
+                // For each agent
+                for (Agent * agent : list_possible_agents){
+
+
+                    // For each open task
+                    for (Task * task : instance->get_list_open_tasks()){
+
+                        // We get the h value
+                        int current_h_value = instance->get_h_values_per_node()[
+                                agent->get_current_location()][task->get_pickup_node()];
+
+                        // We check the found value
+                        if (current_h_value < min_h_value){
+
+                            // We update the values
+                            min_h_value = current_h_value;
+                            id_agent_min_h_value = agent->get_id();
+                        }
+
+                    }
+                }
+
+                // We check if a TOTP solution has been found
+                if (!this->apply_TOTP(instance,instance->get_agent(id_agent_min_h_value)))
+                {
+                    cout << "Problem, no assignment found for the current agent " << endl;
+                    getchar();
+                }
+                else {
+
+                    // We remove the selected agent from the list of available ones
+                    list_possible_agents.erase(find(list_possible_agents.begin(),list_possible_agents.end(),
+                                                    instance->get_agent(id_agent_min_h_value)));
+                }
+            }
+
+
+            // We update the finish time for the agents
+            for (Agent * agent : list_possible_agents){
+                agent->set_finish_time(agent->get_finish_time() + 1);
+            }
+
+        }
+
+        // We update the time step of the instance
+        instance->set_current_time_step(instance->get_current_time_step() + 1);
+    }
+
+    cout << "End of the greedy heuristic" << endl;
 }
 
 bool Resolution_Method::apply_TOTP(Instance * instance, Agent * agent){
@@ -155,6 +263,7 @@ bool Resolution_Method::apply_TOTP(Instance * instance, Agent * agent){
         if (arrive_start < 0)
         {
             cout << "Problem, the arrival start is equal to -1" << endl;
+            getchar();
         }
 
         // We search the shortest path from the task's pickup node and the task's delivery node
@@ -165,6 +274,7 @@ bool Resolution_Method::apply_TOTP(Instance * instance, Agent * agent){
         if (arrive_goal < 0) //find a path to goal
         {
             cout << "Problem, the arrival goal is equal to -1" << endl;
+            getchar();
         }
 
         // We update the agent's finish time

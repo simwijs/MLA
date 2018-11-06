@@ -8,6 +8,7 @@
 using namespace std;
 
 #include <vector>
+#include <iostream>
 
 class Agent {
 
