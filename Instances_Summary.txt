@@ -1,0 +1,7 @@
+Map;Task;Nb_Agent;Nb_Task;Makespan;Computation_Time;Average_Service_Time;Used_Solver;
+./instances/kiva-10-500-5.map;./instances/kiva-1.task;10;500;1198;152.422;311.78;1;
+./instances/kiva-10-500-5.map;./instances/kiva-1.task;10;500;1177;140.012;302.582;2;
+./instances/kiva-10-500-5.map;./instances/kiva-1.task;10;500;1284;172.755;360.154;3;
+./instances/kiva-50-500-5.map;./instances/kiva-1.task;50;500;605;2031.89;45.794;3;
+./instances/kiva-50-500-5.map;./instances/kiva-1.task;50;500;597;3005.43;48.014;2;
+./instances/kiva-50-500-5.map;./instances/kiva-1.task;50;500;611;2011.18;49.684;1;

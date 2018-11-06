@@ -27,6 +27,10 @@ private:
     vector<bool> list_endpoints;
     vector<pair<int,int> > list_pair_node_endpoint;
     vector<vector<int> > h_values_per_node, id_released_tasks_per_time_step;
+    double computation_time = -1;
+
+    // Methods
+    double compute_average_service_time();
 
 public:
 
@@ -55,6 +59,7 @@ public:
     bool check_solution_feasible();
     void apply_assignment(int id_agent, int id_task, int arrive_start, int arrive_goal);
     void compute_final_makespan();
+    void output_solution(char** argv);
 
     // Setters
     void set_nb_row(int value){this->nb_row = value;}
@@ -63,6 +68,7 @@ public:
     void set_nb_agent(int value){this->nb_agent = value;}
     void set_max_horizon(int value){this->max_horizon = value;}
     void set_current_time_step(int value){this->current_time_step = value;}
+    void set_computation_time(double value){this->computation_time = value;}
 
     // Getters
     int get_nb_row(){ return this->nb_row;}
@@ -72,6 +78,7 @@ public:
     int get_max_horizon(){ return this->max_horizon;}
     int get_current_time_step(){ return this->current_time_step;}
     int get_nb_task_scheduled(){ return this->nb_task_scheduled;}
+    double get_computation_time(){ return this->computation_time;}
     vector<Task*> & get_list_tasks(){ return this->list_tasks;}
     vector<Task*> & get_list_open_tasks(){ return this->list_open_tasks;}
     vector<Agent*> & get_list_agents(){ return this->list_agents;}

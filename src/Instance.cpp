@@ -4,6 +4,7 @@
 #include "../include/Instance.h"
 #include <queue>
 #include <iostream>
+#include <fstream>
 
 void Instance::compute_h_values(vector<int> & h_values, int start_location) {
 
@@ -249,4 +250,38 @@ void Instance::compute_final_makespan(){
 
     // We update the current time step value
     this->current_time_step = max_makespan;
+}
+
+double Instance::compute_average_service_time(){
+
+    // We initialize the sum
+    double sum = 0;
+
+    for (Task * task : this->list_tasks){
+
+        sum += task->get_delivered_date() - task->get_release_date();
+    }
+
+    return sum / (double) this->list_tasks.size();
+}
+
+void Instance::output_solution(char** argv){
+
+    // We open the existing file
+    fstream file;
+    file.open ("Instances_Summary.txt", fstream::in | fstream::out | fstream::app);
+
+    // We add the values
+    file << this->get_map_file_name() << ";";
+    file << this->get_task_file_name() << ";";
+    file << this->get_nb_agent() << ";" ;
+    file << this->get_list_tasks().size() << ";";
+    file << this->get_current_time_step() << ";";
+    file << this->computation_time << ";";
+    file << compute_average_service_time() << ";";
+    file << argv[3] << ";";
+    file << endl;
+
+    // We close the file
+    file.close();
 }

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <cstdio>
+#include <string>
 #include <ctime>
 #include <string>
 #include "../include/Data_Reader.h"
@@ -10,12 +11,8 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-    // We set the random seed
-    srand(124);
-
     // We initialize the instance
-    Instance * instance = new Instance("instances/kiva-30-500-5.map",
-                                       "instances/kiva-1.task");
+    Instance * instance = new Instance(argv[1],argv[2]);
 
     // We create the data reader
     Data_Reader * data_reader = new Data_Reader();
@@ -26,8 +23,18 @@ int main(int argc, char** argv)
     // We create the solver
     Resolution_Method * resolution_method = new Resolution_Method();
 
+    // We initialize the timer values
+    std::clock_t start = std::clock();
+    double computation_time;
+
     // We solve the instance
-    resolution_method->solve_instance(instance,2);
+    resolution_method->solve_instance(instance,stoi(argv[3]));
+
+    // We get the computation time
+    computation_time = (std::clock() - start) / (double) (CLOCKS_PER_SEC / 1000);
+
+    // We update the instance's computation time
+    instance->set_computation_time(computation_time);
 
     // We update the instance's makespan
     instance->compute_final_makespan();
@@ -36,6 +43,9 @@ int main(int argc, char** argv)
     if (instance->check_solution_feasible()){
         cout << "Final solution feasible" << endl;
         cout << "Final makespan " << instance->get_current_time_step() << endl;
+
+        // We create the output of the solution
+        instance->output_solution(argv);
     }
     else {
         cout << "Final solution not feasible" << endl;
