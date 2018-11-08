@@ -41,8 +41,9 @@ int main(int argc, char** argv)
 
     // We check that the found solution is feasible
     if (instance->check_solution_feasible()){
-        cout << "Final solution feasible" << endl;
-        cout << "Final makespan " << instance->get_current_time_step() << endl;
+
+        //cout << "Final solution feasible" << endl;
+        cout << "Makespan : " << instance->get_current_time_step() << endl;
 
         // We create the output of the solution
         instance->output_solution(argv);
@@ -57,5 +58,6 @@ int main(int argc, char** argv)
     delete instance;
 
     // We end the program
-	cout << "End of the program" << endl;
+	cout << " - - - - End of the program - - - - " << endl;
+    cout << endl;
 }

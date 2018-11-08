@@ -23,7 +23,9 @@ private:
     void solve_TOTP(Instance * instance);
     void solve_Greedy_Heuristic(Instance * instance);
     void solve_Greedy_Heuristic_Wait(Instance * instance);
+    void solve_Greedy_Heuristic_Task_First(Instance * instance);
     bool apply_TOTP(Instance * instance, Agent * agent);
+    bool try_assignment(Instance * instance, Agent * agent, Task * task);
     bool compute_move_to_endpoint(Instance * instance, Agent * agent);
 
 public:

@@ -192,6 +192,9 @@ bool Instance::check_solution_feasible(){
 
 void Instance::apply_assignment(int id_agent, int id_task, int arrive_start, int arrive_goal){
 
+    //cout << "Assign the task " << id_task << " to the agent " << id_agent << " from the time step " <<
+        // arrive_start << " to the time step " << arrive_goal << endl;
+
     // We update the assigned agent
     this->list_tasks[id_task]->set_id_assigned_agent(id_agent);
 

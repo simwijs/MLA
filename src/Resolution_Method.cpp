@@ -25,6 +25,11 @@ void Resolution_Method::solve_instance(Instance * instance, int solver_id){
         // We solve the Greedy heuristic
         solve_Greedy_Heuristic_Wait(instance);
     }
+    else if (solver_id == 4){
+
+        // We solve the Greedy heuristic
+        solve_Greedy_Heuristic_Task_First(instance);
+    }
 }
 
 void Resolution_Method::solve_TOTP(Instance * instance){
@@ -173,12 +178,10 @@ void Resolution_Method::solve_Greedy_Heuristic(Instance * instance){
                 }
             }
 
-
             // We update the finish time for the agents
             for (Agent * agent : list_possible_agents){
                 agent->set_finish_time(agent->get_finish_time() + 1);
             }
-
         }
 
         // We update the time step of the instance
@@ -230,14 +233,13 @@ void Resolution_Method::solve_Greedy_Heuristic_Wait(Instance * instance){
             }
 
             while(!list_possible_agents.empty() && !instance->get_list_open_tasks().empty() &&
-                    instance->get_current_time_step() % 5 == 0){
+                    instance->get_current_time_step() % 2 == 0){
 
                 // We initialize the values
                 int min_h_value = std::numeric_limits<int>::max(), id_agent_min_h_value = -1;
 
                 // For each agent
                 for (Agent * agent : list_possible_agents){
-
 
                     // For each open task
                     for (Task * task : instance->get_list_open_tasks()){
@@ -284,6 +286,175 @@ void Resolution_Method::solve_Greedy_Heuristic_Wait(Instance * instance){
     cout << "End of the greedy heuristic" << endl;
 }
 
+void Resolution_Method::solve_Greedy_Heuristic_Task_First(Instance * instance){
+
+    while (instance->get_nb_task_scheduled() < instance->get_list_tasks().size() &&
+           instance->get_current_time_step() <= instance->get_max_horizon()) {
+
+        // We get the list of all the available agents for the current time step
+        vector<Agent *> list_possible_agents;
+        for (int i = 0; i < instance->get_nb_agent(); ++i) {
+
+            // We check if the time step corresponds
+            if (instance->get_agent(i)->get_finish_time() == instance->get_current_time_step()) {
+
+                // We add the agent to the list of possible ones
+                list_possible_agents.push_back(instance->get_agent(i));
+
+                // We update the current location for the agent
+                instance->get_agent(i)->set_current_location(
+                        instance->get_agent(i)->get_path()[instance->get_current_time_step()]);
+            }
+        }
+
+        // We add the new tasks
+        for (unsigned int i = instance->get_current_time_step(); i <= instance->get_current_time_step(); i++) {
+            if (instance->get_id_released_tasks_per_time_step()[i].empty()) continue;
+            for (int id_task : instance->get_id_released_tasks_per_time_step()[i]) {
+                if (find(instance->get_list_open_tasks().begin(),
+                         instance->get_list_open_tasks().end(),
+                         instance->get_list_tasks()[id_task]) == instance->get_list_open_tasks().end() &&
+                    instance->get_list_tasks()[id_task]->get_id_assigned_agent() == -1){
+
+                    // We add the goal to the list of open ones
+                    instance->get_list_open_tasks().push_back(instance->get_task(id_task));
+                }
+            }
+        }
+
+        // We check if the list of possible agents is empty
+        if (!list_possible_agents.empty()){
+
+            // We create the list of possible tasks
+            vector<pair<int,int> > list_task_release_time;
+            for (Task * task_to_add : instance->get_list_open_tasks()){
+
+                // We add the task's values to the list
+                list_task_release_time.push_back(pair<int,int> (task_to_add->get_release_date(),task_to_add->get_id()));
+            }
+
+            // We sort the task by release time
+            sort(list_task_release_time.begin(),list_task_release_time.end());
+
+            while (!list_task_release_time.empty()){
+
+                // We get the first task in the list
+                int current_id_task = list_task_release_time[0].second;
+
+                // We remove the task from the list
+                list_task_release_time.erase(list_task_release_time.begin());
+
+                // We create a copy of the available agents
+                vector<pair<int,int> > list_agent_h_value;
+                for (Agent * agent_copy : list_possible_agents){
+
+                    list_agent_h_value.push_back(pair<int,int>(
+                            instance->get_h_values_per_node()[agent_copy->get_current_location()]
+                            [instance->get_task(current_id_task)->get_pickup_node()],agent_copy->get_id()));
+                }
+
+                // We sort the list for the agents
+                sort (list_agent_h_value.begin(),list_agent_h_value.end());
+
+                while (!list_agent_h_value.empty()){
+
+                    // We get the first agent
+                    int id_current_agent = list_agent_h_value[0].second;
+
+                    // We remove the agent from the list
+                    list_agent_h_value.erase(list_agent_h_value.begin());
+
+                    // We check if the agent can be assigned to the task
+                    if (try_assignment(instance,instance->get_agent(id_current_agent),
+                                                  instance->get_task(current_id_task))){
+
+                        // We remove the patient from the available ones
+                        list_possible_agents.erase(find(list_possible_agents.begin(),
+                                                        list_possible_agents.end(),
+                                                        instance->get_agent(id_current_agent)));
+
+                        // We stop the process
+                        break;
+                    }
+                }
+            }
+        }
+
+        // We update the time step of the instance
+        instance->set_current_time_step(instance->get_current_time_step() + 1);
+
+        // We update the finish time for the agents
+        for (Agent * agent : list_possible_agents){
+
+            if (!compute_move_to_endpoint(instance,agent)) {
+
+                agent->set_finish_time(agent->get_finish_time() + 1);
+            }
+
+            // We check if the finish time has to been updated
+            if (agent->get_finish_time() < instance->get_current_time_step()){
+
+                // We update the agent's finish time
+                agent->set_finish_time(instance->get_current_time_step());
+            }
+        }
+    }
+}
+
+bool Resolution_Method::try_assignment(Instance * instance, Agent * agent, Task * task){
+
+    // For each agent
+    for (Agent * agent_to_check : instance->get_list_agents()){
+
+        // We check if it is the same agent
+        if (agent_to_check->get_id() == agent->get_id()) {
+            continue;
+        }
+
+        // We get the current node for the agent
+        int current_agent_final_node = agent_to_check->get_path()[instance->get_max_horizon()-1];
+
+        // We check if the task pickup and delivery nodes are used
+        if (current_agent_final_node == task->get_pickup_node() ||
+                current_agent_final_node == task->get_delivery_node()){
+
+            // We return false
+            return false;
+        }
+    }
+
+    // We call the A start algorithm to the pickup location
+    int arrive_start = solve_AStar(instance, agent, agent->get_current_location(), task->get_pickup_node(),
+                                   agent->get_finish_time());
+
+    // We check that the returned value is feasible
+    if (arrive_start < 0) {
+
+        cout << "Problem, the arrival start is equal to -1" << endl;
+        getchar();
+    }
+
+    // We search the shortest path from the task's pickup node and the task's delivery node
+    int arrive_goal = solve_AStar(instance, agent, task->get_pickup_node(), task->get_delivery_node(),
+                                  arrive_start);
+
+    // We check that the returned value is feasible
+    if (arrive_goal < 0) {
+
+        cout << "Problem, the arrival goal is equal to -1" << endl;
+        getchar();
+    }
+
+    // We update the agent's finish time
+    agent->set_finish_time(arrive_goal);
+
+    // We apply the assignment
+    instance->apply_assignment(agent->get_id(), task->get_id(), arrive_start, arrive_goal);
+
+    // We return true
+    return true;
+}
+
 bool Resolution_Method::apply_TOTP(Instance * instance, Agent * agent){
 
     // We update the current location for the agent
@@ -291,8 +462,9 @@ bool Resolution_Method::apply_TOTP(Instance * instance, Agent * agent){
 
     // We get the list of the used endpoints by the other agents
     vector<bool> hold(instance->get_nb_column()*instance->get_nb_row(), false);
-    for (unsigned int i = 0; i < instance->get_nb_agent(); i++)
-    {
+    for (unsigned int i = 0; i < instance->get_nb_agent(); i++) {
+
+        // We update the matrix
         if (i != agent->get_id()) hold[instance->get_agent(i)->get_path()[instance->get_max_horizon() - 1]] = true;
     }
 
@@ -532,6 +704,8 @@ int Resolution_Method::solve_AStar(Instance * instance, Agent * agent, int start
         // We update the open list value for the current node
         current_node->in_openlist = false;
 
+        //cout << "Test the node " << current_node->loc << " for the time step " << current_node->timestep << endl;
+
         // We check if we have reach the goal
         if (current_node->loc == goal_location)
         {
@@ -633,6 +807,8 @@ int Resolution_Method::solve_AStar(Instance * instance, Agent * agent, int start
 
     // We release all the created node
     releaseClosedListNodes(allNodes_table);
+
+    getchar();
 
     // We return the default value
     return -1;
