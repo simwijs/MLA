@@ -27,6 +27,9 @@ int main(int argc, char** argv)
     std::clock_t start = std::clock();
     double computation_time;
 
+    // We set the instance's wait step
+    instance->set_wait_value(stoi(argv[4]));
+
     // We solve the instance
     resolution_method->solve_instance(instance,stoi(argv[3]));
 

@@ -15,6 +15,8 @@ using namespace std;
 class Resolution_Method {
 
 private:
+
+    // General Methods
     int solve_AStar(Instance * instance, Agent * agent, int start_location, int goal_location,
                     int time_step_start);
     void updatePath(Agent * agent, const Node &goal);
@@ -32,7 +34,10 @@ private:
     void check_if_agent_block_goals(Instance * instance);
 
 public:
+
+    // General Methods
     void solve_instance(Instance * instance, int solver_id);
+
 };
 
 #endif //MAPD_V2_RESOLUTION_METHOD_H

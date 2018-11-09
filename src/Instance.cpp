@@ -283,6 +283,7 @@ void Instance::output_solution(char** argv){
     file << this->computation_time << ";";
     file << compute_average_service_time() << ";";
     file << argv[3] << ";";
+    file << this->wait_value << ";";
     file << endl;
 
     // We close the file

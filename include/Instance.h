@@ -18,7 +18,7 @@ class Instance {
 private:
 
     // Attributes
-    int nb_row, nb_column, nb_endpoint, nb_agent, max_horizon, current_time_step, nb_task_scheduled;
+    int nb_row, nb_column, nb_endpoint, nb_agent, max_horizon, current_time_step, nb_task_scheduled, wait_value;
     string map_file_name, task_file_name;
     vector<Task*> list_tasks;
     vector<Agent*> list_agents;
@@ -68,6 +68,7 @@ public:
     void set_nb_agent(int value){this->nb_agent = value;}
     void set_max_horizon(int value){this->max_horizon = value;}
     void set_current_time_step(int value){this->current_time_step = value;}
+    void set_wait_value(int value){this->wait_value = value;}
     void set_computation_time(double value){this->computation_time = value;}
 
     // Getters
@@ -78,6 +79,7 @@ public:
     int get_max_horizon(){ return this->max_horizon;}
     int get_current_time_step(){ return this->current_time_step;}
     int get_nb_task_scheduled(){ return this->nb_task_scheduled;}
+    int get_wait_value(){ return this->wait_value;}
     double get_computation_time(){ return this->computation_time;}
     vector<Task*> & get_list_tasks(){ return this->list_tasks;}
     vector<Task*> & get_list_open_tasks(){ return this->list_open_tasks;}

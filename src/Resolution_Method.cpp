@@ -335,7 +335,7 @@ void Resolution_Method::solve_Greedy_Heuristic_Wait(Instance * instance){
             }
 
             while(!list_possible_agents.empty() && !instance->get_list_open_tasks().empty() &&
-                    instance->get_current_time_step() % 2 == 0){
+                    instance->get_current_time_step() % instance->get_wait_value() == 0){
 
                 // We initialize the values
                 int min_h_value = std::numeric_limits<int>::max(), id_agent_min_h_value = -1;
