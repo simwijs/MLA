@@ -149,7 +149,6 @@ void Resolution_Method::solve_Greedy_Heuristic(Instance * instance){
                 // For each agent
                 for (Agent * agent : list_possible_agents){
 
-
                     // For each open task
                     for (Task * task : instance->get_list_open_tasks()){
 
@@ -164,7 +163,6 @@ void Resolution_Method::solve_Greedy_Heuristic(Instance * instance){
                             min_h_value = current_h_value;
                             id_agent_min_h_value = agent->get_id();
                         }
-
                     }
                 }
 

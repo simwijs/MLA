@@ -1,3 +1,7 @@
+
+#ifndef MAPD_NODE_H
+#define MAPD_NODE_H
+
 #include <math.h>
 #include <iostream>
 
@@ -34,7 +38,7 @@ public:
 
 };
 
-// the following is used to comapre nodes in the OPEN list
+// the following is used to compare nodes in the OPEN list
 struct compare_node {
 	// returns true if n1 > n2 (note -- this gives us *min*-heap).
 	bool operator()(const Node* n1, const Node* n2) const {
@@ -52,3 +56,5 @@ typedef boost::heap::fibonacci_heap< Node*, boost::heap::compare<compare_node> >
 // note -- hash_map (key is a node pointer, data is a node handler,
 //                   NodeHasher is the hash function to be used,
 //                   eqnode is used to break ties when hash values are equal)
+
+#endif //MAPD_NODE_H
