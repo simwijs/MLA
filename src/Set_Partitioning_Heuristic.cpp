@@ -94,8 +94,9 @@ void Set_Partitioning_Heuristic::compute_set_partitioning_assignment(Instance * 
 
                 // We add the task and its value to the link constraint
                 constraint_link += instance->get_h_values_per_node()[
-                        instance->get_agent(current_agent)->get_current_location()][
-                        instance->get_task(current_task)->get_pickup_node()] * xij[current_task][current_agent];
+                                           list_available_agents[current_agent]->get_current_location()][
+                                           list_possible_tasks[current_task]->get_pickup_node()] *
+                        xij[current_task][current_agent];
             }
 
             // We add the constraint in the model
@@ -147,7 +148,7 @@ void Set_Partitioning_Heuristic::compute_set_partitioning_assignment(Instance * 
 
         if (cplex.solve()){
 
-            cout << "A solution exists and the value is " << cplex.getObjValue() << endl;
+            //cout << "A solution exists and the value is " << cplex.getObjValue() << endl;
 
             // Sortir les selected values
             for (int current_task = 0; current_task < nb_task; ++current_task){
@@ -158,7 +159,8 @@ void Set_Partitioning_Heuristic::compute_set_partitioning_assignment(Instance * 
                     // We check if the assignment is used
                     if (cplex.getValue(xij[current_task][current_agent]) > 0.5){
 
-                        chosen_assignments.push_back(pair<int,int> (current_agent,current_task));
+                        chosen_assignments.push_back(pair<int,int> (list_available_agents[current_agent]->get_id(),
+                                                                    list_possible_tasks[current_task]->get_id()));
                     }
                 }
             }
@@ -228,7 +230,25 @@ void Set_Partitioning_Heuristic::solve_SP_Heuristic(Instance * instance){
 
                 // We check that none of the tasks in the list has the same delivery node
                 for (Task * task_2 : list_tasks_to_check){
-                    if (task_2->get_delivery_node() == task_to_check->get_delivery_node()){
+
+                    if (task_2->get_delivery_node() == task_to_check->get_delivery_node() ||
+                            task_2->get_delivery_node() == task_to_check->get_pickup_node() ||
+                            task_2->get_pickup_node() == task_to_check->get_delivery_node()){
+
+                        // We update the booleab value
+                        feasible = false;
+
+                        // We break the loop
+                        break;
+                    }
+                }
+
+                // For each agent
+                for (Agent * agent : instance->get_list_agents()){
+
+                    // We check that the final node does not correspond
+                    if (agent->get_path()[instance->get_max_horizon()-1] == task_to_check->get_pickup_node() ||
+                            agent->get_path()[instance->get_max_horizon()-1] == task_to_check->get_delivery_node() ){
 
                         // We update the booleab value
                         feasible = false;
@@ -241,6 +261,8 @@ void Set_Partitioning_Heuristic::solve_SP_Heuristic(Instance * instance){
                 // We check if the add is feasible
                 if (feasible){
 
+                    //cout << "Add the task " << task_to_check->get_id() << endl;
+
                     // We add the task in the list
                     list_tasks_to_check.push_back(task_to_check);
                 }
@@ -250,7 +272,7 @@ void Set_Partitioning_Heuristic::solve_SP_Heuristic(Instance * instance){
             vector<pair<int,int> > list_chosen_assignments, list_h_value_per_assignment;
 
             // We solve the set partitioning problem
-            compute_set_partitioning_assignment(instance,instance->get_list_open_tasks(),list_possible_agents,
+            compute_set_partitioning_assignment(instance,list_tasks_to_check,list_possible_agents,
                                                 list_chosen_assignments);
 
             // We get the h values per chosen assignment
@@ -285,12 +307,14 @@ void Set_Partitioning_Heuristic::solve_SP_Heuristic(Instance * instance){
                 else {
 
                     cout << "The found assignment is not feasible" << endl;
+                    cout << "Time step " << instance->get_current_time_step() << endl;
+                    getchar();
                 }
             }
 
-            while(!list_possible_agents.empty() && !instance->get_list_open_tasks().empty()){
+            //cout << "List agents size : " << list_possible_agents.size() << endl;
 
-                cout << "Sub assignment called in the set partitioning heuristic" << endl;
+            while(!list_possible_agents.empty() && !instance->get_list_open_tasks().empty()){
 
                 // We initialize the values
                 int min_h_value = std::numeric_limits<int>::max(), id_agent_min_h_value = -1;
@@ -356,6 +380,10 @@ bool Set_Partitioning_Heuristic::try_assignment(Instance * instance, Agent * age
         // We check if the task pickup and delivery nodes are used
         if (current_agent_final_node == task->get_pickup_node() ||
                 current_agent_final_node == task->get_delivery_node()){
+
+            cout << "Id current agent " << agent_to_check->get_id() << endl;
+            cout << "Current Final Node : " << current_agent_final_node << endl;
+            task->write();
 
             // We return false
             return false;
