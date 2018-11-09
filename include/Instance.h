@@ -31,6 +31,7 @@ private:
 
     // Methods
     double compute_average_service_time();
+    double compute_average_impact_traffic();
 
 public:
 

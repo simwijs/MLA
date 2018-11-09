@@ -268,6 +268,23 @@ double Instance::compute_average_service_time(){
     return sum / (double) this->list_tasks.size();
 }
 
+double Instance::compute_average_impact_traffic(){
+
+    // We initialize the sum
+    double sum = 0;
+
+    // For each task of the problem
+    for (Task * task : this->list_tasks){
+
+        // We add the difference between the h value and the real value
+        sum += (task->get_delivered_date()-task->get_picked_date()) -
+                h_values_per_node[task->get_pickup_node()][task->get_delivery_node()];
+    }
+
+    // We return the average of the computed sum
+    return sum / (double) this->list_tasks.size();
+}
+
 void Instance::output_solution(char** argv){
 
     // We open the existing file
@@ -284,6 +301,7 @@ void Instance::output_solution(char** argv){
     file << compute_average_service_time() << ";";
     file << argv[3] << ";";
     file << this->wait_value << ";";
+    file << compute_average_impact_traffic() << ";";
     file << endl;
 
     // We close the file
