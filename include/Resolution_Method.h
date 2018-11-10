@@ -23,6 +23,7 @@ private:
     void releaseClosedListNodes(map<unsigned int, Node*> &allNodes_table);
     bool isConstrained(Instance * instance, Agent * agent, int curr_id, int next_id, int next_timestep);
     void solve_TOTP(Instance * instance);
+    void solve_TOTP_Wait(Instance * instance);
     void solve_Greedy_Heuristic(Instance * instance);
     void solve_Greedy_Heuristic_With_Update_Active_Agents(Instance * instance);
     void solve_Greedy_Heuristic_Wait(Instance * instance);

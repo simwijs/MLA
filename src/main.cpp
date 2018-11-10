@@ -35,8 +35,8 @@ int main(int argc, char** argv)
     instance->set_wait_value(stoi(argv[4]));
 
     // We solve the instance
-    //resolution_method->solve_instance(instance,stoi(argv[3]));
-    set_partitioning_heuristic->solve_instance(instance,stoi(argv[3]));
+    resolution_method->solve_instance(instance,stoi(argv[3]));
+    //set_partitioning_heuristic->solve_instance(instance,stoi(argv[3]));
 
     // We get the computation time
     computation_time = (std::clock() - start) / (double) (CLOCKS_PER_SEC / 1000);

@@ -28,6 +28,7 @@ private:
     vector<pair<int,int> > list_pair_node_endpoint;
     vector<vector<int> > h_values_per_node, id_released_tasks_per_time_step;
     double computation_time = -1;
+    vector<int> nb_open_goal_per_time_step;
 
     // Methods
     double compute_average_service_time();
@@ -94,5 +95,6 @@ public:
     vector<pair<int,int> > & get_list_pair_node_endpoint(){ return this->list_pair_node_endpoint;};
     vector<vector<int> > & get_h_values_per_node(){ return this->h_values_per_node;};
     vector<vector<int> > & get_id_released_tasks_per_time_step(){ return this->id_released_tasks_per_time_step;};
+    vector<int> & get_nb_open_goal_per_time_step(){return this->nb_open_goal_per_time_step;};
 };
 #endif //MAPD_INSTANCE_H

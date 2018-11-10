@@ -34,6 +34,11 @@ void Resolution_Method::solve_instance(Instance * instance, int solver_id){
         // We solve the Greedy heuristic
         solve_Greedy_Heuristic_With_Update_Active_Agents(instance);
     }
+    else if (solver_id == 6){
+
+        // We solve the Greedy heuristic
+        solve_TOTP_Wait(instance);
+    }
 }
 
 void Resolution_Method::solve_TOTP(Instance * instance){
@@ -78,6 +83,73 @@ void Resolution_Method::solve_TOTP(Instance * instance){
 
         // We update the current location of the agent
         current_agent->set_current_location(current_agent->get_path()[instance->get_current_time_step()]);
+
+        // We check if there is some tasks in the open list
+        if (instance->get_list_open_tasks().empty())
+        {
+            // We update the finish time for the agent
+            current_agent->set_finish_time(current_agent->get_finish_time() + 1);
+
+            // We continue the process
+            continue;
+        }
+
+        // We check if a TOTP solution has been found
+        if (!this->apply_TOTP(instance,current_agent))
+        {
+            cout << "Problem, no assignment found for the current agent " << endl;
+            getchar();
+        }
+    }
+
+    //cout << "End of the TOTP Algorithm" << endl;
+}
+
+void Resolution_Method::solve_TOTP_Wait(Instance * instance){
+
+    //cout << "Solve the TOTP Algorithm" << endl;
+
+    while (instance->get_nb_task_scheduled() < instance->get_list_tasks().size() &&
+           instance->get_current_time_step() <= instance->get_max_horizon()) {
+
+        // pick the first agent in the lis
+        Agent * current_agent = instance->get_agent(0);
+
+        // We search for the first agent waiting at the time step t
+        for (int i = 1; i < instance->get_nb_agent(); i++) {
+
+            // We check if the time step corresponds
+            if (instance->get_agent(i)->get_finish_time() == instance->get_current_time_step()) {
+                current_agent = instance->get_agent(i);
+                break;
+
+            } else if (instance->get_agent(i)->get_finish_time() < current_agent->get_finish_time()) {
+                current_agent = instance->get_agent(i);
+            }
+        }
+
+        // We add the new tasks
+        for (unsigned int i = instance->get_current_time_step(); i <= current_agent->get_finish_time(); i++) {
+            if (instance->get_id_released_tasks_per_time_step()[i].empty()) continue;
+            for (int id_task : instance->get_id_released_tasks_per_time_step()[i]) {
+                if (find(instance->get_list_open_tasks().begin(),
+                         instance->get_list_open_tasks().end(),
+                         instance->get_list_tasks()[id_task]) == instance->get_list_open_tasks().end() &&
+                    instance->get_list_tasks()[id_task]->get_id_assigned_agent() == -1){
+
+                    instance->get_list_open_tasks().push_back(instance->get_task(id_task));
+                }
+            }
+        }
+
+        // We update the current time step of the instance
+        instance->set_current_time_step(current_agent->get_finish_time());
+
+        // We update the current location of the agent
+        current_agent->set_current_location(current_agent->get_path()[instance->get_current_time_step()]);
+
+        // We update the nb of open goals per time step in the instance
+        instance->get_nb_open_goal_per_time_step().push_back(instance->get_list_open_tasks().size());
 
         // We check if there is some tasks in the open list
         if (instance->get_list_open_tasks().empty())
