@@ -1,3 +1,6 @@
 Map;Task;Nb_Agent;Nb_Task;Makespan;Computation_Time;Average_Service_Time;Used_Solver;Wait_Value;Impact_Traffic;
 ./instances/kiva-10-500-5.map;./instances/kiva-1.task;10;500;1198;147.098;311.78;1;1;0.584;
 ./instances/kiva-10-500-5.map;./instances/kiva-0.2.task;10;500;2532;208.098;38.54;6;1;0.492;
+./instances/kiva-50-500-5.map;./instances/kiva-5.task;50;500;400;2006.95;121.172;6;1;3.324;
+./instances/kiva-50-500-5.map;./instances/kiva-5.task;50;500;400;1864.34;121.172;6;1;3.324;
+./instances/kiva-50-500-5.map;./instances/kiva-5.task;50;500;400;1840.38;121.172;1;1;3.324;
