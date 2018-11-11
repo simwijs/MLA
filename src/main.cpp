@@ -6,7 +6,6 @@
 #include <string>
 #include "../include/Data_Reader.h"
 #include "../include/Resolution_Method.h"
-#include "../include/Set_Partitioning_Heuristic.h"
 
 using namespace std;
 
@@ -24,19 +23,15 @@ int main(int argc, char** argv)
     // We create the solver
     Resolution_Method * resolution_method = new Resolution_Method();
 
-    // We create the set partitioning heuristic
-    Set_Partitioning_Heuristic * set_partitioning_heuristic = new Set_Partitioning_Heuristic();
+    // We set the instance's wait step
+    //instance->set_wait_value(stoi(argv[4]));
 
     // We initialize the timer values
     std::clock_t start = std::clock();
     double computation_time;
 
-    // We set the instance's wait step
-    instance->set_wait_value(stoi(argv[4]));
-
     // We solve the instance
     resolution_method->solve_instance(instance,stoi(argv[3]));
-    //set_partitioning_heuristic->solve_instance(instance,stoi(argv[3]));
 
     // We get the computation time
     computation_time = (std::clock() - start) / (double) (CLOCKS_PER_SEC / 1000);
@@ -61,7 +56,6 @@ int main(int argc, char** argv)
     }
 
     // We delete the objects
-    delete set_partitioning_heuristic;
     delete resolution_method;
     delete data_reader;
     delete instance;

@@ -153,7 +153,6 @@ bool Instance::check_solution_feasible(){
                 if (this->list_agents[agent_1]->get_path()[time_step] ==
                         this->list_agents[agent_2]->get_path()[time_step]){
 
-                    cout << "Problem, the agents have the same locations for the time step " << time_step << endl;
                     return false;
                 }
             }
@@ -216,12 +215,6 @@ void Instance::apply_assignment(int id_agent, int id_task, int arrive_start, int
 
     // We increment the number of scheduled task
     ++ this->nb_task_scheduled;
-
-    // We compute the impact of the trafic on the path to the pick up point
-    int actual_length = arrive_start - this->current_time_step;
-    int h_value = this->h_values_per_node[list_agents[id_agent]->get_path()[this->current_time_step]][
-            list_tasks[id_task]->get_pickup_node()];
-    this->diff_h_value_pickup_length_per_assignment.push_back(actual_length - h_value);
 }
 
 void Instance::compute_final_makespan(){

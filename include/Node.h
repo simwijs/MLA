@@ -42,6 +42,7 @@ public:
 struct compare_node {
 	// returns true if n1 > n2 (note -- this gives us *min*-heap).
 	bool operator()(const Node* n1, const Node* n2) const {
+
 		if (n1->g_val + n1->h_val == n2->g_val + n2->h_val)
 			return n1->g_val <= n2->g_val;  // break ties towards larger g_vals
 		else
