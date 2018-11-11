@@ -32,6 +32,7 @@ private:
     void releaseClosedListComplexNodes(map<string, Complex_Node*> &allNodes_table);
     bool isConstrained(Instance * instance, Agent * agent, int curr_id, int next_id, int next_timestep);
     void solve_TOTP(Instance * instance);
+    void solve_Greedy_Heuristic(Instance * instance);
     bool apply_TOTP(Instance * instance, Agent * agent);
     bool apply_TOTP_2(Instance * instance, Agent * agent);
     bool compute_move_to_endpoint(Instance * instance, Agent * agent);
