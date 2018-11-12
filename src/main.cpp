@@ -33,7 +33,6 @@ int main(int argc, char** argv)
     // We check if the instance has to generate agents
     if (stoi(argv[3])==7){
         instance->generate_agents(stoi(argv[5]));
-        cout << "Nb agents in the list " << instance->get_list_agents().size() << endl;
     }
 
     // We initialize the timer values
