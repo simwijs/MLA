@@ -13,14 +13,16 @@ void Resolution_Method::solve_instance(Instance * instance, int solver_id){
     // We update the solve type
     this->solve_type = solver_id;
 
+    if (this->solve_type == 3 || this->solve_type == 5){
+        this->allow_modification_endpoint = true;
+    }
+
     if (solve_type <= 3){
 
         // We solve the instance using the TOTP algorithm
         solve_TOTP(instance);
     }
-    else {
-
-        solve_type = 2;
+    else if (solve_type == 4 || solve_type == 5) {
 
         // We solve the greedy heuristic based on the h values
         solve_Greedy_Heuristic(instance);
@@ -223,13 +225,18 @@ void Resolution_Method::solve_Greedy_Heuristic(Instance * instance){
 
                 // We move the agent
                 compute_move_to_endpoint(instance,agent_remaining);
+
+                if (allow_modification_endpoint){
+
+                    // We update the finish time of the agent
+                    agent_remaining->set_finish_time(instance->get_current_time_step() + 1);
+                }
             }
             else {
 
                 // We update the finish time of the agent
                 agent_remaining->set_finish_time(agent_remaining->get_finish_time() + 1);
             }
-
         }
 
         // We increment the current time step
@@ -457,8 +464,15 @@ bool Resolution_Method::apply_TOTP_2(Instance * instance, Agent * agent){
     // We check if a move is necessary
     if (move) {
 
+        int previous_finish_time = agent->get_finish_time();
+
         // We try to move the agent to another free endpoint
         if (compute_move_to_endpoint(instance,agent)) {
+
+            // We check if we allow modification through endpoint movement
+            if (allow_modification_endpoint){
+                agent->set_finish_time(previous_finish_time + 1);
+            }
 
             // We return true
             return true;
@@ -941,12 +955,12 @@ bool Resolution_Method::check_if_assignment_feasible(Instance * instance, Agent 
         }
 
         // We check the solve type
-        if (solve_type == 2){
+        if (!allow_modification_endpoint){
 
             // We update the finish time for the agent
             agent->set_finish_time(best_node->timestep);
         }
-        else if (solve_type == 3){
+        else {
 
             // We update the finish time for the agent
             agent->set_finish_time(delivery_time);

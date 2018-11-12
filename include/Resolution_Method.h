@@ -22,6 +22,9 @@ private:
     // Type 1 = Their TOTP
     // Type 2 = TOTP + improved A star
     // Type 3 = TOTP + Improved A star + Allow modification when the agent goes to its endpoint
+    // Type 4 = Greedy Heuristic
+    // Type 5 = Greedy Heuristic + Allow modification when the agent goes to its endpoint
+    bool allow_modification_endpoint = false;
 
     // General Methods
     int solve_AStar(Instance * instance, Agent * agent, int start_location, int goal_location,
