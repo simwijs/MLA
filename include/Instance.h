@@ -63,6 +63,7 @@ public:
     void apply_assignment(int id_agent, int id_task, int arrive_start, int arrive_goal);
     void compute_final_makespan();
     void output_solution(char** argv);
+    void generate_agents(int nb_agent_to_generate);
 
     // Setters
     void set_nb_row(int value){this->nb_row = value;}

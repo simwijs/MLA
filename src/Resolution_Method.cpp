@@ -22,7 +22,7 @@ void Resolution_Method::solve_instance(Instance * instance, int solver_id){
         // We solve the instance using the TOTP algorithm
         solve_TOTP(instance);
     }
-    else if (solve_type == 4 || solve_type == 5) {
+    else if (solve_type == 4 || solve_type == 5 || this->solve_type == 7) {
 
         // We solve the greedy heuristic based on the h values
         solve_Greedy_Heuristic(instance);

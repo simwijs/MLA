@@ -11,6 +11,10 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
+
+    // We generate the random seed
+    srand(123);
+
     // We initialize the instance
     Instance * instance = new Instance(argv[1],argv[2]);
 
@@ -25,6 +29,12 @@ int main(int argc, char** argv)
 
     // We set the instance's wait step
     instance->set_wait_value(stoi(argv[4]));
+
+    // We check if the instance has to generate agents
+    if (stoi(argv[3])==7){
+        instance->generate_agents(stoi(argv[5]));
+        cout << "Nb agents in the list " << instance->get_list_agents().size() << endl;
+    }
 
     // We initialize the timer values
     std::clock_t start = std::clock();

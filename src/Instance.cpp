@@ -299,6 +299,41 @@ double Instance::compute_average_nb_agent_avail(){
     return sum / (double) this->nb_agent_available_per_time_step.size();
 }
 
+void Instance::generate_agents(int nb_agent_to_generate){
+
+    // We clear the list of agents
+    this->list_agents.clear();
+
+    // We update the nb agent for the instance
+    this->nb_agent = nb_agent_to_generate;
+
+    // We initialize the vector of possible endpoints
+    vector<int> list_possible_endpoints;
+
+    // We get the list of possible endpoints
+    for (int ep = 0; ep < nb_row*nb_column; ++ep){
+        if (this->list_endpoints[ep]){
+            list_possible_endpoints.push_back(ep);
+        }
+    }
+
+    // We create the agents
+    for (int k = 0; k < nb_agent_to_generate; ++k){
+
+        // We randomly select an index in the list of possible endpoints
+        int rdm_index = rand() % list_possible_endpoints.size();
+
+        // We get the corresponding node
+        int rdm_node = list_possible_endpoints[rdm_index];
+
+        // We remove the node from the list
+        list_possible_endpoints.erase(list_possible_endpoints.begin() + rdm_index);
+
+        // We create the associated agent
+        this->list_agents.push_back(new Agent(this->list_agents.size(),rdm_node,this->max_horizon));
+    }
+}
+
 void Instance::output_solution(char** argv){
 
     // We open the existing file

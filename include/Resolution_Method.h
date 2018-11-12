@@ -24,6 +24,9 @@ private:
     // Type 3 = TOTP + Improved A star + Allow modification when the agent goes to its endpoint
     // Type 4 = Greedy Heuristic
     // Type 5 = Greedy Heuristic + Allow modification when the agent goes to its endpoint
+    // Type 6 = Greedy Heuristic + Wait
+    // Type 7 = Greedy Heuristic + Modification of the number of agents
+
     bool allow_modification_endpoint = false;
 
     // General Methods
