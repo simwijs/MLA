@@ -26,6 +26,7 @@ private:
     // Type 5 = Greedy Heuristic + Allow modification when the agent goes to its endpoint
     // Type 6 = Greedy Heuristic + Wait
     // Type 7 = Greedy Heuristic + Modification of the number of agents
+    // Type 8 = Greedy Set Partitioning Heuristic
 
     bool allow_modification_endpoint = false;
 
@@ -39,6 +40,7 @@ private:
     bool isConstrained(Instance * instance, Agent * agent, int curr_id, int next_id, int next_timestep);
     void solve_TOTP(Instance * instance);
     void solve_Greedy_Heuristic(Instance * instance);
+    void solve_Set_Partitioning_Heuristic(Instance * instance);
     void solve_Greedy_Heuristic_Wait(Instance * instance);
     bool apply_TOTP(Instance * instance, Agent * agent);
     bool apply_TOTP_2(Instance * instance, Agent * agent);
@@ -49,6 +51,9 @@ private:
                                        vector<int> & list_endpoints_used);
     int compute_max_reach_delivery_node(Instance * instance, Agent * agent, Task * task,
                                        vector<int> & list_endpoints_used);
+    void compute_set_partitioning_assignment(Instance * instance, vector<Task *> & list_open_goals,
+                                             vector<Agent *> & list_available_agents,
+                                             vector<pair<int,int> > & chosen_assignments);
 public:
 
     // General Methods

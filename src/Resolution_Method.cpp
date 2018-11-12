@@ -7,6 +7,8 @@
 #include <limits>
 #include <utility>
 #include <string>
+#include <ilcplex/ilocplex.h>
+
 
 void Resolution_Method::solve_instance(Instance * instance, int solver_id){
 
@@ -31,6 +33,11 @@ void Resolution_Method::solve_instance(Instance * instance, int solver_id){
 
         // We solve the greedy heuristic with the waits
         solve_Greedy_Heuristic_Wait(instance);
+    }
+    else if (solve_type == 8){
+
+        // We solve the problem with the set partitioning heuristic
+        solve_Set_Partitioning_Heuristic(instance);
     }
 }
 
@@ -250,6 +257,330 @@ void Resolution_Method::solve_Greedy_Heuristic(Instance * instance){
         // We increment the current time step
         instance->set_current_time_step(instance->get_current_time_step() + 1);
     }
+}
+
+void Resolution_Method::solve_Set_Partitioning_Heuristic(Instance * instance){
+
+    while (instance->get_nb_task_scheduled() < instance->get_list_tasks().size() &&
+           instance->get_current_time_step() <= instance->get_max_horizon()) {
+
+        // We update the list of open goals for the current time step
+        for (int id_task : instance->get_id_released_tasks_per_time_step()[instance->get_current_time_step()]) {
+            if (find(instance->get_list_open_tasks().begin(),
+                     instance->get_list_open_tasks().end(),
+                     instance->get_list_tasks()[id_task]) == instance->get_list_open_tasks().end() &&
+                instance->get_list_tasks()[id_task]->get_id_assigned_agent() == -1){
+
+                instance->get_list_open_tasks().push_back(instance->get_task(id_task));
+            }
+        }
+
+        // We initialize the list of available agents
+        vector<Agent *> list_available_agents;
+
+        // We get the list of available agents
+        for (Agent * agent : instance->get_list_agents()){
+            if (agent->get_finish_time() == instance->get_current_time_step()){
+
+                // We add the agent in the list
+                list_available_agents.push_back(agent);
+
+                // We update the agent current location
+                agent->set_current_location(agent->get_path()[instance->get_current_time_step()]);
+            }
+        }
+
+        // We update the instance's value
+        instance->get_nb_agent_available_per_time_step().push_back(list_available_agents.size());
+
+        // We initialize the list of chosen assignments
+        vector<pair<int,int> > list_chosen_assignments;
+
+        // We solve the assignment using the set partitioning
+        compute_set_partitioning_assignment(instance,instance->get_list_open_tasks(),list_available_agents,
+                                            list_chosen_assignments);
+
+        // We try the found assignments
+        for (pair<int,int> & pair : list_chosen_assignments){
+
+            // We try the assignment and apply it if possible
+            if(check_if_assignment_feasible(instance,
+                                            instance->get_agent(pair.first),
+                                            instance->get_task(pair.second))){
+
+                // We remove the agent from the available ones
+                list_available_agents.erase(find(list_available_agents.begin(),list_available_agents.end(),
+                                                 instance->get_agent(pair.first)));
+            }
+        }
+
+        // We check if some agents are still available and some goals are still open
+        if (!instance->get_list_open_tasks().empty() && !list_available_agents.empty()){
+
+            // We initialize the lists
+            vector<pair<int,int> > list_pair_possible_assignment, list_h_value_per_pair;
+
+            // We initialize the current index
+            int current_index = -1;
+
+            // For each task in the list of open ones
+            for (Task * task : instance->get_list_open_tasks()){
+
+                // For each agent in the list of available agents
+                for (Agent * agent : list_available_agents){
+
+                    // We increment the current index
+                    ++ current_index;
+
+                    // We create the corresponding pair
+                    list_pair_possible_assignment.push_back(pair<int,int> (agent->get_id(),task->get_id()));
+
+                    // We add the h value in the list
+                    list_h_value_per_pair.push_back( pair<int,int> (
+                            instance->get_h_values_per_node()[agent->get_current_location()][task->get_pickup_node()],
+                            current_index));
+                }
+            }
+
+            // We sort the list by h value
+            sort(list_h_value_per_pair.begin(),list_h_value_per_pair.end());
+
+            // While the lists are not empty
+            while (!list_h_value_per_pair.empty() && !list_available_agents.empty() &&
+                   !instance->get_list_open_tasks().empty()){
+
+                // We get the index of the first pair in the list
+                int index_to_check = list_h_value_per_pair[0].second;
+
+                // We remove this value from the list
+                list_h_value_per_pair.erase(list_h_value_per_pair.begin());
+
+                // We check that the agent is still available
+                if (find(list_available_agents.begin(),list_available_agents.end(),
+                         instance->get_agent(list_pair_possible_assignment[index_to_check].first))
+                    == list_available_agents.end()) continue;
+
+                // We check that the task is still available
+                if (find(instance->get_list_open_tasks().begin(), instance->get_list_open_tasks().end(),
+                         instance->get_task(list_pair_possible_assignment[index_to_check].second))
+                    == instance->get_list_open_tasks().end()) continue;
+
+                // We try the assignment and apply it if possible
+                if(check_if_assignment_feasible(instance,
+                                                instance->get_agent(list_pair_possible_assignment[index_to_check].first),
+                                                instance->get_task(list_pair_possible_assignment[index_to_check].second))){
+
+                    // We remove the agent from the available ones
+                    list_available_agents.erase(find(list_available_agents.begin(),list_available_agents.end(),
+                                                     instance->get_agent(
+                                                             list_pair_possible_assignment[index_to_check].first)));
+                }
+            }
+        }
+
+        // For each remaining agent
+        for (Agent * agent_remaining : list_available_agents){
+
+            // We initialize the boolean value
+            bool move = false;
+
+            // We check if the agent has to move from its current position
+            for (vector<Task*>::iterator it = instance->get_list_open_tasks().begin();
+                 it != instance->get_list_open_tasks().end(); it++) {
+
+                // We check if the delivery location correponds with the agent's current location
+                if ((*it)->get_delivery_node() == agent_remaining->get_current_location()) {
+                    move = true;
+                    break;
+                }
+            }
+
+            // We check if a move is necessary
+            if (move) {
+
+                // We move the agent
+                compute_move_to_endpoint(instance,agent_remaining);
+
+                if (allow_modification_endpoint){
+
+                    // We update the finish time of the agent
+                    agent_remaining->set_finish_time(instance->get_current_time_step() + 1);
+                }
+            }
+            else {
+
+                // We update the finish time of the agent
+                agent_remaining->set_finish_time(agent_remaining->get_finish_time() + 1);
+            }
+        }
+
+        // We increment the current time step
+        instance->set_current_time_step(instance->get_current_time_step() + 1);
+    }
+}
+
+void Resolution_Method::compute_set_partitioning_assignment(Instance * instance,
+                                                                     vector<Task *> & list_open_goals,
+                                                                     vector<Agent *> & list_available_agents,
+                                                                     vector<pair<int,int> > & chosen_assignments){
+
+    // -----------------------------------------------------------------------------
+    // ENVIRONMENT
+    // -----------------------------------------------------------------------------
+
+    IloEnv env;
+    IloModel model(env);
+
+    // We get the general values
+    int nb_task = list_open_goals.size();
+    int nb_agent = list_available_agents.size();
+    int nb_required_assignment = 0;
+
+    // We compute the required number of assignment
+    if (nb_agent <= nb_task){
+        nb_required_assignment = nb_agent;
+    }
+    else {
+        nb_required_assignment = nb_task;
+    }
+
+    // We check that both values are greater than 0
+    if (nb_agent == 0 || nb_task == 0) {
+        return;
+    }
+
+    try {
+
+        // -----------------------------------------------------------------------------
+        // DECISION VARIABLES
+        // -----------------------------------------------------------------------------
+
+        // Xij variables
+        IloArray<IloBoolVarArray> xij(env, nb_task);
+        for(int i = 0; i < nb_task; i++){
+            xij[i] = IloBoolVarArray(env);
+            for (int j = 0; j < nb_agent; ++j){
+                string name_current = "Assignment_" + to_string(i) + "_" + to_string(j) + "";
+                xij[i].add(IloBoolVar(env, name_current.c_str()));
+            }
+        }
+
+        // Delta variable
+        IloIntVar Delta(env);
+
+        // -----------------------------------------------------------------------------
+        // OBJECTIVE FUNCTION
+        // -----------------------------------------------------------------------------
+
+        // We add the objective function to the problem
+        model.add(IloMinimize(env, Delta));
+
+        // -----------------------------------------------------------------------------
+        // CONSTRAINTS
+        // -----------------------------------------------------------------------------
+
+        // At most 1 assignment per agent + Link between variables
+
+        // For each agent
+        for (int current_agent = 0; current_agent < nb_agent; ++current_agent){
+
+            // We create the Ilo Expression
+            IloExpr constraint_agent(env);
+
+            // We create the Ilo Expression for the link between variables
+            IloExpr constraint_link(env);
+
+            // For each task
+            for (int current_task = 0; current_task < nb_task; ++current_task){
+
+                // We add the task in the agent's constraint
+                constraint_agent += xij[current_task][current_agent];
+
+                // We add the task and its value to the link constraint
+                constraint_link += instance->get_h_values_per_node()[
+                                           list_available_agents[current_agent]->get_current_location()][
+                                           list_open_goals[current_task]->get_pickup_node()] *
+                                   xij[current_task][current_agent];
+            }
+
+            // We add the constraint in the model
+            model.add(constraint_agent <= 1);
+
+            // We add the link constrain in the model
+            model.add(Delta >= constraint_link);
+        }
+
+        // At most 1 assignment per task + Required number of assignment
+
+        // We create the Ilo Expression for the required number of assignments
+        IloExpr constraint_required_assignment(env);
+
+        // For each task
+        for (int current_task = 0; current_task < nb_task; ++current_task){
+
+            // We create the Ilo Expression
+            IloExpr constraint_task(env);
+
+            // For each agent
+            for (int current_agent = 0; current_agent < nb_agent; ++current_agent){
+
+                // We add the agent in the task's constraint
+                constraint_task += xij[current_task][current_agent];
+
+                // We add the value in the assignments' constraint
+                constraint_required_assignment += xij[current_task][current_agent];
+            }
+
+            // We add the constraint in the model
+            model.add(constraint_task <= 1);
+        }
+
+        // We add the required assignments' constraint in the model
+        model.add(constraint_required_assignment == nb_required_assignment);
+
+        // -----------------------------------------------------------------------------
+        // RESOLUTION
+        // -----------------------------------------------------------------------------
+
+        // We create the cplex
+        IloCplex cplex(model);
+
+        cplex.setOut(env.getNullStream());
+        cplex.setParam(IloCplex::TiLim, 3600);
+        cplex.setParam(IloCplex::Threads, 1);
+        //cplex.exportModel("Model.lp");
+
+        if (cplex.solve()){
+
+            //cout << "A solution exists and the value is " << cplex.getObjValue() << endl;
+
+            // Sortir les selected values
+            for (int current_task = 0; current_task < nb_task; ++current_task){
+
+                // For each agent
+                for (int current_agent = 0; current_agent < nb_agent; ++current_agent){
+
+                    // We check if the assignment is used
+                    if (cplex.getValue(xij[current_task][current_agent]) > 0.5){
+
+                        chosen_assignments.push_back(pair<int,int> (list_available_agents[current_agent]->get_id(),
+                                                                    list_open_goals[current_task]->get_id()));
+                    }
+                }
+            }
+        }
+        else {
+            cout << "Infeasible problem in the set partitioning" << endl;
+        }
+    }
+    catch (IloException& e) {
+        cerr << "Concert exception caught: " << e << endl;
+    }
+    catch (...) {
+        cerr << "Unknown exception caught" << endl;
+    }
+
+    env.end();
 }
 
 void Resolution_Method::solve_Greedy_Heuristic_Wait(Instance * instance){
