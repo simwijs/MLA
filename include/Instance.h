@@ -74,6 +74,7 @@ public:
     void set_current_time_step(int value){this->current_time_step = value;}
     void set_wait_value(int value){this->wait_value = value;}
     void set_computation_time(double value){this->computation_time = value;}
+    void set_nb_task_scheduled(int value){this->nb_task_scheduled = value;}
 
     // Getters
     int get_nb_row(){ return this->nb_row;}

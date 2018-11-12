@@ -11,12 +11,16 @@
   <component name="ChangeListManager">
     <list default="true" id="04dd8bb8-0006-4472-a5ce-8a6e28368019" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/MAPD" afterPath="$PROJECT_DIR$/bin/MAPD" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obj/Instance.o" afterPath="$PROJECT_DIR$/obj/Instance.o" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obj/Resolution_Method.o" afterPath="$PROJECT_DIR$/obj/Resolution_Method.o" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Instances_Summary.txt" afterPath="$PROJECT_DIR$/Instances_Summary.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bash.sh" afterPath="$PROJECT_DIR$/bash.sh" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/Instance.h" afterPath="$PROJECT_DIR$/include/Instance.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/Resolution_Method.h" afterPath="$PROJECT_DIR$/include/Resolution_Method.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Instance.cpp" afterPath="$PROJECT_DIR$/src/Instance.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Resolution_Method.cpp" afterPath="$PROJECT_DIR$/src/Resolution_Method.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main.cpp" afterPath="$PROJECT_DIR$/src/main.cpp" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -35,17 +39,17 @@
       <file leaf-file-name="Instance.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Instance.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="331" column="41" lean-forward="true" selection-start-line="331" selection-start-column="41" selection-end-line="331" selection-end-column="41" />
+            <state relative-caret-position="253">
+              <caret line="198" column="9" lean-forward="false" selection-start-line="198" selection-start-column="9" selection-end-line="198" selection-end-column="9" />
               <folding>
-                <element signature="e#9692#10045#0" expanded="false" />
-                <marker date="1542033052000" expanded="false" signature="222:1730" ph="{...}" />
-                <marker date="1542033052000" expanded="false" signature="1783:2112" ph="{...}" />
-                <marker date="1542033052000" expanded="false" signature="2154:6566" ph="{...}" />
-                <marker date="1542033052000" expanded="false" signature="6661:7809" ph="{...}" />
-                <marker date="1542033052000" expanded="false" signature="7850:8896" ph="{...}" />
-                <marker date="1542033052000" expanded="false" signature="8945:9170" ph="{...}" />
-                <marker date="1542033052000" expanded="false" signature="9221:9690" ph="{...}" />
+                <element signature="e#2114#6827#0" expanded="false" />
+                <element signature="e#9953#10306#0" expanded="false" />
+                <element signature="e#10308#11424#0" expanded="false" />
+                <marker date="1542049661000" expanded="false" signature="222:1730" ph="{...}" />
+                <marker date="1542049661000" expanded="false" signature="1783:2112" ph="{...}" />
+                <marker date="1542049661000" expanded="false" signature="8111:9157" ph="{...}" />
+                <marker date="1542049661000" expanded="false" signature="9206:9431" ph="{...}" />
+                <marker date="1542049661000" expanded="false" signature="9482:9951" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -54,8 +58,8 @@
       <file leaf-file-name="bash.sh" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bash.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="390">
-              <caret line="26" column="70" lean-forward="true" selection-start-line="26" selection-start-column="70" selection-end-line="26" selection-end-column="70" />
+            <state relative-caret-position="15">
+              <caret line="1" column="0" lean-forward="true" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -64,8 +68,8 @@
       <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="28" column="0" lean-forward="true" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+            <state relative-caret-position="630">
+              <caret line="46" column="0" lean-forward="false" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -75,7 +79,7 @@
         <entry file="file://$PROJECT_DIR$/bash_2.sh">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="4770">
-              <caret line="318" column="61" lean-forward="true" selection-start-line="318" selection-start-column="61" selection-end-line="318" selection-end-column="61" />
+              <caret line="318" column="61" lean-forward="false" selection-start-line="318" selection-start-column="61" selection-end-line="318" selection-end-column="61" />
               <folding />
             </state>
           </provider>
@@ -84,8 +88,8 @@
       <file leaf-file-name="Instances_Summary.txt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Instances_Summary.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="885">
-              <caret line="1046" column="0" lean-forward="true" selection-start-line="1046" selection-start-column="0" selection-end-line="1046" selection-end-column="0" />
+            <state relative-caret-position="810">
+              <caret line="1097" column="102" lean-forward="true" selection-start-line="1097" selection-start-column="102" selection-end-line="1097" selection-end-column="102" />
               <folding />
             </state>
           </provider>
@@ -95,7 +99,7 @@
         <entry file="file://$PROJECT_DIR$/src/Agent.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="75">
-              <caret line="5" column="24" lean-forward="true" selection-start-line="5" selection-start-column="24" selection-end-line="5" selection-end-column="24" />
+              <caret line="5" column="24" lean-forward="false" selection-start-line="5" selection-start-column="24" selection-end-line="5" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -114,8 +118,8 @@
       <file leaf-file-name="Resolution_Method.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/include/Resolution_Method.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="405">
-              <caret line="27" column="71" lean-forward="true" selection-start-line="27" selection-start-column="71" selection-end-line="27" selection-end-column="71" />
+            <state relative-caret-position="450">
+              <caret line="30" column="14" lean-forward="false" selection-start-line="30" selection-start-column="14" selection-end-line="30" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -124,8 +128,8 @@
       <file leaf-file-name="Instance.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/include/Instance.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="65" column="51" lean-forward="true" selection-start-line="65" selection-start-column="51" selection-end-line="65" selection-end-column="51" />
+            <state relative-caret-position="453">
+              <caret line="76" column="30" lean-forward="false" selection-start-line="76" selection-start-column="9" selection-end-line="76" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -134,25 +138,27 @@
       <file leaf-file-name="Resolution_Method.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Resolution_Method.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="296" column="14" lean-forward="false" selection-start-line="296" selection-start-column="14" selection-end-line="296" selection-end-column="14" />
+            <state relative-caret-position="322">
+              <caret line="1006" column="1" lean-forward="true" selection-start-line="1006" selection-start-column="1" selection-end-line="1006" selection-end-column="1" />
               <folding>
-                <element signature="e#1072#4193#0" expanded="false" />
-                <element signature="e#4195#10047#0" expanded="false" />
-                <element signature="e#17293#23444#0" expanded="false" />
-                <element signature="e#23446#29501#0" expanded="false" />
-                <element signature="e#10049#17291#0" expanded="false" />
-                <element signature="e#33324#38249#0" expanded="false" />
-                <element signature="e#38251#40295#0" expanded="false" />
-                <element signature="e#40297#42077#0" expanded="false" />
-                <element signature="e#42079#43883#0" expanded="false" />
-                <element signature="e#38251#40295#0" expanded="false" />
-                <element signature="e#56638#61185#0" expanded="false" />
-                <element signature="e#61187#66256#0" expanded="false" />
-                <element signature="e#66258#66836#0" expanded="false" />
-                <element signature="e#66838#67443#0" expanded="false" />
-                <element signature="e#67445#68502#0" expanded="false" />
-                <element signature="e#68504#68916#0" expanded="false" />
+                <element signature="e#203#1272#0" expanded="false" />
+                <element signature="e#4397#10249#0" expanded="false" />
+                <element signature="e#10251#23460#0" expanded="false" />
+                <element signature="e#23462#30704#0" expanded="false" />
+                <element signature="e#30707#36858#0" expanded="false" />
+                <element signature="e#36860#42915#0" expanded="false" />
+                <element signature="e#46738#51663#0" expanded="false" />
+                <element signature="e#51665#53709#0" expanded="false" />
+                <element signature="e#53711#55491#0" expanded="false" />
+                <element signature="e#55493#57297#0" expanded="false" />
+                <element signature="e#74601#79670#0" expanded="false" />
+                <element signature="e#79672#80250#0" expanded="false" />
+                <element signature="e#80252#80857#0" expanded="false" />
+                <element signature="e#80859#81916#0" expanded="false" />
+                <element signature="e#81918#82330#0" expanded="false" />
+                <marker date="1542049894000" expanded="false" signature="1329:4395" ph="{...}" />
+                <marker date="1542049894000" expanded="false" signature="42987:46736" ph="{...}" />
+                <marker date="1542049894000" expanded="false" signature="57400:70050" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -162,11 +168,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>task 1 2</find>
-      <find>task 1 4</find>
-      <find>task 1 5</find>
-      <find>task 3 16</find>
-      <find>Resolution_Method</find>
       <find>sort</find>
       <find>try</find>
       <find>try_assignment</find>
@@ -192,10 +193,13 @@
       <find>/kiva-1.task</find>
       <find>/kiva-2.task</find>
       <find>list_possible_tasks</find>
+      <find>nb_task_scheduled</find>
+      <find>get_list_open_tasks</find>
+      <find>8 1 1</find>
+      <find>cout</find>
+      <find>9 1 1</find>
     </findStrings>
     <replaceStrings>
-      <replace>Set_Partitioning_Heuristic</replace>
-      <replace>releaseClosedListComplexNodes</replace>
       <replace>task 5</replace>
       <replace>task 1</replace>
       <replace>task 2</replace>
@@ -223,7 +227,9 @@
       <replace>kiva-1</replace>
       <replace>/kiva-2.task</replace>
       <replace>/kiva-5.task</replace>
+      <replace>9 1 1</replace>
       <replace>list_open_goals</replace>
+      <replace>10 1 1</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -258,11 +264,11 @@
         <option value="$PROJECT_DIR$/bash_3.sh" />
         <option value="$PROJECT_DIR$/include/Node.h" />
         <option value="$PROJECT_DIR$/include/Complex_Node.h" />
-        <option value="$PROJECT_DIR$/include/Instance.h" />
         <option value="$PROJECT_DIR$/include/Agent.h" />
         <option value="$PROJECT_DIR$/bash_2.sh" />
-        <option value="$PROJECT_DIR$/src/Instance.cpp" />
         <option value="$PROJECT_DIR$/src/main.cpp" />
+        <option value="$PROJECT_DIR$/include/Instance.h" />
+        <option value="$PROJECT_DIR$/src/Instance.cpp" />
         <option value="$PROJECT_DIR$/include/Resolution_Method.h" />
         <option value="$PROJECT_DIR$/src/Resolution_Method.cpp" />
         <option value="$PROJECT_DIR$/bash.sh" />
@@ -309,20 +315,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="MAPD_V2_Improved_A_Star" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="MAPD_V2_Improved_A_Star" />
-              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="MAPD_V2_Improved_A_Star" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -544,12 +536,12 @@
       <workItem from="1541877137678" duration="4584000" />
       <workItem from="1541886202330" duration="29000" />
       <workItem from="1541886329715" duration="31217000" />
-      <workItem from="1542021044728" duration="8987000" />
+      <workItem from="1542021044728" duration="16285000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="185316000" />
+    <option name="totallyTimeSpent" value="192614000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-269" y="-1057" width="1280" height="1057" extended-state="0" />
@@ -775,6 +767,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="465">
           <caret line="31" column="30" lean-forward="false" selection-start-line="31" selection-start-column="9" selection-end-line="31" selection-end-column="30" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -809,18 +802,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/Instance.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="65" column="51" lean-forward="true" selection-start-line="65" selection-start-column="51" selection-end-line="65" selection-end-column="51" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Agent.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
-          <caret line="5" column="24" lean-forward="true" selection-start-line="5" selection-start-column="24" selection-end-line="5" selection-end-column="24" />
+          <caret line="5" column="24" lean-forward="false" selection-start-line="5" selection-start-column="24" selection-end-line="5" selection-end-column="24" />
           <folding />
         </state>
       </provider>
@@ -836,81 +821,91 @@
     <entry file="file://$PROJECT_DIR$/bash_2.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4770">
-          <caret line="318" column="61" lean-forward="true" selection-start-line="318" selection-start-column="61" selection-end-line="318" selection-end-column="61" />
+          <caret line="318" column="61" lean-forward="false" selection-start-line="318" selection-start-column="61" selection-end-line="318" selection-end-column="61" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/Instance.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="453">
+          <caret line="76" column="30" lean-forward="false" selection-start-line="76" selection-start-column="9" selection-end-line="76" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="630">
+          <caret line="46" column="0" lean-forward="false" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Instance.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="331" column="41" lean-forward="true" selection-start-line="331" selection-start-column="41" selection-end-line="331" selection-end-column="41" />
+        <state relative-caret-position="253">
+          <caret line="198" column="9" lean-forward="false" selection-start-line="198" selection-start-column="9" selection-end-line="198" selection-end-column="9" />
           <folding>
-            <element signature="e#9692#10045#0" expanded="false" />
-            <marker date="1542033052000" expanded="false" signature="222:1730" ph="{...}" />
-            <marker date="1542033052000" expanded="false" signature="1783:2112" ph="{...}" />
-            <marker date="1542033052000" expanded="false" signature="2154:6566" ph="{...}" />
-            <marker date="1542033052000" expanded="false" signature="6661:7809" ph="{...}" />
-            <marker date="1542033052000" expanded="false" signature="7850:8896" ph="{...}" />
-            <marker date="1542033052000" expanded="false" signature="8945:9170" ph="{...}" />
-            <marker date="1542033052000" expanded="false" signature="9221:9690" ph="{...}" />
+            <element signature="e#2114#6827#0" expanded="false" />
+            <element signature="e#9953#10306#0" expanded="false" />
+            <element signature="e#10308#11424#0" expanded="false" />
+            <marker date="1542049661000" expanded="false" signature="222:1730" ph="{...}" />
+            <marker date="1542049661000" expanded="false" signature="1783:2112" ph="{...}" />
+            <marker date="1542049661000" expanded="false" signature="8111:9157" ph="{...}" />
+            <marker date="1542049661000" expanded="false" signature="9206:9431" ph="{...}" />
+            <marker date="1542049661000" expanded="false" signature="9482:9951" ph="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/include/Resolution_Method.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="27" column="71" lean-forward="true" selection-start-line="27" selection-start-column="71" selection-end-line="27" selection-end-column="71" />
+        <state relative-caret-position="450">
+          <caret line="30" column="14" lean-forward="false" selection-start-line="30" selection-start-column="14" selection-end-line="30" selection-end-column="14" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Resolution_Method.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="296" column="14" lean-forward="false" selection-start-line="296" selection-start-column="14" selection-end-line="296" selection-end-column="14" />
+        <state relative-caret-position="322">
+          <caret line="1006" column="1" lean-forward="true" selection-start-line="1006" selection-start-column="1" selection-end-line="1006" selection-end-column="1" />
           <folding>
-            <element signature="e#1072#4193#0" expanded="false" />
-            <element signature="e#4195#10047#0" expanded="false" />
-            <element signature="e#17293#23444#0" expanded="false" />
-            <element signature="e#23446#29501#0" expanded="false" />
-            <element signature="e#10049#17291#0" expanded="false" />
-            <element signature="e#33324#38249#0" expanded="false" />
-            <element signature="e#38251#40295#0" expanded="false" />
-            <element signature="e#40297#42077#0" expanded="false" />
-            <element signature="e#42079#43883#0" expanded="false" />
-            <element signature="e#38251#40295#0" expanded="false" />
-            <element signature="e#56638#61185#0" expanded="false" />
-            <element signature="e#61187#66256#0" expanded="false" />
-            <element signature="e#66258#66836#0" expanded="false" />
-            <element signature="e#66838#67443#0" expanded="false" />
-            <element signature="e#67445#68502#0" expanded="false" />
-            <element signature="e#68504#68916#0" expanded="false" />
+            <element signature="e#203#1272#0" expanded="false" />
+            <element signature="e#4397#10249#0" expanded="false" />
+            <element signature="e#10251#23460#0" expanded="false" />
+            <element signature="e#23462#30704#0" expanded="false" />
+            <element signature="e#30707#36858#0" expanded="false" />
+            <element signature="e#36860#42915#0" expanded="false" />
+            <element signature="e#46738#51663#0" expanded="false" />
+            <element signature="e#51665#53709#0" expanded="false" />
+            <element signature="e#53711#55491#0" expanded="false" />
+            <element signature="e#55493#57297#0" expanded="false" />
+            <element signature="e#74601#79670#0" expanded="false" />
+            <element signature="e#79672#80250#0" expanded="false" />
+            <element signature="e#80252#80857#0" expanded="false" />
+            <element signature="e#80859#81916#0" expanded="false" />
+            <element signature="e#81918#82330#0" expanded="false" />
+            <marker date="1542049894000" expanded="false" signature="1329:4395" ph="{...}" />
+            <marker date="1542049894000" expanded="false" signature="42987:46736" ph="{...}" />
+            <marker date="1542049894000" expanded="false" signature="57400:70050" ph="{...}" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="28" column="0" lean-forward="true" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bash.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="26" column="70" lean-forward="true" selection-start-line="26" selection-start-column="70" selection-end-line="26" selection-end-column="70" />
+        <state relative-caret-position="15">
+          <caret line="1" column="0" lean-forward="true" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Instances_Summary.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="885">
-          <caret line="1046" column="0" lean-forward="true" selection-start-line="1046" selection-start-column="0" selection-end-line="1046" selection-end-column="0" />
+        <state relative-caret-position="810">
+          <caret line="1097" column="102" lean-forward="true" selection-start-line="1097" selection-start-column="102" selection-end-line="1097" selection-end-column="102" />
           <folding />
         </state>
       </provider>

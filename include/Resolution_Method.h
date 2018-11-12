@@ -27,6 +27,8 @@ private:
     // Type 6 = Greedy Heuristic + Wait
     // Type 7 = Greedy Heuristic + Modification of the number of agents
     // Type 8 = Greedy Set Partitioning Heuristic
+    // Type 9 = Greedy Heuristic with Exchange
+    // Type 10 = Greedy Heuristic with Exchange + Allow modification when the agent goes to its endpoint
 
     bool allow_modification_endpoint = false;
 
@@ -40,6 +42,7 @@ private:
     bool isConstrained(Instance * instance, Agent * agent, int curr_id, int next_id, int next_timestep);
     void solve_TOTP(Instance * instance);
     void solve_Greedy_Heuristic(Instance * instance);
+    void solve_Greedy_Heuristic_With_Exchange(Instance * instance);
     void solve_Set_Partitioning_Heuristic(Instance * instance);
     void solve_Greedy_Heuristic_Wait(Instance * instance);
     bool apply_TOTP(Instance * instance, Agent * agent);

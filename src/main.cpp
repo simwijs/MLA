@@ -31,7 +31,7 @@ int main(int argc, char** argv)
     instance->set_wait_value(stoi(argv[4]));
 
     // We check if the instance has to generate agents
-    if (stoi(argv[3])==7){
+    if (stoi(argv[3]) == 7){
         instance->generate_agents(stoi(argv[5]));
     }
 

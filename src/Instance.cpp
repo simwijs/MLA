@@ -153,6 +153,10 @@ bool Instance::check_solution_feasible(){
                 if (this->list_agents[agent_1]->get_path()[time_step] ==
                         this->list_agents[agent_2]->get_path()[time_step]){
 
+                    cout << "Problem the agents use the same vertex" << endl;
+                    cout << "Agent : " << agent_1 << endl;
+                    cout << "Agent : " << agent_2 << endl;
+                    cout << "Time step : " << time_step << endl;
                     return false;
                 }
             }

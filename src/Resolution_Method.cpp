@@ -15,7 +15,7 @@ void Resolution_Method::solve_instance(Instance * instance, int solver_id){
     // We update the solve type
     this->solve_type = solver_id;
 
-    if (this->solve_type == 3 || this->solve_type == 5){
+    if (this->solve_type == 3 || this->solve_type == 5 || solve_type == 10){
         this->allow_modification_endpoint = true;
     }
 
@@ -38,6 +38,11 @@ void Resolution_Method::solve_instance(Instance * instance, int solver_id){
 
         // We solve the problem with the set partitioning heuristic
         solve_Set_Partitioning_Heuristic(instance);
+    }
+    else if (solve_type == 9 || solve_type == 10){
+
+        // We solve the problem with the set partitioning heuristic
+        solve_Greedy_Heuristic_With_Exchange(instance);
     }
 }
 
@@ -259,6 +264,287 @@ void Resolution_Method::solve_Greedy_Heuristic(Instance * instance){
     }
 }
 
+void Resolution_Method::solve_Greedy_Heuristic_With_Exchange(Instance * instance){
+
+    while (instance->get_nb_task_scheduled() < instance->get_list_tasks().size() &&
+           instance->get_current_time_step() <= instance->get_max_horizon()) {
+
+        // We update the list of open goals for the current time step
+        for (int id_task : instance->get_id_released_tasks_per_time_step()[instance->get_current_time_step()]) {
+            if (find(instance->get_list_open_tasks().begin(),
+                     instance->get_list_open_tasks().end(),
+                     instance->get_list_tasks()[id_task]) == instance->get_list_open_tasks().end() &&
+                instance->get_list_tasks()[id_task]->get_id_assigned_agent() == -1){
+
+                instance->get_list_open_tasks().push_back(instance->get_task(id_task));
+            }
+        }
+
+        // We initialize the list of available agents
+        vector<Agent *> list_available_agents;
+
+        // We get the list of available agents
+        for (Agent * agent : instance->get_list_agents()){
+            if (agent->get_finish_time() == instance->get_current_time_step()){
+
+                // We add the agent in the list
+                list_available_agents.push_back(agent);
+
+                // We update the agent current location
+                agent->set_current_location(agent->get_path()[instance->get_current_time_step()]);
+            }
+        }
+
+        // We update the instance's value
+        instance->get_nb_agent_available_per_time_step().push_back(list_available_agents.size());
+
+        // We initialize the list of possible goals
+        vector<Task *> list_possible_goals;
+
+        // We copy the list of open goals
+        list_possible_goals.insert(list_possible_goals.begin(),instance->get_list_open_tasks().begin(),
+                                  instance->get_list_open_tasks().end());
+
+        // For each passed time step
+        for (int ts = 0; ts < instance->get_current_time_step(); ++ts){
+
+            // For each task of the time step
+            for (int id_task : instance->get_id_released_tasks_per_time_step()[ts]){
+
+                // We check if the task is assigned
+                if (instance->get_task(id_task)->get_id_assigned_agent()!=-1){
+
+                    // We check if the task has been picked up
+                    if (instance->get_task(id_task)->get_picked_date() > instance->get_current_time_step()){
+
+                        // We add the task in the list
+                        list_possible_goals.push_back(instance->get_task(id_task));
+                    }
+                }
+            }
+        }
+
+        // We initialize the boolean value
+        bool assignment_found = true;
+
+        // While the lists are not empty
+        while (assignment_found && !list_available_agents.empty() && !list_possible_goals.empty()){
+
+            // We update the boolean value
+            assignment_found = false;
+
+            // We initialize the lists
+            vector<pair<int,int> > list_pair_possible_assignment, list_h_value_per_pair;
+
+            // We initialize the current index
+            int current_index = -1;
+
+            // or each task in the list of open ones
+            for (Task * task : list_possible_goals){
+
+                // For each agent in the list of available agents
+                for (Agent * agent : list_available_agents){
+
+                    // We increment the current index
+                    ++ current_index;
+
+                    // We create the corresponding pair
+                    list_pair_possible_assignment.push_back(pair<int,int> (agent->get_id(),task->get_id()));
+
+                    // We add the h value in the list
+                    list_h_value_per_pair.push_back( pair<int,int> (
+                            instance->get_h_values_per_node()[agent->get_current_location()][task->get_pickup_node()],
+                            current_index));
+                }
+            }
+
+            // We sort the list by h value
+            sort(list_h_value_per_pair.begin(),list_h_value_per_pair.end());
+
+            while (true && !list_h_value_per_pair.empty()){
+
+                // We get the index of the first pair in the list
+                int index_to_check = list_h_value_per_pair[0].second;
+
+                // We remove this value from the list
+                list_h_value_per_pair.erase(list_h_value_per_pair.begin());
+
+                // We get the current agent
+                Agent * current_agent = instance->get_agent(list_pair_possible_assignment[index_to_check].first);
+
+                // We get the current task
+                Task * current_task = instance->get_task(list_pair_possible_assignment[index_to_check].second);
+
+                // We check that the agent is still available
+                if (find(list_available_agents.begin(),list_available_agents.end(), current_agent)
+                    == list_available_agents.end()) continue;
+
+                // We check that the task is still available
+                if (find(list_possible_goals.begin(), list_possible_goals.end(), current_task)
+                    == list_possible_goals.end()) continue;
+
+                // We check if it is a classic assignment
+                if (find(instance->get_list_open_tasks().begin(), instance->get_list_open_tasks().end(),
+                         current_task) != instance->get_list_open_tasks().end()){
+
+                    // We try the assignment and apply it if possible
+                    if(check_if_assignment_feasible(instance, current_agent, current_task)){
+
+                        // We remove the agent from the available ones
+                        list_available_agents.erase(find(list_available_agents.begin(),list_available_agents.end(),
+                                                         current_agent));
+
+                        // We remove the task from the list
+                        list_possible_goals.erase(find(list_possible_goals.begin(),list_possible_goals.end(),
+                                                         current_task));
+                    }
+
+                }
+                else {
+
+                    // We first check the new pickup date with the h value
+                    if (instance->get_current_time_step() +
+                            instance->get_h_values_per_node()[
+                                    current_agent->get_current_location()][current_task->get_pickup_node()] <
+                            current_task->get_picked_date()){
+
+                        // We get the other agent
+                        Agent * other_agent = instance->get_agent(current_task->get_id_assigned_agent());
+
+                        // We copy the existing values
+                        vector<int> other_agent_path (other_agent->get_path().begin(),
+                                                      other_agent->get_path().end());
+
+                        int actual_picked_date = current_task->get_picked_date();
+                        int actual_delivered_date = current_task->get_delivered_date();
+                        int other_agent_finish_time = other_agent->get_finish_time();
+
+                        // We update the finish time for the other agent
+                        other_agent->set_finish_time(instance->get_current_time_step());
+                        other_agent->set_current_location(other_agent->get_path()[instance->get_current_time_step()]);
+
+                        // We reset the task values
+                        current_task->set_picked_date(-1);
+                        current_task->set_delivered_date(-1);
+                        current_task->set_id_assigned_agent(-1);
+
+                        // We remove 1 assignment to the instance
+                        instance->set_nb_task_scheduled(instance->get_nb_task_scheduled()-1);
+
+                        // We add the task in open task
+                        instance->get_list_open_tasks().push_back(current_task);
+
+                        // We reroute the other agent to an endpoint
+                        compute_move_to_endpoint(instance,other_agent);
+
+                        if (allow_modification_endpoint){
+                            // We update the finish time of the agent
+                            other_agent->set_finish_time(instance->get_current_time_step());
+                        }
+
+                        // We check if the assignment is possible
+                        if (check_if_assignment_feasible(instance,current_agent,current_task)){
+
+                            // We remove the agent from the available ones
+                            list_available_agents.erase(find(list_available_agents.begin(),list_available_agents.end(),
+                                                             current_agent));
+
+                            // We remove the task from the list
+                            list_possible_goals.erase(find(list_possible_goals.begin(),list_possible_goals.end(),
+                                                           current_task));
+
+                            // We check if the finish time of the other agent is now
+                            if (other_agent->get_finish_time() == instance->get_current_time_step()){
+
+                                // We add the other agent in the list of possible ones
+                                list_available_agents.push_back(other_agent);
+
+                                // We update its current location
+                                other_agent->set_current_location(other_agent->get_path()[
+                                                                          instance->get_current_time_step()]);
+                            }
+
+                            // TODO We update the boolean value - Voir si il faut le mettre ici ou dans le if du dessus
+                            assignment_found = true;
+
+                            // We stop the process (Necessity to recompute the possible h values)
+                            break;
+                        }
+                        else {
+
+                            // We undo the rerouting of the other agent
+                            other_agent->get_path().clear();
+                            other_agent->get_path().insert(other_agent->get_path().begin(),
+                                                           other_agent_path.begin(),other_agent_path.end());
+                            other_agent->set_finish_time(other_agent_finish_time);
+                            other_agent->set_current_location(
+                                    other_agent->get_path()[instance->get_current_time_step()]);
+
+                            // We undo the reset of the task
+                            current_task->set_picked_date(actual_picked_date);
+                            current_task->set_delivered_date(actual_delivered_date);
+                            current_task->set_id_assigned_agent(other_agent->get_id());
+
+                            // We add the task in open task
+                            instance->get_list_open_tasks().erase(find(instance->get_list_open_tasks().begin(),
+                                                                       instance->get_list_open_tasks().end(),
+                                                                       current_task));
+
+                            // We add 1 assignment to the instance
+                            instance->set_nb_task_scheduled(instance->get_nb_task_scheduled()+1);
+
+                        }
+                    }
+                }
+
+                // We check that the list of pairs is not empty
+                if (list_h_value_per_pair.empty()){
+                    break;
+                }
+            }
+        }
+
+        // For each remaining agent
+        for (Agent * agent_remaining : list_available_agents){
+
+            // We initialize the boolean value
+            bool move = false;
+
+            // We check if the agent has to move from its current position
+            for (vector<Task*>::iterator it = instance->get_list_open_tasks().begin();
+                 it != instance->get_list_open_tasks().end(); it++) {
+
+                // We check if the delivery location correponds with the agent's current location
+                if ((*it)->get_delivery_node() == agent_remaining->get_current_location()) {
+                    move = true;
+                    break;
+                }
+            }
+
+            // We check if a move is necessary
+            if (move) {
+
+                // We move the agent
+                compute_move_to_endpoint(instance,agent_remaining);
+
+                if (allow_modification_endpoint){
+
+                    // We update the finish time of the agent
+                    agent_remaining->set_finish_time(instance->get_current_time_step() + 1);
+                }
+            }
+            else {
+
+                // We update the finish time of the agent
+                agent_remaining->set_finish_time(agent_remaining->get_finish_time() + 1);
+            }
+        }
+
+        // We increment the current time step
+        instance->set_current_time_step(instance->get_current_time_step() + 1);
+    }
+}
+
 void Resolution_Method::solve_Set_Partitioning_Heuristic(Instance * instance){
 
     while (instance->get_nb_task_scheduled() < instance->get_list_tasks().size() &&
@@ -418,6 +704,7 @@ void Resolution_Method::solve_Set_Partitioning_Heuristic(Instance * instance){
         instance->set_current_time_step(instance->get_current_time_step() + 1);
     }
 }
+
 
 void Resolution_Method::compute_set_partitioning_assignment(Instance * instance,
                                                                      vector<Task *> & list_open_goals,
