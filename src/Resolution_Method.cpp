@@ -148,6 +148,9 @@ void Resolution_Method::solve_Greedy_Heuristic(Instance * instance){
             }
         }
 
+        // We update the instance's value
+        instance->get_nb_agent_available_per_time_step().push_back(list_available_agents.size());
+
         // We initialize the lists
         vector<pair<int,int> > list_pair_possible_assignment, list_h_value_per_pair;
 

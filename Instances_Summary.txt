@@ -1,4 +1,4 @@
-Map;Task;Nb_Agent;Nb_Task;Makespan;Computation_Time;Average_Service_Time;Used_Solver;Wait_Value;Impact_Traffic;
+Map;Task;Nb_Agent;Nb_Task;Makespan;Computation_Time;Average_Service_Time;Used_Solver;Wait_Value;Impact_Traffic;Average_nb_avail_agent;
 
 THEIR TOTP
 
@@ -517,3 +517,34 @@ OUR GREEDY HEURISTIC + WAIT
 ./instances/kiva-50-500-5.map;./instances/kiva-1.task;50;500;572;578.062;34.046;6;15;1.284;
 ./instances/kiva-50-500-5.map;./instances/kiva-2.task;50;500;393;765.8;58.924;6;15;1.718;
 ./instances/kiva-50-500-5.map;./instances/kiva-5.task;50;500;354;1172.04;119.42;6;15;1.732;
+
+GREEDY HEURISTIC - Show average number of agent available per time step (last value)
+
+./instances/kiva-10-500-5.map;./instances/kiva-0.2.task;10;500;2514;247.273;28.986;4;1;0.316;4.51482;
+./instances/kiva-10-500-5.map;./instances/kiva-0.5.task;10;500;1242;234.344;109.572;4;1;0.368;0.507284;
+./instances/kiva-10-500-5.map;./instances/kiva-1.task;10;500;1131;202.807;283.332;4;1;0.374;0.50369;
+./instances/kiva-10-500-5.map;./instances/kiva-2.task;10;500;1131;194.564;392.982;4;1;0.422;0.48785;
+./instances/kiva-10-500-5.map;./instances/kiva-5.task;10;500;1118;227.825;453.912;4;1;0.378;0.478713;
+./instances/kiva-20-500-5.map;./instances/kiva-0.2.task;20;500;2532;283.402;25.788;4;1;0.448;15.1619;
+./instances/kiva-20-500-5.map;./instances/kiva-0.5.task;20;500;1062;361.894;30.71;4;1;0.606;6.12587;
+./instances/kiva-20-500-5.map;./instances/kiva-1.task;20;500;652;302.637;74.552;4;1;0.878;1.2027;
+./instances/kiva-20-500-5.map;./instances/kiva-2.task;20;500;647;301.608;155.88;4;1;0.778;1.39161;
+./instances/kiva-20-500-5.map;./instances/kiva-5.task;20;500;592;274.561;222.564;4;1;0.866;1.00187;
+./instances/kiva-30-500-5.map;./instances/kiva-0.2.task;30;500;2532;382.056;24.788;4;1;0.54;25.3634;
+./instances/kiva-30-500-5.map;./instances/kiva-0.5.task;30;500;1062;427.552;27.094;4;1;0.68;17.7333;
+./instances/kiva-30-500-5.map;./instances/kiva-1.task;30;500;594;693.837;37.496;4;1;1.152;2.69981;
+./instances/kiva-30-500-5.map;./instances/kiva-2.task;30;500;468;438.931;85.954;4;1;1.182;2.08142;
+./instances/kiva-30-500-5.map;./instances/kiva-5.task;30;500;433;482.481;145.172;4;1;1.242;1.58266;
+./instances/kiva-40-500-5.map;./instances/kiva-0.2.task;40;500;2532;468.997;24.452;4;1;0.694;35.4163;
+./instances/kiva-40-500-5.map;./instances/kiva-0.5.task;40;500;1063;719.436;26.016;4;1;0.802;28.1876;
+./instances/kiva-40-500-5.map;./instances/kiva-1.task;40;500;583;868.142;29.458;4;1;1.064;14.8103;
+./instances/kiva-40-500-5.map;./instances/kiva-2.task;40;500;424;821.561;56.384;4;1;1.588;4.77101;
+./instances/kiva-40-500-5.map;./instances/kiva-5.task;40;500;363;710.011;105.57;4;1;1.576;3.62701;
+./instances/kiva-50-500-5.map;./instances/kiva-0.2.task;50;500;2532;424.027;24.296;4;1;0.758;45.4543;
+./instances/kiva-50-500-5.map;./instances/kiva-0.5.task;50;500;1062;563.983;25.736;4;1;0.906;38.3596;
+./instances/kiva-50-500-5.map;./instances/kiva-1.task;50;500;583;625.46;27.762;4;1;1.32;26.2222;
+./instances/kiva-50-500-5.map;./instances/kiva-2.task;50;500;335;636.107;41.098;4;1;1.852;7.34754;
+./instances/kiva-50-500-5.map;./instances/kiva-5.task;50;500;311;554.106;83.996;4;1;2.062;4.29435;
+
+TEST
+

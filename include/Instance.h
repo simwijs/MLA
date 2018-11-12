@@ -28,10 +28,12 @@ private:
     vector<pair<int,int> > list_pair_node_endpoint;
     vector<vector<int> > h_values_per_node, id_released_tasks_per_time_step;
     double computation_time = -1;
+    vector<int> nb_agent_available_per_time_step;
 
     // Methods
     double compute_average_service_time();
     double compute_average_impact_traffic();
+    double compute_average_nb_agent_avail();
 
 public:
 
@@ -89,10 +91,11 @@ public:
     string & get_task_file_name(){ return this->task_file_name;}
     Agent * get_agent(int id_agent){ return this->list_agents[id_agent];}
     Task * get_task(int id_task){ return this->list_tasks[id_task];}
-    vector<bool> & get_list_map_nodes(){ return this->list_map_nodes;};
-    vector<bool> & get_list_endpoints(){ return this->list_endpoints;};
-    vector<pair<int,int> > & get_list_pair_node_endpoint(){ return this->list_pair_node_endpoint;};
-    vector<vector<int> > & get_h_values_per_node(){ return this->h_values_per_node;};
-    vector<vector<int> > & get_id_released_tasks_per_time_step(){ return this->id_released_tasks_per_time_step;};
+    vector<bool> & get_list_map_nodes(){ return this->list_map_nodes;}
+    vector<bool> & get_list_endpoints(){ return this->list_endpoints;}
+    vector<pair<int,int> > & get_list_pair_node_endpoint(){ return this->list_pair_node_endpoint;}
+    vector<vector<int> > & get_h_values_per_node(){ return this->h_values_per_node;}
+    vector<vector<int> > & get_id_released_tasks_per_time_step(){ return this->id_released_tasks_per_time_step;}
+    vector<int> & get_nb_agent_available_per_time_step(){ return this->nb_agent_available_per_time_step;}
 };
 #endif //MAPD_INSTANCE_H

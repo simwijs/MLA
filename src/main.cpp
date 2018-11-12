@@ -50,6 +50,7 @@ int main(int argc, char** argv)
 
         // We create the output of the solution
         instance->output_solution(argv);
+
     }
     else {
         cout << "Final solution not feasible" << endl;

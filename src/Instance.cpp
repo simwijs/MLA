@@ -284,6 +284,21 @@ double Instance::compute_average_impact_traffic(){
     return sum / (double) this->list_tasks.size();
 }
 
+double Instance::compute_average_nb_agent_avail(){
+
+    // We initialize the sum
+    double sum = 0;
+
+    // For each task of the problem
+    for (int value : this->nb_agent_available_per_time_step){
+
+        sum += value;
+    }
+
+    // We return the average of the computed sum
+    return sum / (double) this->nb_agent_available_per_time_step.size();
+}
+
 void Instance::output_solution(char** argv){
 
     // We open the existing file
@@ -301,6 +316,7 @@ void Instance::output_solution(char** argv){
     file << argv[3] << ";";
     file << this->wait_value << ";";
     file << compute_average_impact_traffic() << ";";
+    file << compute_average_nb_agent_avail() << ";";
     file << endl;
 
     // We close the file
