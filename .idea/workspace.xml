@@ -10,14 +10,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="04dd8bb8-0006-4472-a5ce-8a6e28368019" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/MAPD" afterPath="$PROJECT_DIR$/bin/MAPD" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obj/Resolution_Method.o" afterPath="$PROJECT_DIR$/obj/Resolution_Method.o" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/obj/main.o" afterPath="$PROJECT_DIR$/obj/main.o" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Instances_Summary.txt" afterPath="$PROJECT_DIR$/Instances_Summary.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bash.sh" afterPath="$PROJECT_DIR$/bash.sh" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/Resolution_Method.h" afterPath="$PROJECT_DIR$/include/Resolution_Method.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Resolution_Method.cpp" afterPath="$PROJECT_DIR$/src/Resolution_Method.cpp" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -63,8 +58,8 @@
       <file leaf-file-name="bash.sh" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bash.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="18" column="68" lean-forward="true" selection-start-line="18" selection-start-column="68" selection-end-line="18" selection-end-column="68" />
+            <state relative-caret-position="387">
+              <caret line="114" column="66" lean-forward="true" selection-start-line="114" selection-start-column="66" selection-end-line="114" selection-end-column="66" />
               <folding />
             </state>
           </provider>
@@ -103,8 +98,8 @@
       <file leaf-file-name="Instances_Summary.txt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Instances_Summary.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2550">
-              <caret line="170" column="0" lean-forward="false" selection-start-line="170" selection-start-column="0" selection-end-line="170" selection-end-column="0" />
+            <state relative-caret-position="601">
+              <caret line="144" column="0" lean-forward="true" selection-start-line="144" selection-start-column="0" selection-end-line="144" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -123,8 +118,8 @@
       <file leaf-file-name="Resolution_Method.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/include/Resolution_Method.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="27" column="0" lean-forward="false" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+            <state relative-caret-position="226">
+              <caret line="30" column="41" lean-forward="true" selection-start-line="30" selection-start-column="41" selection-end-line="30" selection-end-column="41" />
               <folding />
             </state>
           </provider>
@@ -133,11 +128,12 @@
       <file leaf-file-name="Resolution_Method.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Resolution_Method.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="364">
-              <caret line="963" column="0" lean-forward="true" selection-start-line="963" selection-start-column="0" selection-end-line="963" selection-end-column="0" />
+            <state relative-caret-position="261">
+              <caret line="494" column="81" lean-forward="false" selection-start-line="494" selection-start-column="81" selection-end-line="494" selection-end-column="81" />
               <folding>
                 <element signature="e#717#3838#0" expanded="false" />
                 <element signature="e#9553#13372#0" expanded="false" />
+                <element signature="e#13374#18299#0" expanded="false" />
                 <element signature="e#18301#20345#0" expanded="false" />
                 <element signature="e#20347#22127#0" expanded="false" />
                 <element signature="e#22129#23933#0" expanded="false" />
@@ -145,8 +141,8 @@
                 <element signature="e#41237#46306#0" expanded="false" />
                 <element signature="e#46308#46886#0" expanded="false" />
                 <element signature="e#47495#48552#0" expanded="false" />
-                <marker date="1541987671000" expanded="false" signature="46966:47493" ph="{...}" />
-                <marker date="1541987671000" expanded="false" signature="48652:48966" ph="{...}" />
+                <marker date="1541989522000" expanded="false" signature="46966:47493" ph="{...}" />
+                <marker date="1541989522000" expanded="false" signature="48652:48966" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -156,9 +152,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>start_loc</find>
-      <find>col</find>
-      <find>ag</find>
       <find>finis</find>
       <find>toke</find>
       <find>current_time_step</find>
@@ -184,8 +177,11 @@
       <find>releaseClosedListComplexNodes_2</find>
       <find>releaseClosedListComplexNodes</find>
       <find>task 1</find>
-      <find>list_h_value_per_pair</find>
       <find>task 4</find>
+      <find>task 5</find>
+      <find>list_h_value_per_pair</find>
+      <find>h_val_</find>
+      <find>h_val_e</find>
     </findStrings>
     <replaceStrings>
       <replace>nb_found_agents</replace>
@@ -210,11 +206,12 @@
       <replace>S</replace>
       <replace>task 1 1</replace>
       <replace>Set_Partitioning_Heuristic</replace>
-      <replace>task 2</replace>
       <replace>releaseClosedListComplexNodes</replace>
+      <replace>task 5</replace>
+      <replace>task 1</replace>
+      <replace>task 2</replace>
       <replace>task 3</replace>
       <replace>task 4</replace>
-      <replace>task 5</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -254,9 +251,9 @@
         <option value="$PROJECT_DIR$/include/Complex_Node.h" />
         <option value="$PROJECT_DIR$/src/main.cpp" />
         <option value="$PROJECT_DIR$/src/Instance.cpp" />
-        <option value="$PROJECT_DIR$/include/Resolution_Method.h" />
-        <option value="$PROJECT_DIR$/src/Resolution_Method.cpp" />
         <option value="$PROJECT_DIR$/bash.sh" />
+        <option value="$PROJECT_DIR$/src/Resolution_Method.cpp" />
+        <option value="$PROJECT_DIR$/include/Resolution_Method.h" />
         <option value="$PROJECT_DIR$/Instances_Summary.txt" />
       </list>
     </option>
@@ -299,6 +296,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="MAPD_V2_Improved_A_Star" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MAPD_V2_Improved_A_Star" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MAPD_V2_Improved_A_Star" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -519,18 +530,18 @@
       <workItem from="1541809256457" duration="3000" />
       <workItem from="1541877137678" duration="4584000" />
       <workItem from="1541886202330" duration="29000" />
-      <workItem from="1541886329715" duration="29442000" />
+      <workItem from="1541886329715" duration="30463000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="174554000" />
+    <option name="totallyTimeSpent" value="175575000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="773" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18671875" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18671875" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.093495935" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -845,6 +856,22 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/bash.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="387">
+          <caret line="114" column="66" lean-forward="true" selection-start-line="114" selection-start-column="66" selection-end-line="114" selection-end-column="66" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/Resolution_Method.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="226">
+          <caret line="30" column="41" lean-forward="true" selection-start-line="30" selection-start-column="41" selection-end-line="30" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/makefile">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
@@ -853,21 +880,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/Resolution_Method.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="27" column="0" lean-forward="false" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Resolution_Method.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="364">
-          <caret line="963" column="0" lean-forward="true" selection-start-line="963" selection-start-column="0" selection-end-line="963" selection-end-column="0" />
+        <state relative-caret-position="261">
+          <caret line="494" column="81" lean-forward="false" selection-start-line="494" selection-start-column="81" selection-end-line="494" selection-end-column="81" />
           <folding>
             <element signature="e#717#3838#0" expanded="false" />
             <element signature="e#9553#13372#0" expanded="false" />
+            <element signature="e#13374#18299#0" expanded="false" />
             <element signature="e#18301#20345#0" expanded="false" />
             <element signature="e#20347#22127#0" expanded="false" />
             <element signature="e#22129#23933#0" expanded="false" />
@@ -875,24 +895,16 @@
             <element signature="e#41237#46306#0" expanded="false" />
             <element signature="e#46308#46886#0" expanded="false" />
             <element signature="e#47495#48552#0" expanded="false" />
-            <marker date="1541987671000" expanded="false" signature="46966:47493" ph="{...}" />
-            <marker date="1541987671000" expanded="false" signature="48652:48966" ph="{...}" />
+            <marker date="1541989522000" expanded="false" signature="46966:47493" ph="{...}" />
+            <marker date="1541989522000" expanded="false" signature="48652:48966" ph="{...}" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bash.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="68" lean-forward="true" selection-start-line="18" selection-start-column="68" selection-end-line="18" selection-end-column="68" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Instances_Summary.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2550">
-          <caret line="170" column="0" lean-forward="false" selection-start-line="170" selection-start-column="0" selection-end-line="170" selection-end-column="0" />
+        <state relative-caret-position="601">
+          <caret line="144" column="0" lean-forward="true" selection-start-line="144" selection-start-column="0" selection-end-line="144" selection-end-column="0" />
           <folding />
         </state>
       </provider>
