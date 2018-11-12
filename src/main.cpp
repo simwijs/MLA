@@ -24,7 +24,7 @@ int main(int argc, char** argv)
     Resolution_Method * resolution_method = new Resolution_Method();
 
     // We set the instance's wait step
-    //instance->set_wait_value(stoi(argv[4]));
+    instance->set_wait_value(stoi(argv[4]));
 
     // We initialize the timer values
     std::clock_t start = std::clock();
