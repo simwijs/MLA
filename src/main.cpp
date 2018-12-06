@@ -9,8 +9,7 @@
 
 using namespace std;
 
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
 
     // We generate the random seed
     srand(123);
@@ -29,11 +28,6 @@ int main(int argc, char** argv)
 
     // We set the instance's wait step
     instance->set_wait_value(stoi(argv[4]));
-
-    // We check if the instance has to generate agents
-    if (stoi(argv[3]) == 7){
-        instance->generate_agents(stoi(argv[5]));
-    }
 
     // We initialize the timer values
     std::clock_t start = std::clock();
@@ -55,14 +49,54 @@ int main(int argc, char** argv)
     if (instance->check_solution_feasible()){
 
         //cout << "Final solution feasible" << endl;
-        cout << "Makespan : " << instance->get_current_time_step() << endl;
+        //cout << "Makespan : " << instance->get_current_time_step() << endl;
 
         // We create the output of the solution
         instance->output_solution(argv);
 
+        // We write the files for the visualization
+        //instance->output_map_for_visualization();
+        //instance->output_moves_for_visualization();
+
+        // We create all the instances (NEED TO USE A 50 AGENTS INSTANCE)
+
+        // For each number of agents
+        /*for (int nb_a = 5; nb_a <= 50; nb_a+=5){
+
+            // For each number of task
+            for (int nb_t = 100; nb_t <= 500; nb_t += 100){
+
+                // For each frequency
+                instance->create_instances_first_set(nb_a,nb_t,0.2);
+                instance->create_instances_second_set(nb_a,nb_t,0.2);
+                instance->create_instances_third_set(nb_a,nb_t,0.2);
+
+                instance->create_instances_first_set(nb_a,nb_t,0.5);
+                instance->create_instances_second_set(nb_a,nb_t,0.5);
+                instance->create_instances_third_set(nb_a,nb_t,0.5);
+
+                instance->create_instances_first_set(nb_a,nb_t,1);
+                instance->create_instances_second_set(nb_a,nb_t,1);
+                instance->create_instances_third_set(nb_a,nb_t,1);
+
+                instance->create_instances_first_set(nb_a,nb_t,2);
+                instance->create_instances_second_set(nb_a,nb_t,2);
+                instance->create_instances_third_set(nb_a,nb_t,2);
+
+                instance->create_instances_first_set(nb_a,nb_t,5);
+                instance->create_instances_second_set(nb_a,nb_t,5);
+                instance->create_instances_third_set(nb_a,nb_t,5);
+
+                instance->create_instances_first_set(nb_a,nb_t,10);
+                instance->create_instances_second_set(nb_a,nb_t,10);
+                instance->create_instances_third_set(nb_a,nb_t,10);
+
+            }
+        }*/
     }
     else {
         cout << "Final solution not feasible" << endl;
+        getchar();
     }
 
     // We delete the objects

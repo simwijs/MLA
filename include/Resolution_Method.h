@@ -19,18 +19,19 @@ private:
 
     // Attributes
     int solve_type = 1;
+
     // Type 1 = Their TOTP
-    // Type 2 = TOTP + improved A star
-    // Type 3 = TOTP + Improved A star + Allow modification when the agent goes to its endpoint
-    // Type 4 = Greedy Heuristic
-    // Type 5 = Greedy Heuristic + Allow modification when the agent goes to its endpoint
-    // Type 6 = Greedy Heuristic + Wait
-    // Type 7 = Greedy Heuristic + Modification of the number of agents
-    // Type 8 = Greedy Set Partitioning Heuristic
-    // Type 9 = Greedy Heuristic with Exchange
-    // Type 10 = Greedy Heuristic with Exchange + Allow modification when the agent goes to its endpoint
+    // Type 2 = TOTP + improved A star but without move after endpoint
+    // Type 3 = TOTP + improved A star
+    // Type 4 = Greedy Heuristic but without move after endpoint
+    // Type 5 = Greedy Heuristic
+    // Type 6 = Greedy Heuristic with Exchange without end
+    // Type 7 = Greedy Heuristic with Exchange
+    // Type 8 = Their TOTP + improved A star without allowing scheduled when used as endpoint by another agent
+    // Type 9-20 = Decentralized
 
     bool allow_modification_endpoint = false;
+    bool allow_move_after_endpoint = true;
 
     // General Methods
     int solve_AStar(Instance * instance, Agent * agent, int start_location, int goal_location,
@@ -42,6 +43,8 @@ private:
     bool isConstrained(Instance * instance, Agent * agent, int curr_id, int next_id, int next_timestep);
     void solve_TOTP(Instance * instance);
     void solve_Greedy_Heuristic(Instance * instance);
+    void solve_Decentralized(Instance * instance, int n_value = 0);
+    void solve_Decentralized_ST_Focused(Instance * instance, int n_value = 0);
     void solve_Greedy_Heuristic_With_Exchange(Instance * instance);
     void solve_Set_Partitioning_Heuristic(Instance * instance);
     void solve_Greedy_Heuristic_Wait(Instance * instance);

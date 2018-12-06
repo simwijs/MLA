@@ -195,6 +195,7 @@ bool Instance::check_solution_feasible(){
 
 void Instance::apply_assignment(int id_agent, int id_task, int arrive_start, int arrive_goal){
 
+
     //cout << "Assign the task " << id_task << " to the agent " << id_agent << " from the time step " <<
          //arrive_start << " to the time step " << arrive_goal << endl;
 
@@ -290,6 +291,10 @@ double Instance::compute_average_impact_traffic(){
 
 double Instance::compute_average_nb_agent_avail(){
 
+    if (this->nb_agent_available_per_time_step.empty()){
+        return 0;
+    }
+
     // We initialize the sum
     double sum = 0;
 
@@ -301,6 +306,45 @@ double Instance::compute_average_nb_agent_avail(){
 
     // We return the average of the computed sum
     return sum / (double) this->nb_agent_available_per_time_step.size();
+}
+
+double Instance::compute_max_service_time(){
+
+    double max_value = 0;
+
+    for (Task * task : this->list_tasks){
+
+        if (task->get_delivered_date() - task->get_release_date() > max_value){
+
+            max_value = task->get_delivered_date() - task->get_release_date();
+        }
+    }
+
+    return max_value;
+}
+
+double Instance::compute_ninth_decile_service_time(){
+
+    vector<int> values;
+
+    for (Task * task : this->list_tasks){
+
+        values.push_back(task->get_delivered_date() - task->get_release_date());
+
+    }
+
+    sort(values.begin(),values.end());
+    reverse(values.begin(),values.end());
+
+    double sum = 0;
+
+    for (int k = 0; k < this->list_tasks.size()/10; ++k){
+
+        sum += values[k];
+    }
+
+    return sum / (double) (this->list_tasks.size()/10);
+
 }
 
 void Instance::generate_agents(int nb_agent_to_generate){
@@ -355,9 +399,686 @@ void Instance::output_solution(char** argv){
     file << argv[3] << ";";
     file << this->wait_value << ";";
     file << compute_average_impact_traffic() << ";";
-    file << compute_average_nb_agent_avail() << ";";
+    file << this->nb_created_search_nodes << ";";
+    file << this->nb_checked_search_nodes << ";";
+    file << this->compute_max_service_time() << ";";
+    file << this->compute_ninth_decile_service_time() << ";";
     file << endl;
 
     // We close the file
     file.close();
+}
+
+void Instance::output_map_for_visualization(){
+
+    // We open the existing file
+    fstream file;
+    file.open ("map.yaml", fstream::out);
+
+    // We write the agents
+    file << "agents:" << endl;
+    for (Agent * agent : this->list_agents){
+        file << "-   goal: [" << agent->get_path()[0]/nb_column << "," << agent->get_path()[0]%nb_column << "]" << endl;
+        file << "    name: agent" << agent->get_id() << endl;
+        file << "    start: [0, 0]" << endl;
+    }
+
+    // We write the obstacles
+    file << "map:" << endl;
+
+    // We write the dimensions
+    file << "    dimensions: [" << nb_row << ", " << nb_column << "]" << endl;
+
+    // We write the obstacles
+    file << "    obstacles:" << endl;
+    // For each node of the map
+    for (int k = 0; k < nb_column*nb_row; ++k){
+        if (!this->list_map_nodes[k]){
+            // We add this node in the list of obstacles
+            file << "    - !!python/tuple [" << k / nb_column << ", " << k % nb_column << "]" << endl;
+        }
+    }
+
+    // We write the endpoints
+    file << "    endpoints:" << endl;
+    // For each node of the map
+    for (int k = 0; k < nb_column*nb_row; ++k){
+        if (this->list_endpoints[k]){
+            // We add this node in the list of obstacles
+            file << "    - !!python/tuple [" << k / nb_column << ", " << k % nb_column << "]" << endl;
+        }
+    }
+}
+
+void Instance::output_moves_for_visualization(){
+
+    // We open the existing file
+    fstream file;
+    file.open ("output.yaml", fstream::out);
+
+    // We write the agents
+    file << "schedule:" << endl;
+    for (Agent * agent : this->list_agents){
+        file << "  agent" << agent->get_id() << ":" << endl;
+        for (int ts = 0; ts <= this->get_current_time_step(); ++ts){
+            file << "    - x: " << agent->get_path()[ts]/nb_column << endl;
+            file << "      y: " << agent->get_path()[ts]%nb_column << endl;
+            file << "      t: " << ts << endl;
+        }
+    }
+}
+
+void Instance::create_instances_first_set(int nb_agent_for_map,int nb_task_for_instance, double frequency_for_instance){
+
+    // We create the copy of the list of pairs
+    vector<pair<int,int> > copy_list_pairs;
+    for (pair<int,int> & pair_to_copy : this->list_pair_node_endpoint){
+        copy_list_pairs.push_back(pair<int,int> (pair_to_copy.first,pair_to_copy.second));
+    }
+
+    // For each agent of the problem
+    for (Agent * agent : this->list_agents) {
+
+        // We add the agent's location to the send of possible locations
+        copy_list_pairs.push_back(pair<int,int> (
+                copy_list_pairs.size(),agent->get_path()[0]));
+    }
+
+    // We open the existing file
+    fstream file;
+    int frequency_to_write = frequency_for_instance*10;
+    file.open ("./Instances_First_Set/map_"+ to_string(nb_agent_for_map) + "_" + to_string(nb_task_for_instance)
+               + "_" + to_string(frequency_to_write) + ".map", fstream::out);
+
+    // We write the size of the map
+    file << this->nb_row << " " << this->nb_column << endl;
+
+    // We write the number of endpoints
+    file << (copy_list_pairs.size()-nb_agent_for_map) << endl;
+
+    // We write the number of agents
+    file << to_string(nb_agent_for_map) << endl;
+
+    // We write the default value
+    file << this->list_agents[0]->get_path().size() << endl;
+
+    // We initialize the list of positions for the agents
+    vector<int> positions_agents, indexes_agents;
+
+    // We randomly define the positions of the agents
+    for (int k = 0; k < nb_agent_for_map; ++k){
+
+        while(true){
+
+            // We randomly choose a node
+            int rdm_node = rand() % (copy_list_pairs.size());
+
+            // We get the associated grid node
+            int current_value = copy_list_pairs[rdm_node].second;
+
+            // We check that the node is not already in the lise
+            if (find(positions_agents.begin(), positions_agents.end(), current_value) !=
+                    positions_agents.end()) continue;
+
+            // We add the node in the list
+            positions_agents.push_back(current_value);
+
+            // We add the index in the list
+            indexes_agents.push_back(rdm_node);
+
+            // We break the process for the current agent
+            break;
+        }
+    }
+
+    // We initialize the current index of the node
+    int current_index = -1;
+
+    // We write the map
+    for (int row = 0; row < this->nb_row; ++row){
+
+        for (int column = 0; column < this->nb_column; ++column){
+
+            // We increment the current index
+            ++ current_index;
+
+            // We check if the current node is a map node
+            if (!this->list_map_nodes[current_index]){
+
+                // We write the obstacle value
+                file << "@";
+            }
+            else {
+
+                // We check if the node is an endpoint
+                if(!this->list_endpoints[current_index]){
+
+                    // We write the non-endpoint value
+                    file << ".";
+                }
+                else {
+
+                    // We check if the node is in the list (robot start point)
+                    if (find(positions_agents.begin(),positions_agents.end(),current_index) != positions_agents.end()){
+
+                        // We write the robot value
+                        file << "r";
+                    }
+                    else {
+
+                        // We write the endpoint value
+                        file << "e";
+                    }
+                }
+            }
+        }
+
+        // We go to the next line
+        file << endl;
+    }
+
+    // We sort the agents' locations
+    sort(indexes_agents.begin(),indexes_agents.end());
+    reverse(indexes_agents.begin(),indexes_agents.end());
+
+    // We remove the corresponding values in the list of pairs
+    for (int value : indexes_agents){
+
+        // We remove the corresponding value
+        copy_list_pairs.erase(copy_list_pairs.begin()+value);
+    }
+
+    // We create/open the file
+    fstream file_task;
+    file_task.open ("./Instances_First_Set/task_"+ to_string(nb_agent_for_map) + "_" + to_string(nb_task_for_instance)
+               + "_" + to_string(frequency_to_write) + ".task", fstream::out);
+
+    // We write the number of task
+    file_task << nb_task_for_instance << endl;
+
+    // We initialize the list of pickup and delivery point per task
+    vector<pair<int,int> > pickup_delivery_node_per_task;
+
+    // We define the pickup and delivery point for each task of the problem
+    for (int k = 0; k < nb_task_for_instance; ++k){
+
+        // We get the random value
+        int node_pickup = rand() % (copy_list_pairs.size());
+
+        // We randomly select a delivery node
+        while(true){
+
+            // We get the random value
+            int node_delivery = rand() % (copy_list_pairs.size());
+
+            // We check that it's not the same as the pickup one
+            if (node_delivery == node_pickup) continue;
+
+            // We add the pair in the list
+            pickup_delivery_node_per_task.push_back(pair<int,int> (node_pickup,node_delivery));
+
+            // We break the process for this task
+            break;
+        }
+    }
+
+    // We initialize the values for the release time values
+    int nb_per_stop = 0;
+    int step_stop = 0;
+
+    if (frequency_for_instance == 0.2){
+        nb_per_stop = 1;
+        step_stop = 5;
+    }
+    else if (frequency_for_instance == 0.5){
+        nb_per_stop = 1;
+        step_stop = 2;
+    }
+    else {
+        nb_per_stop = frequency_for_instance;
+        step_stop = 1;
+    }
+
+    // We initialize the initial values
+    int current_stop = 0, nb_done = 0;
+
+    for (int k = 0; k < nb_task_for_instance; ++k){
+
+        // We check if we have to update the current stop value
+        if (nb_done == nb_per_stop){
+
+            // We increment with the step
+            current_stop += step_stop;
+
+            // We reset the nb done value
+            nb_done = 0;
+        }
+
+        // We create the tasks
+        file_task  << current_stop << " " << pickup_delivery_node_per_task[k].first << " " <<
+              pickup_delivery_node_per_task[k].second << " 0 0" << endl;
+
+        // We increment the number of done
+        ++nb_done;
+    }
+}
+
+void Instance::create_instances_second_set(int nb_agent_for_map,int nb_task_for_instance,
+                                           double frequency_for_instance){
+
+    // We create the copy of the list of pairs
+    vector<pair<int,int> > copy_list_pairs;
+    for (pair<int,int> & pair_to_copy : this->list_pair_node_endpoint){
+        copy_list_pairs.push_back(pair<int,int> (pair_to_copy.first,pair_to_copy.second));
+    }
+
+    // For each agent of the problem
+    for (Agent * agent : this->list_agents) {
+
+        // We add the agent's location to the send of possible locations
+        copy_list_pairs.push_back(pair<int,int> (
+                copy_list_pairs.size(),agent->get_path()[0]));
+    }
+
+    // We create the list of possible nodes for the agents
+    vector<int> possible_nodes_agents;
+    for (int i = 1; i < 20; ++i){
+        possible_nodes_agents.push_back(35*i + 1);
+        possible_nodes_agents.push_back(35*i + 2);
+        possible_nodes_agents.push_back(35*i + 32);
+        possible_nodes_agents.push_back(35*i + 33);
+    }
+
+    // We remove those values from the possible endpoints for the pickup and deliveries
+    for (int value : possible_nodes_agents){
+
+        // For each pair of the list
+        for (int pair_index = 0; pair_index < copy_list_pairs.size(); ++pair_index){
+
+            // We check if the node value corresponds
+            if (copy_list_pairs[pair_index].second == value){
+
+                // We remove the pair from the list
+                copy_list_pairs.erase(copy_list_pairs.begin() + pair_index);
+
+                // We stop the process for the current value
+                break;
+            }
+        }
+    }
+
+    // We open the existing file
+    fstream file;
+    int frequency_to_write = 10* frequency_for_instance;
+    file.open ("./Instances_Second_Set/map_"+ to_string(nb_agent_for_map) + "_" + to_string(nb_task_for_instance)
+               + "_" + to_string(frequency_to_write) + ".map", fstream::out);
+
+    // We write the size of the map
+    file << this->nb_row << " " << this->nb_column << endl;
+
+    // We write the number of endpoints
+    file << (copy_list_pairs.size()) << endl;
+
+    // We write the number of agents
+    file << to_string(nb_agent_for_map) << endl;
+
+    // We write the default value
+    file << this->list_agents[0]->get_path().size() << endl;
+
+    // We initialize the list of positions for the agents
+    vector<int> positions_agents;
+
+    // We randomly define the positions of the agents
+    for (int k = 0; k < nb_agent_for_map; ++k){
+
+        while(true){
+
+            // We randomly choose a node
+            int rdm_node = rand() % (possible_nodes_agents.size());
+
+            // We get the associated grid node
+            int current_value = possible_nodes_agents[rdm_node];
+
+            // We check that the node is not already in the lise
+            if (find(positions_agents.begin(), positions_agents.end(), current_value) !=
+                positions_agents.end()) continue;
+
+            // We add the node in the list
+            positions_agents.push_back(current_value);
+
+            // We break the process for the current agent
+            break;
+        }
+    }
+
+    // We initialize the current index of the node
+    int current_index = -1;
+
+    // We write the map
+    for (int row = 0; row < this->nb_row; ++row){
+
+        for (int column = 0; column < this->nb_column; ++column){
+
+            // We increment the current index
+            ++ current_index;
+
+            // We check if the current node is a map node
+            if (!this->list_map_nodes[current_index]){
+
+                // We write the obstacle value
+                file << "@";
+            }
+            else {
+
+                // We check if the node is an endpoint
+                if(!this->list_endpoints[current_index]){
+
+                    // We write the non-endpoint value
+                    file << ".";
+                }
+                else {
+
+                    // We check if the node is in the list (robot start point)
+                    if (find(positions_agents.begin(),positions_agents.end(),current_index) != positions_agents.end()){
+
+                        // We write the robot value
+                        file << "r";
+                    }
+                    else {
+
+                        // We write the endpoint value
+                        file << "e";
+                    }
+                }
+            }
+        }
+
+        // We go to the next line
+        file << endl;
+    }
+
+    // We create/open the file
+    fstream file_task;
+    file_task.open ("./Instances_Second_Set/task_"+ to_string(nb_agent_for_map) + "_" + to_string(nb_task_for_instance)
+                    + "_" + to_string(frequency_to_write) + ".task", fstream::out);
+
+    // We write the number of task
+    file_task << nb_task_for_instance << endl;
+
+    // We initialize the list of pickup and delivery point per task
+    vector<pair<int,int> > pickup_delivery_node_per_task;
+
+    // We define the pickup and delivery point for each task of the problem
+    for (int k = 0; k < nb_task_for_instance; ++k){
+
+        // We get the random value
+        int node_pickup = rand() % (copy_list_pairs.size());
+
+        // We randomly select a delivery node
+        while(true){
+
+            // We get the random value
+            int node_delivery = rand() % (copy_list_pairs.size());
+
+            // We check that it's not the same as the pickup one
+            if (node_delivery == node_pickup) continue;
+
+            // We add the pair in the list
+            pickup_delivery_node_per_task.push_back(pair<int,int> (node_pickup,node_delivery));
+
+            // We break the process for this task
+            break;
+        }
+    }
+
+    // We initialize the values for the release time values
+    int nb_per_stop = 0;
+    int step_stop = 0;
+
+    if (frequency_for_instance == 0.2){
+        nb_per_stop = 1;
+        step_stop = 5;
+    }
+    else if (frequency_for_instance == 0.5){
+        nb_per_stop = 1;
+        step_stop = 2;
+    }
+    else {
+        nb_per_stop = frequency_for_instance;
+        step_stop = 1;
+    }
+
+    // We initialize the initial values
+    int current_stop = 0, nb_done = 0;
+
+    for (int k = 0; k < nb_task_for_instance; ++k){
+
+        // We check if we have to update the current stop value
+        if (nb_done == nb_per_stop){
+
+            // We increment with the step
+            current_stop += step_stop;
+
+            // We reset the nb done value
+            nb_done = 0;
+        }
+
+        // We create the tasks
+        file_task  << current_stop << " " << pickup_delivery_node_per_task[k].first << " " <<
+                   pickup_delivery_node_per_task[k].second << " 0 0" << endl;
+
+        // We increment the number of done
+        ++nb_done;
+    }
+}
+
+void Instance::create_instances_third_set(int nb_agent_for_map,int nb_task_for_instance,
+                                           double frequency_for_instance){
+
+    // We create the copy of the list of pairs
+    vector<pair<int,int> > copy_list_pairs;
+    for (pair<int,int> & pair_to_copy : this->list_pair_node_endpoint){
+        copy_list_pairs.push_back(pair<int,int> (pair_to_copy.first,pair_to_copy.second));
+    }
+
+    // For each agent of the problem
+    for (Agent * agent : this->list_agents) {
+
+        // We add the agent's location to the send of possible locations
+        copy_list_pairs.push_back(pair<int,int> (
+                copy_list_pairs.size(),agent->get_path()[0]));
+    }
+
+    // We create the list of possible nodes for the agents
+    vector<int> possible_nodes_agents;
+    for (int i = 1; i < 20; ++i){
+        possible_nodes_agents.push_back(35*i + 1);
+        possible_nodes_agents.push_back(35*i + 2);
+        possible_nodes_agents.push_back(35*i + 16);
+        possible_nodes_agents.push_back(35*i + 18);
+        possible_nodes_agents.push_back(35*i + 32);
+        possible_nodes_agents.push_back(35*i + 33);
+    }
+
+    // We remove those values from the possible endpoints for the pickup and deliveries
+    for (int value : possible_nodes_agents){
+
+        // For each pair of the list
+        for (int pair_index = 0; pair_index < copy_list_pairs.size(); ++pair_index){
+
+            // We check if the node value corresponds
+            if (copy_list_pairs[pair_index].second == value){
+
+                // We remove the pair from the list
+                copy_list_pairs.erase(copy_list_pairs.begin() + pair_index);
+
+                // We stop the process for the current value
+                break;
+            }
+        }
+    }
+
+    // We open the existing file
+    fstream file;
+    int frequency_to_write = 10*frequency_for_instance;
+    file.open ("./Instances_Third_Set/map_"+ to_string(nb_agent_for_map) + "_" + to_string(nb_task_for_instance)
+               + "_" + to_string(frequency_to_write) + ".map", fstream::out);
+
+    // We write the size of the map
+    file << this->nb_row << " " << this->nb_column << endl;
+
+    // We write the number of endpoints
+    file << (copy_list_pairs.size()) << endl;
+
+    // We write the number of agents
+    file << to_string(nb_agent_for_map) << endl;
+
+    // We write the default value
+    file << this->list_agents[0]->get_path().size() << endl;
+
+    // We initialize the list of positions for the agents
+    vector<int> positions_agents;
+
+    // We randomly define the positions of the agents
+    for (int k = 0; k < nb_agent_for_map; ++k){
+
+        while(true){
+
+            // We randomly choose a node
+            int rdm_node = rand() % (possible_nodes_agents.size());
+
+            // We get the associated grid node
+            int current_value = possible_nodes_agents[rdm_node];
+
+            // We check that the node is not already in the lise
+            if (find(positions_agents.begin(), positions_agents.end(), current_value) !=
+                positions_agents.end()) continue;
+
+            // We add the node in the list
+            positions_agents.push_back(current_value);
+
+            // We break the process for the current agent
+            break;
+        }
+    }
+
+    // We initialize the current index of the node
+    int current_index = -1;
+
+    // We write the map
+    for (int row = 0; row < this->nb_row; ++row){
+
+        for (int column = 0; column < this->nb_column; ++column){
+
+            // We increment the current index
+            ++ current_index;
+
+            // We check if the current node is a map node
+            if (!this->list_map_nodes[current_index]){
+
+                // We write the obstacle value
+                file << "@";
+            }
+            else {
+
+                // We check if the node is an endpoint
+                if(!this->list_endpoints[current_index]){
+
+                    // We write the non-endpoint value
+                    file << ".";
+                }
+                else {
+
+                    // We check if the node is in the list (robot start point)
+                    if (find(positions_agents.begin(),positions_agents.end(),current_index) != positions_agents.end()){
+
+                        // We write the robot value
+                        file << "r";
+                    }
+                    else {
+
+                        // We write the endpoint value
+                        file << "e";
+                    }
+                }
+            }
+        }
+
+        // We go to the next line
+        file << endl;
+    }
+
+    // We create/open the file
+    fstream file_task;
+    file_task.open ("./Instances_Third_Set/task_"+ to_string(nb_agent_for_map) + "_" + to_string(nb_task_for_instance)
+                    + "_" + to_string(frequency_to_write) + ".task", fstream::out);
+
+    // We write the number of task
+    file_task << nb_task_for_instance << endl;
+
+    // We initialize the list of pickup and delivery point per task
+    vector<pair<int,int> > pickup_delivery_node_per_task;
+
+    // We define the pickup and delivery point for each task of the problem
+    for (int k = 0; k < nb_task_for_instance; ++k){
+
+        // We get the random value
+        int node_pickup = rand() % (copy_list_pairs.size());
+
+        // We randomly select a delivery node
+        while(true){
+
+            // We get the random value
+            int node_delivery = rand() % (copy_list_pairs.size());
+
+            // We check that it's not the same as the pickup one
+            if (node_delivery == node_pickup) continue;
+
+            // We add the pair in the list
+            pickup_delivery_node_per_task.push_back(pair<int,int> (node_pickup,node_delivery));
+
+            // We break the process for this task
+            break;
+        }
+    }
+
+    // We initialize the values for the release time values
+    int nb_per_stop = 0;
+    int step_stop = 0;
+
+    if (frequency_for_instance == 0.2){
+        nb_per_stop = 1;
+        step_stop = 5;
+    }
+    else if (frequency_for_instance == 0.5){
+        nb_per_stop = 1;
+        step_stop = 2;
+    }
+    else {
+        nb_per_stop = frequency_for_instance;
+        step_stop = 1;
+    }
+
+    // We initialize the initial values
+    int current_stop = 0, nb_done = 0;
+
+    for (int k = 0; k < nb_task_for_instance; ++k){
+
+        // We check if we have to update the current stop value
+        if (nb_done == nb_per_stop){
+
+            // We increment with the step
+            current_stop += step_stop;
+
+            // We reset the nb done value
+            nb_done = 0;
+        }
+
+        // We create the tasks
+        file_task  << current_stop << " " << pickup_delivery_node_per_task[k].first << " " <<
+                   pickup_delivery_node_per_task[k].second << " 0 0" << endl;
+
+        // We increment the number of done
+        ++nb_done;
+    }
 }

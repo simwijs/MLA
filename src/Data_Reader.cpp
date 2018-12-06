@@ -76,7 +76,6 @@ void Data_Reader::read_task_file(Instance * instance){
         // We close the file
         file.close();
     }
-
 }
 
 void Data_Reader::read_map_file(Instance * instance){

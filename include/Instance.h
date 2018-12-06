@@ -18,7 +18,8 @@ class Instance {
 private:
 
     // Attributes
-    int nb_row, nb_column, nb_endpoint, nb_agent, max_horizon, current_time_step, nb_task_scheduled, wait_value;
+    int nb_row, nb_column, nb_endpoint, nb_agent, max_horizon, current_time_step, nb_task_scheduled, wait_value,
+        nb_created_search_nodes = 0, nb_checked_search_nodes = 0;
     string map_file_name, task_file_name;
     vector<Task*> list_tasks;
     vector<Agent*> list_agents;
@@ -34,6 +35,8 @@ private:
     double compute_average_service_time();
     double compute_average_impact_traffic();
     double compute_average_nb_agent_avail();
+    double compute_max_service_time();
+    double compute_ninth_decile_service_time();
 
 public:
 
@@ -63,7 +66,14 @@ public:
     void apply_assignment(int id_agent, int id_task, int arrive_start, int arrive_goal);
     void compute_final_makespan();
     void output_solution(char** argv);
+    void output_map_for_visualization();
+    void output_moves_for_visualization();
     void generate_agents(int nb_agent_to_generate);
+    void add_created_search_node(){++ nb_created_search_nodes;}
+    void add_checked_search_node(){++ nb_checked_search_nodes;}
+    void create_instances_first_set(int nb_agent_for_map,int nb_task_for_instance, double frequency_for_instance);
+    void create_instances_second_set(int nb_agent_for_map,int nb_task_for_instance, double frequency_for_instance);
+    void create_instances_third_set(int nb_agent_for_map,int nb_task_for_instance, double frequency_for_instance);
 
     // Setters
     void set_nb_row(int value){this->nb_row = value;}
