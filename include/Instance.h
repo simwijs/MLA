@@ -19,7 +19,7 @@ private:
 
     // Attributes
     int nb_row, nb_column, nb_endpoint, nb_agent, max_horizon, current_time_step, nb_task_scheduled, wait_value,
-        nb_created_search_nodes = 0, nb_checked_search_nodes = 0;
+        nb_created_search_nodes = 0, nb_checked_search_nodes = 0, max_distance_multi_task = 0, max_size_multi_task = 1;
     string map_file_name, task_file_name;
     vector<Task*> list_tasks;
     vector<Agent*> list_agents;
@@ -30,6 +30,7 @@ private:
     vector<vector<int> > h_values_per_node, id_released_tasks_per_time_step;
     double computation_time = -1;
     vector<int> nb_agent_available_per_time_step;
+    vector<int> list_not_possible_endpoints, deadline_per_not_feasible_endpoint;
 
     // Methods
     double compute_average_service_time();
@@ -74,6 +75,7 @@ public:
     void create_instances_first_set(int nb_agent_for_map,int nb_task_for_instance, double frequency_for_instance);
     void create_instances_second_set(int nb_agent_for_map,int nb_task_for_instance, double frequency_for_instance);
     void create_instances_third_set(int nb_agent_for_map,int nb_task_for_instance, double frequency_for_instance);
+    void show_h_value_between_tasks_per_agent();
 
     // Setters
     void set_nb_row(int value){this->nb_row = value;}
@@ -85,6 +87,8 @@ public:
     void set_wait_value(int value){this->wait_value = value;}
     void set_computation_time(double value){this->computation_time = value;}
     void set_nb_task_scheduled(int value){this->nb_task_scheduled = value;}
+    void set_max_distance_multi_task(int value){this->max_distance_multi_task = value;}
+    void set_max_size_multi_task(int value){this->max_size_multi_task = value;}
 
     // Getters
     int get_nb_row(){ return this->nb_row;}
@@ -95,6 +99,8 @@ public:
     int get_current_time_step(){ return this->current_time_step;}
     int get_nb_task_scheduled(){ return this->nb_task_scheduled;}
     int get_wait_value(){ return this->wait_value;}
+    int get_max_distance_multi_task(){ return this->max_distance_multi_task;}
+    int get_max_size_multi_task(){ return this->max_size_multi_task;}
     double get_computation_time(){ return this->computation_time;}
     vector<Task*> & get_list_tasks(){ return this->list_tasks;}
     vector<Task*> & get_list_open_tasks(){ return this->list_open_tasks;}
@@ -109,5 +115,7 @@ public:
     vector<vector<int> > & get_h_values_per_node(){ return this->h_values_per_node;}
     vector<vector<int> > & get_id_released_tasks_per_time_step(){ return this->id_released_tasks_per_time_step;}
     vector<int> & get_nb_agent_available_per_time_step(){ return this->nb_agent_available_per_time_step;}
+    vector<int> & get_list_not_possible_endpoints(){ return this->list_not_possible_endpoints;}
+    vector<int> & get_deadline_per_not_feasible_endpoint(){ return this->deadline_per_not_feasible_endpoint;}
 };
 #endif //MAPD_INSTANCE_H

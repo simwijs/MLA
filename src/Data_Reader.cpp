@@ -37,7 +37,6 @@ void Data_Reader::read_task_file(Instance * instance){
     // We open the file
     ifstream file(instance->get_task_file_name());
 
-
     if (file.is_open()) {
 
         // We initialize the value
@@ -163,6 +162,9 @@ void Data_Reader::read_map_file(Instance * instance){
                                                                     row*instance->get_nb_column() + column,
                                                                     max_horizon));
 
+                    instance->get_list_not_possible_endpoints().push_back(row*instance->get_nb_column() + column);
+                    instance->get_deadline_per_not_feasible_endpoint().push_back(0);
+
                     // We increment the number of found agents
                     ++ nb_found_agents;
                 }
@@ -196,5 +198,4 @@ void Data_Reader::read_map_file(Instance * instance){
         // We close the file
         file.close();
     }
-
 }

@@ -48,15 +48,18 @@ int main(int argc, char** argv) {
     // We check that the found solution is feasible
     if (instance->check_solution_feasible()){
 
-        //cout << "Final solution feasible" << endl;
-        //cout << "Makespan : " << instance->get_current_time_step() << endl;
+        cout << "Final solution feasible" << endl;
+        cout << "Makespan : " << instance->get_current_time_step() << endl;
 
         // We create the output of the solution
         instance->output_solution(argv);
 
+        // We write the h value between consecutive tasks per agent
+        //instance->show_h_value_between_tasks_per_agent();
+
         // We write the files for the visualization
-        //instance->output_map_for_visualization();
-        //instance->output_moves_for_visualization();
+        instance->output_map_for_visualization();
+        instance->output_moves_for_visualization();
 
         // We create all the instances (NEED TO USE A 50 AGENTS INSTANCE)
 
@@ -67,27 +70,27 @@ int main(int argc, char** argv) {
             for (int nb_t = 100; nb_t <= 500; nb_t += 100){
 
                 // For each frequency
-                instance->create_instances_first_set(nb_a,nb_t,0.2);
+                //instance->create_instances_first_set(nb_a,nb_t,0.2);
                 instance->create_instances_second_set(nb_a,nb_t,0.2);
                 instance->create_instances_third_set(nb_a,nb_t,0.2);
 
-                instance->create_instances_first_set(nb_a,nb_t,0.5);
+                //instance->create_instances_first_set(nb_a,nb_t,0.5);
                 instance->create_instances_second_set(nb_a,nb_t,0.5);
                 instance->create_instances_third_set(nb_a,nb_t,0.5);
 
-                instance->create_instances_first_set(nb_a,nb_t,1);
+                //instance->create_instances_first_set(nb_a,nb_t,1);
                 instance->create_instances_second_set(nb_a,nb_t,1);
                 instance->create_instances_third_set(nb_a,nb_t,1);
 
-                instance->create_instances_first_set(nb_a,nb_t,2);
+                //instance->create_instances_first_set(nb_a,nb_t,2);
                 instance->create_instances_second_set(nb_a,nb_t,2);
                 instance->create_instances_third_set(nb_a,nb_t,2);
 
-                instance->create_instances_first_set(nb_a,nb_t,5);
+                //instance->create_instances_first_set(nb_a,nb_t,5);
                 instance->create_instances_second_set(nb_a,nb_t,5);
                 instance->create_instances_third_set(nb_a,nb_t,5);
 
-                instance->create_instances_first_set(nb_a,nb_t,10);
+                //instance->create_instances_first_set(nb_a,nb_t,10);
                 instance->create_instances_second_set(nb_a,nb_t,10);
                 instance->create_instances_third_set(nb_a,nb_t,10);
 
@@ -95,8 +98,8 @@ int main(int argc, char** argv) {
         }*/
     }
     else {
+
         cout << "Final solution not feasible" << endl;
-        getchar();
     }
 
     // We delete the objects
@@ -105,6 +108,6 @@ int main(int argc, char** argv) {
     delete instance;
 
     // We end the program
-	cout << " - - - - End of the program - - - - " << endl;
-    cout << endl;
+    //cout << " - - - - End of the program - - - - " << endl;
+    //cout << endl;
 }

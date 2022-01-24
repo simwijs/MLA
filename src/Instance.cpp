@@ -5,6 +5,7 @@
 #include <queue>
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
 void Instance::compute_h_values(vector<int> & h_values, int start_location) {
 
@@ -86,6 +87,7 @@ bool Instance::check_solution_feasible(){
         if (task->get_picked_date() >= task->get_delivered_date() ||
                 task->get_picked_date() == -1 || task->get_delivered_date() == -1){
 
+            task->write();
             cout << "Problem, the pickup and/or delivery dates are not feasible" << endl;
             return false;
         }
@@ -220,6 +222,8 @@ void Instance::apply_assignment(int id_agent, int id_task, int arrive_start, int
 
     // We increment the number of scheduled task
     ++ this->nb_task_scheduled;
+
+    //cout << "End Assignment " << endl;
 }
 
 void Instance::compute_final_makespan(){
@@ -382,6 +386,48 @@ void Instance::generate_agents(int nb_agent_to_generate){
     }
 }
 
+void Instance::show_h_value_between_tasks_per_agent(){
+
+    // For each agent of the problem
+    for (Agent * agent : this->list_agents){
+
+        // We initialize the list of tasks for the agent
+        vector<pair<int,int> > list_tasks_for_current_agent;
+
+        // For each task of the problem
+        for (Task * task : this->list_tasks){
+
+            // We check if the id of the agent corresponds
+            if (task->get_id_assigned_agent() == agent->get_id()){
+
+                // We add the task in the list
+                list_tasks_for_current_agent.push_back(pair<int,int> (task->get_picked_date(),task->get_id()));
+            }
+        }
+
+        // We sort the tasks per picked date
+        sort(list_tasks_for_current_agent.begin(),list_tasks_for_current_agent.end());
+
+        // For each task of the list
+        for (int i = 0; i < list_tasks_for_current_agent.size()-1; ++i){
+
+            // We get the current task
+            Task * current_task = this->list_tasks[list_tasks_for_current_agent[i].second];
+
+            // We get the next task
+            Task * next_task = this->list_tasks[list_tasks_for_current_agent[i+1].second];
+
+            // We compute the h value
+            int current_h_value = this->h_values_per_node[current_task->get_delivery_node()][next_task->get_pickup_node()];
+
+            // We print out the current h value
+            cout << "H value between tasks : " << current_h_value << endl;
+        }
+    }
+
+    getchar();
+}
+
 void Instance::output_solution(char** argv){
 
     // We open the existing file
@@ -403,6 +449,9 @@ void Instance::output_solution(char** argv){
     file << this->nb_checked_search_nodes << ";";
     file << this->compute_max_service_time() << ";";
     file << this->compute_ninth_decile_service_time() << ";";
+    file << this->max_distance_multi_task << ";";
+    file << this->max_size_multi_task << ";";
+
     file << endl;
 
     // We close the file
@@ -786,8 +835,17 @@ void Instance::create_instances_second_set(int nb_agent_for_map,int nb_task_for_
                     }
                     else {
 
-                        // We write the endpoint value
-                        file << "e";
+                        if (find(possible_nodes_agents.begin(),possible_nodes_agents.end(), current_index) !=
+                             possible_nodes_agents.end()){
+
+                            // We write the non-endpoint value
+                            file << ".";
+                        }
+                        else {
+
+                            // We write the endpoint value
+                            file << "e";
+                        }
                     }
                 }
             }
@@ -997,8 +1055,17 @@ void Instance::create_instances_third_set(int nb_agent_for_map,int nb_task_for_i
                     }
                     else {
 
-                        // We write the endpoint value
-                        file << "e";
+                        if (find(possible_nodes_agents.begin(),possible_nodes_agents.end(), current_index) !=
+                            possible_nodes_agents.end()){
+
+                            // We write the non-endpoint value
+                            file << ".";
+                        }
+                        else {
+
+                            // We write the endpoint value
+                            file << "e";
+                        }
                     }
                 }
             }

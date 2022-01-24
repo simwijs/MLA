@@ -5,9 +5,9 @@
 #include "../include/Resolution_Method.h"
 #include <queue>
 #include <limits>
+#include <algorithm>
 #include <utility>
 #include <string>
-#include <ilcplex/ilocplex.h>
 
 void Resolution_Method::solve_instance(Instance * instance, int solver_id){
 
@@ -26,6 +26,7 @@ void Resolution_Method::solve_instance(Instance * instance, int solver_id){
 
         // We solve the TOTP with Improved A*
         solve_TOTP(instance);
+
     }
     else if (this->solve_type == 3){
 
@@ -70,7 +71,6 @@ void Resolution_Method::solve_instance(Instance * instance, int solver_id){
 
         // We update the boolean value
         this->allow_move_after_endpoint = false;
-
 
         // We solve the classic TOTP
         solve_Decentralized(instance,0);
@@ -120,7 +120,6 @@ void Resolution_Method::solve_instance(Instance * instance, int solver_id){
         // We update the boolean value
         this->allow_move_after_endpoint = true;
 
-
         // We solve the classic TOTP
         solve_Decentralized(instance,0);
     }
@@ -163,22 +162,6 @@ void Resolution_Method::solve_instance(Instance * instance, int solver_id){
 
         // We solve the classic TOTP
         solve_Decentralized(instance,5);
-    }
-    else if (this->solve_type == 21){
-
-        // We update the boolean value
-        this->allow_move_after_endpoint = false;
-
-        // We solve the classic TOTP
-        solve_Decentralized_ST_Focused(instance,0);
-    }
-    else if (this->solve_type == 22){
-
-        // We update the boolean value
-        this->allow_move_after_endpoint = false;
-
-        // We solve the classic TOTP
-        solve_Decentralized_ST_Focused(instance,5);
     }
 }
 
@@ -263,6 +246,726 @@ void Resolution_Method::solve_TOTP(Instance * instance){
     }
 
     //cout << "End of the TOTP Algorithm" << endl;
+}
+
+bool Resolution_Method::compute_multi_task_path(Instance * instance, Agent * agent, vector<int> & list_id_task,
+                                                int start_node){
+
+    // We initialize the list of goals to visit
+    vector<int> list_goals_to_reach;
+
+    list_goals_to_reach.push_back(start_node);
+
+    // We compute the list of goals to visit
+    for (int id_task : list_id_task){
+
+        // We add the task's pickup location
+        list_goals_to_reach.push_back(instance->get_task(id_task)->get_pickup_node());
+
+        // We add the task's delivery location
+        list_goals_to_reach.push_back(instance->get_task(id_task)->get_delivery_node());
+
+    }
+
+    // We create the list of h values
+    vector<int> list_h_values_between_goals_to_reach;
+
+    // We compute the h values between each pair of node to reach
+    for (int it_1 = 0; it_1 < list_goals_to_reach.size()-1; ++it_1){
+
+        // We compute the h value between the consecutive goals
+        list_h_values_between_goals_to_reach.push_back(
+                instance->get_h_values_per_node()[list_goals_to_reach[it_1]][list_goals_to_reach[it_1+1]]);
+    }
+
+    // We create the first search node
+    Complex_Node * start = new Complex_Node(start_node, 0,
+                                            this->get_h_value_next_goals(list_h_values_between_goals_to_reach,-1),
+                                            NULL, instance->get_current_time_step(), 0, false);
+
+    // We initialize the values
+    complex_heap_open_t open_list;
+    map<string, Complex_Node*> allNodes_table; // key = type*g_val*map_size + loc
+
+    // We add the first node in the list
+    open_list.push(start);
+    start->in_openlist = true;
+    instance->add_created_search_node();
+    allNodes_table.insert(make_pair(to_string(start_node)+"_0_0", start)); // g_val = 0 --> key = loc
+
+    // We initialize the value of the best node
+    Complex_Node * best_node = NULL;
+
+    // While some nodes are still in the open list
+    while (!open_list.empty()) {
+
+        // We take the first node in the list
+        Complex_Node * current_node = open_list.top();
+        open_list.pop();
+
+        // We increment the number of checked node
+        instance->add_checked_search_node();
+
+        // We update the open list value for the current node
+        current_node->in_openlist = false;
+
+        // We check the timestep of the current node
+        if (current_node->timestep >= instance->get_max_horizon() - 1) continue;
+
+        // We check if we have reached a goal and that the release time is respected
+        if (current_node->location == list_goals_to_reach[current_node->type+1]){
+
+            // CASE : Final goal
+            if (current_node->type == list_goals_to_reach.size()-2){
+
+                //cout << "Final goal found " << endl;
+
+                // We initialize the boolean value
+                bool end_found = true;
+
+                // We check that the current node is node used by an agent during the following time step
+                for (Agent * agent_to_check : instance->get_list_agents()){
+
+                    // We check if it is the same agent
+                    if (agent_to_check == agent) continue;
+
+                    // For each following time step
+                    for (int ts = current_node->timestep + 1; ts < instance->get_max_horizon(); ++ts){
+
+                        // We check if the agent use the current node
+                        if (agent_to_check->get_path()[ts] == current_node->location){
+
+                            // We update the boolean value
+                            end_found = false;
+                        }
+                    }
+                }
+
+                // We check if the final node has been found
+                if (end_found){
+
+                    // We update the value of the best node
+                    best_node = current_node;
+
+                    // We stop the search
+                    break;
+                }
+            }
+                // CASE : Transitional goal
+            else {
+
+                //cout << "Transitional goal found from " << current_node->type << " to " << current_node->type+1<< endl;
+
+                // We compute the successor values
+                int next_g_val = current_node->g_val;
+                int next_h_val = get_h_value_next_goals(list_h_values_between_goals_to_reach,current_node->type);
+
+                // We generate the corresponding node
+                Complex_Node * next = new Complex_Node(current_node->location, next_g_val, next_h_val, current_node,
+                                                       current_node->timestep, current_node->type+1, false);
+
+                // We check if the current successor has been checked before
+                map<string, Complex_Node * >::iterator it = allNodes_table.find(
+                        to_string(next->location)+"_"+to_string(next->g_val)+"_"+to_string(next->type));
+
+                if (it == allNodes_table.end()) //undiscovered
+                {  // add the newly generated node to open_list and hash table
+
+                    // We udate open list value for the node
+                    next->in_openlist = true;
+
+                    // We insert the current node in the list of all the nodes
+                    allNodes_table.insert(pair<string, Complex_Node*>(
+                            to_string(next->location)+"_"+to_string(next->g_val)+"_"+to_string(next->type), next));
+
+                    // We add the node to the open list
+                    open_list.push(next);
+
+                    // We increment the number of created node
+                    instance->add_created_search_node();
+                }
+                else //discovered
+                {
+                    // We delete the created node
+                    delete(next);
+                }
+
+                continue;
+            }
+        }
+
+        // We intialize the successor id
+        int successor_id;
+
+        // We create the list of possible moves
+        int action[5] = {0, 1, -1, instance->get_nb_column(), -(instance->get_nb_column())};
+
+        for (int i = 0; i < 5;i++) {
+
+            // We check if the move is feasible
+            if (i == 1 && current_node->location % (instance->get_nb_column()) == instance->get_nb_column() - 1) {
+                continue;
+            }
+            if (i == 2 && current_node->location % (instance->get_nb_column()) == 0) {
+                continue;
+            }
+            if (i == 3 && current_node->location / (instance->get_nb_column()) == instance->get_nb_row() - 1) {
+                continue;
+            }
+            if (i == 4 && current_node->location / (instance->get_nb_column()) == 0) {
+                continue;
+            }
+
+            // We get the location of the successor
+            successor_id = current_node->location + action[i];
+
+            // We initialize the current time step value
+            int next_timestep = current_node->timestep + 1;
+
+            // We check if the successor is accessible
+            if (!isConstrained(instance, agent, current_node->location, successor_id, next_timestep))
+            {
+
+                // We compute the successor g value
+                int next_g_val = current_node->g_val + 1;
+                int next_h_val = instance->get_h_values_per_node()
+                                 [successor_id][list_goals_to_reach[current_node->type+1]] +
+                                 this->get_h_value_next_goals(list_h_values_between_goals_to_reach,current_node->type);
+
+                // We generate the corresponding node
+                Complex_Node * next = new Complex_Node(successor_id, next_g_val, next_h_val, current_node,
+                                                       next_timestep, current_node->type, false);
+
+                // We check if the current successor has been checked before
+                map<string, Complex_Node* >::iterator it = allNodes_table.find(
+                        to_string(next->location)+"_"+to_string(next->g_val)+"_"+to_string(next->type));
+
+                if (it == allNodes_table.end()) //undiscovered
+                {  // add the newly generated node to open_list and hash table
+
+                    // We udate open list value for the node
+                    next->in_openlist = true;
+
+                    // We insert the current node in the list of all the nodes
+                    allNodes_table.insert(pair<string, Complex_Node*>(
+                            to_string(next->location)+"_"+to_string(next->g_val)+"_"+to_string(next->type), next));
+
+                    // We add the node to the open list
+                    open_list.push(next);
+
+                    // We increment the number of created node
+                    instance->add_created_search_node();
+                }
+
+                else //discovered
+                {
+                    // We delete the created node
+                    delete(next);
+                }
+            }
+        }
+    }
+
+    // We check if a best complex node has been found
+    if (best_node != NULL){
+
+        // We update the agent path
+        Update_Path(agent,*best_node);
+
+        // We initialize the previous task end time
+        int previous_task_end = instance->get_current_time_step();
+
+        // For each task assigned to the agent
+        for (int id_task : list_id_task){
+
+            // We get the current task
+            Task * task = instance->get_task(id_task);
+
+            // We create the boolean values
+            bool pickup_found = false, delivery_found = false;
+
+            // We compute the pickup time
+            for (int ts = previous_task_end; ts < agent->get_path().size(); ++ts){
+
+                // We check if the location corresponds
+                if (agent->get_path()[ts] == task->get_pickup_node()){
+
+                    // We set the task pickup date
+                    task->set_picked_date(ts);
+
+                    // We update the previous task end
+                    previous_task_end = ts;
+
+                    // We update the boolean value
+                    pickup_found = true;
+
+                    // We stop the process
+                    break;
+                }
+            }
+
+            // We check that the pcikup has been found
+            if (!pickup_found){
+                cout << "Problem, the pickup value has not been found" << endl;
+                task->write();
+                cout << "previous_task_end : " << previous_task_end << endl;
+                task->write();
+                for (int ts = previous_task_end; ts < task->get_delivered_date(); ++ts){
+                    cout << "Position " << ts << " : " << agent->get_path()[ts] << endl;
+                }
+                cout << endl;
+                getchar();
+            }
+
+            // We compute the delivery time
+            for (int ts = previous_task_end; ts < agent->get_path().size(); ++ts){
+
+                // We check if the location corresponds
+                if (agent->get_path()[ts] == task->get_delivery_node()){
+
+                    // We set the task pickup date
+                    task->set_delivered_date(ts);
+
+                    // We apply the assignment
+                    instance->apply_assignment(agent->get_id(), task->get_id(), previous_task_end, ts);
+
+                    // We update the previous task end
+                    previous_task_end = ts;
+
+                    // We update the boolean value
+                    delivery_found = true;
+
+                    // We stop the process
+                    break;
+                }
+            }
+
+            // We check that the delivery has been found
+            if (!delivery_found){
+                cout << "Problem, the delivery value has not been found" << endl;
+                task->write();
+                cout << "previous_task_end : " << previous_task_end << endl;
+                task->write();
+                for (int ts = previous_task_end; ts < task->get_delivered_date(); ++ts){
+                    cout << "Position " << ts << " : " << agent->get_path()[ts] << endl;
+                }
+                cout << endl;
+                getchar();
+            }
+        }
+
+        // We update the finish time for the agent
+        agent->set_finish_time(best_node->timestep);
+
+        // We release the nodes
+        releaseClosedListComplexNodes(allNodes_table);
+
+        // We return true
+        return true;
+    }
+    else {
+
+        cout << "Problem, no best node (multi task) found for the agent " << agent->get_id() << endl;
+        getchar();
+
+        // We return false
+        return false;
+    }
+}
+
+bool Resolution_Method::compute_multi_task_path_2(Instance * instance, Agent * agent, vector<int> & list_id_task,
+                                                int start_node, bool apply_path){
+
+    // We initialize the list of goals to visit
+    vector<int> list_goals_to_reach, list_deadline_per_goal;
+
+    list_goals_to_reach.push_back(start_node);
+    list_deadline_per_goal.push_back(instance->get_max_horizon());
+
+    // We compute the list of goals to visit
+    for (int id_task : list_id_task){
+
+        // We add the task's pickup location
+        list_goals_to_reach.push_back(instance->get_task(id_task)->get_pickup_node());
+
+        // We add the deadline
+        if (find(instance->get_list_not_possible_endpoints().begin(),
+                 instance->get_list_not_possible_endpoints().end(),
+                 instance->get_task(id_task)->get_pickup_node()) !=
+                    instance->get_list_not_possible_endpoints().end() &&
+                distance (instance->get_list_not_possible_endpoints().begin(),
+                          find(instance->get_list_not_possible_endpoints().begin(),
+                               instance->get_list_not_possible_endpoints().end(),
+                               instance->get_task(id_task)->get_pickup_node())) != agent->get_id()){
+
+            list_deadline_per_goal.push_back(instance->get_deadline_per_not_feasible_endpoint()[distance(
+                    instance->get_list_not_possible_endpoints().begin(),
+                    find(instance->get_list_not_possible_endpoints().begin(),
+                         instance->get_list_not_possible_endpoints().end(),
+                         instance->get_task(id_task)->get_pickup_node()))]);
+        }
+        else {
+
+            // We add the default value
+            list_deadline_per_goal.push_back(instance->get_max_horizon());
+        }
+
+        // We add the task's delivery location
+        list_goals_to_reach.push_back(instance->get_task(id_task)->get_delivery_node());
+
+        if (find(instance->get_list_not_possible_endpoints().begin(),
+                 instance->get_list_not_possible_endpoints().end(),
+                 instance->get_task(id_task)->get_delivery_node()) !=
+                    instance->get_list_not_possible_endpoints().end() &&
+            distance (instance->get_list_not_possible_endpoints().begin(),
+                      find(instance->get_list_not_possible_endpoints().begin(),
+                           instance->get_list_not_possible_endpoints().end(),
+                           instance->get_task(id_task)->get_delivery_node())) != agent->get_id()){
+
+            list_deadline_per_goal.push_back(instance->get_deadline_per_not_feasible_endpoint()[distance(
+                    instance->get_list_not_possible_endpoints().begin(),
+                    find(instance->get_list_not_possible_endpoints().begin(),
+                         instance->get_list_not_possible_endpoints().end(),
+                         instance->get_task(id_task)->get_delivery_node()))]);
+        }
+        else {
+
+            // We add the default value
+            list_deadline_per_goal.push_back(instance->get_max_horizon());
+        }
+    }
+
+    // We create the list of h values
+    vector<int> list_h_values_between_goals_to_reach;
+
+    // We compute the h values between each pair of node to reach
+    for (int it_1 = 0; it_1 < list_goals_to_reach.size()-1; ++it_1){
+
+        // We compute the h value between the consecutive goals
+        list_h_values_between_goals_to_reach.push_back(
+                instance->get_h_values_per_node()[list_goals_to_reach[it_1]][list_goals_to_reach[it_1+1]]);
+    }
+
+    // We clean the deadline values
+    for (int k = list_deadline_per_goal.size()-1; k >= 1; --k){
+
+        // We check if we have to update the deadline value
+        if (list_deadline_per_goal[k] - list_h_values_between_goals_to_reach[k-1] < list_deadline_per_goal[k-1]){
+
+            // We update the deadline
+            list_deadline_per_goal[k-1] = list_deadline_per_goal[k] - list_h_values_between_goals_to_reach[k-1];
+        }
+    }
+
+    // We create the first search node
+    Complex_Node * start = new Complex_Node(start_node, 0,
+                                            this->get_h_value_next_goals(list_h_values_between_goals_to_reach,-1),
+                                            NULL, instance->get_current_time_step(), 0, false);
+
+    // We initialize the values
+    complex_heap_open_t open_list;
+    map<string, Complex_Node*> allNodes_table; // key = type*g_val*map_size + loc
+
+    // We add the first node in the list
+    open_list.push(start);
+    start->in_openlist = true;
+    instance->add_created_search_node();
+    allNodes_table.insert(make_pair(to_string(start_node)+"_0_0", start)); // g_val = 0 --> key = loc
+
+    // We initialize the value of the best node
+    Complex_Node * best_node = NULL;
+
+    // While some nodes are still in the open list
+    while (!open_list.empty()) {
+
+        // We take the first node in the list
+        Complex_Node * current_node = open_list.top();
+        open_list.pop();
+
+        // We increment the number of checked node
+        instance->add_checked_search_node();
+
+        // We update the open list value for the current node
+        current_node->in_openlist = false;
+
+        // We check the timestep of the current node
+        if (current_node->timestep >= instance->get_max_horizon() - 1 ||
+                (current_node->type < list_goals_to_reach.size()-1 &&
+                        current_node->timestep >= list_deadline_per_goal[current_node->type+1])) continue;
+
+        // We check if the final node is found
+        if (current_node->type == list_goals_to_reach.size()-1){
+
+            // We check if the current node is a feasible endpoint
+            if (instance->get_list_endpoints()[current_node->location] &&
+                    (find(instance->get_list_not_possible_endpoints().begin(),
+                         instance->get_list_not_possible_endpoints().end(),current_node->location)
+                    == instance->get_list_not_possible_endpoints().end() ||
+                    distance (instance->get_list_not_possible_endpoints().begin(),
+                              find(instance->get_list_not_possible_endpoints().begin(),
+                                   instance->get_list_not_possible_endpoints().end(),
+                                   current_node->location)) == agent->get_id())){
+
+                // We initialize the boolean value
+                bool end_found = true;
+
+                // We check that the current node is node used by an agent during the following time step
+                for (Agent * agent_to_check : instance->get_list_agents()){
+
+                    // We check if it is the same agent
+                    if (agent_to_check == agent) continue;
+
+                    // For each following time step
+                    for (int ts = current_node->timestep + 1; ts < instance->get_max_horizon(); ++ts){
+
+                        // We check if the agent use the current node
+                        if (agent_to_check->get_path()[ts] == current_node->location){
+
+                            // We update the boolean value
+                            end_found = false;
+                        }
+                    }
+                }
+
+                // We check if the final node has been found
+                if (end_found){
+
+                    // We update the value of the best node
+                    best_node = current_node;
+
+                    // We stop the search
+                    break;
+                }
+            }
+        }
+        // We check if we have reached a goal
+        else if (current_node->location == list_goals_to_reach[current_node->type+1]){
+
+            // We compute the successor values
+            int next_g_val = current_node->g_val;
+            int next_h_val = get_h_value_next_goals(list_h_values_between_goals_to_reach,current_node->type);
+
+            // We generate the corresponding node
+            Complex_Node * next = new Complex_Node(current_node->location, next_g_val, next_h_val, current_node,
+                                                   current_node->timestep, current_node->type+1, false);
+
+            // We check if the current successor has been checked before
+            map<string, Complex_Node * >::iterator it = allNodes_table.find(
+                    to_string(next->location)+"_"+to_string(next->g_val)+"_"+to_string(next->type));
+
+            if (it == allNodes_table.end()) //undiscovered
+            {  // add the newly generated node to open_list and hash table
+
+                // We udate open list value for the node
+                next->in_openlist = true;
+
+                // We insert the current node in the list of all the nodes
+                allNodes_table.insert(pair<string, Complex_Node*>(
+                        to_string(next->location)+"_"+to_string(next->g_val)+"_"+to_string(next->type), next));
+
+                // We add the node to the open list
+                open_list.push(next);
+
+                // We increment the number of created node
+                instance->add_created_search_node();
+            }
+            else //discovered
+            {
+                // We delete the created node
+                delete(next);
+            }
+
+            continue;
+
+        }
+
+        // We intialize the successor id
+        int successor_id;
+
+        // We create the list of possible moves
+        int action[5] = {0, 1, -1, instance->get_nb_column(), -(instance->get_nb_column())};
+
+        for (int i = 0; i < 5;i++) {
+
+            // We check if the move is feasible
+            if (i == 1 && current_node->location % (instance->get_nb_column()) == instance->get_nb_column() - 1) {
+                continue;
+            }
+            if (i == 2 && current_node->location % (instance->get_nb_column()) == 0) {
+                continue;
+            }
+            if (i == 3 && current_node->location / (instance->get_nb_column()) == instance->get_nb_row() - 1) {
+                continue;
+            }
+            if (i == 4 && current_node->location / (instance->get_nb_column()) == 0) {
+                continue;
+            }
+
+            // We get the location of the successor
+            successor_id = current_node->location + action[i];
+
+            // We initialize the current time step value
+            int next_timestep = current_node->timestep + 1;
+
+            // We check if the successor is accessible
+            if (!isConstrained(instance, agent, current_node->location, successor_id, next_timestep))
+            {
+
+                // We compute the successor g value
+                int next_g_val = current_node->g_val + 1;
+                int next_h_val = 0;
+
+                if (current_node->type < list_goals_to_reach.size()-1){
+                    next_h_val = instance->get_h_values_per_node()
+                                 [successor_id][list_goals_to_reach[current_node->type+1]] +
+                                 this->get_h_value_next_goals(list_h_values_between_goals_to_reach,current_node->type);
+                }
+
+                // We generate the corresponding node
+                Complex_Node * next = new Complex_Node(successor_id, next_g_val, next_h_val, current_node,
+                                                       next_timestep, current_node->type, false);
+
+                // We check if the current successor has been checked before
+                map<string, Complex_Node* >::iterator it = allNodes_table.find(
+                        to_string(next->location)+"_"+to_string(next->g_val)+"_"+to_string(next->type));
+
+                if (it == allNodes_table.end()) //undiscovered
+                {  // add the newly generated node to open_list and hash table
+
+                    // We udate open list value for the node
+                    next->in_openlist = true;
+
+                    // We insert the current node in the list of all the nodes
+                    allNodes_table.insert(pair<string, Complex_Node*>(
+                            to_string(next->location)+"_"+to_string(next->g_val)+"_"+to_string(next->type), next));
+
+                    // We add the node to the open list
+                    open_list.push(next);
+
+                    // We increment the number of created node
+                    instance->add_created_search_node();
+                }
+
+                else //discovered
+                {
+                    // We delete the created node
+                    delete(next);
+                }
+            }
+        }
+    }
+
+    // We check if a best complex node has been found
+    if (best_node != NULL){
+
+        // We check if we have to update the path
+        if (apply_path){
+
+            // We update the agent path
+            Update_Path(agent,*best_node);
+
+            // We initialize the previous task end time
+            int previous_task_end = instance->get_current_time_step();
+
+            // For each task assigned to the agent
+            for (int id_task : list_id_task){
+
+                // We get the current task
+                Task * task = instance->get_task(id_task);
+
+                // We create the boolean values
+                bool pickup_found = false, delivery_found = false;
+
+                // We compute the pickup time
+                for (int ts = previous_task_end; ts < agent->get_path().size(); ++ts){
+
+                    // We check if the location corresponds
+                    if (agent->get_path()[ts] == task->get_pickup_node()){
+
+                        // We set the task pickup date
+                        task->set_picked_date(ts);
+
+                        // We update the previous task end
+                        previous_task_end = ts;
+
+                        // We update the boolean value
+                        pickup_found = true;
+
+                        // We stop the process
+                        break;
+                    }
+                }
+
+                // We check that the pcikup has been found
+                if (!pickup_found){
+                    cout << "Problem, the pickup value has not been found" << endl;
+                    task->write();
+                    cout << "previous_task_end : " << previous_task_end << endl;
+                    task->write();
+                    for (int ts = previous_task_end; ts < task->get_delivered_date(); ++ts){
+                        cout << "Position " << ts << " : " << agent->get_path()[ts] << endl;
+                    }
+                    cout << endl;
+                    getchar();
+                }
+
+                // We compute the delivery time
+                for (int ts = previous_task_end; ts < agent->get_path().size(); ++ts){
+
+                    // We check if the location corresponds
+                    if (agent->get_path()[ts] == task->get_delivery_node()){
+
+                        // We set the task pickup date
+                        task->set_delivered_date(ts);
+
+                        // We apply the assignment
+                        instance->apply_assignment(agent->get_id(), task->get_id(), previous_task_end, ts);
+
+                        // We update the possible endpoints
+                        instance->get_list_not_possible_endpoints()[agent->get_id()] = best_node->location;
+                        instance->get_deadline_per_not_feasible_endpoint()[agent->get_id()] = best_node->timestep;
+
+                        // We update the previous task end
+                        previous_task_end = ts;
+
+                        // We update the boolean value
+                        delivery_found = true;
+
+                        // We stop the process
+                        break;
+                    }
+                }
+
+                // We check that the delivery has been found
+                if (!delivery_found){
+                    cout << "Problem, the delivery value has not been found" << endl;
+                    task->write();
+                    cout << "previous_task_end : " << previous_task_end << endl;
+                    task->write();
+                    for (int ts = previous_task_end; ts < task->get_delivered_date(); ++ts){
+                        cout << "Position " << ts << " : " << agent->get_path()[ts] << endl;
+                    }
+                    cout << endl;
+                    getchar();
+                }
+
+            }
+
+            // We update the finish time for the agent
+            agent->set_finish_time(best_node->timestep);
+        }
+
+        // We release the nodes
+        releaseClosedListComplexNodes(allNodes_table);
+
+        // We return true
+        return true;
+    }
+    else {
+
+        // We return false
+        return false;
+    }
 }
 
 void Resolution_Method::solve_Decentralized(Instance * instance, int n_value){
@@ -373,178 +1076,6 @@ void Resolution_Method::solve_Decentralized(Instance * instance, int n_value){
                         // We remove this agent from the list of available ones
                         list_available_agents.erase(find(list_available_agents.begin(),list_available_agents.end(),
                         instance->get_agent(best_agent)));
-
-                        // We continue with the next open goal
-                        continue;
-                    }
-                    else {
-
-                        // We try the assignment and apply it if possible
-                        if(check_if_assignment_feasible(instance, current_agent, current_task)){
-
-                            // We update the boolean value
-                            assignment_found = true;
-
-                            // We stop the process
-                            break;
-                        }
-                    }
-                }
-
-                // We check if the agent has been assigned
-                if (!assignment_found){
-
-                    // We initialize the boolean value
-                    bool move = false;
-
-                    // We check if the agent has to move from its current position
-                    for (vector<Task*>::iterator it = instance->get_list_open_tasks().begin();
-                         it != instance->get_list_open_tasks().end(); it++) {
-
-                        // We check if the delivery location correponds with the agent's current location
-                        if ((*it)->get_delivery_node() == current_agent->get_current_location()) {
-                            move = true;
-                            break;
-                        }
-                    }
-
-                    // We check if a move is necessary
-                    if (move) {
-
-                        // We move the agent
-                        compute_move_to_endpoint(instance,current_agent);
-
-                        if (allow_modification_endpoint){
-
-                            // We update the finish time of the agent
-                            current_agent->set_finish_time(instance->get_current_time_step() + 1);
-                        }
-                    }
-                    else {
-
-                        // We update the finish time of the agent
-                        current_agent->set_finish_time(current_agent->get_finish_time() + 1);
-                    }
-                }
-            }
-            else {
-
-                // We stop the search for the current time step
-                break;
-            }
-        }
-
-        // We increment the current time step
-        instance->set_current_time_step(instance->get_current_time_step() + 1);
-    }
-}
-
-void Resolution_Method::solve_Decentralized_ST_Focused(Instance * instance, int n_value){
-
-    while (instance->get_nb_task_scheduled() < instance->get_list_tasks().size() &&
-           instance->get_current_time_step() <= instance->get_max_horizon()) {
-
-        // We update the list of open goals for the current time step
-        for (int id_task : instance->get_id_released_tasks_per_time_step()[instance->get_current_time_step()]) {
-            instance->get_list_open_tasks().push_back(instance->get_task(id_task));
-        }
-
-        while (true){
-
-            // We get the first agent available
-            Agent * current_agent = NULL;
-
-            // For each agent
-            for (Agent * agent : instance->get_list_agents()){
-
-                // We check if the finish time corresponds
-                if (agent->get_finish_time() == instance->get_current_time_step()){
-
-                    // We get the agent
-                    current_agent = agent;
-
-                    // We stop the process
-                    break;
-                }
-            }
-
-            // We check if an available agent exists for the current time step
-            if (current_agent != NULL){
-
-                // We update the current agent location
-                current_agent->set_current_location(current_agent->get_path()[instance->get_current_time_step()]);
-
-                // We initialize the list of available agents
-                vector<Agent*> list_available_agents;
-
-                // We get the list of available agents in the following time steps
-                for (Agent * agent : instance->get_list_agents()){
-
-                    // We check if the finish time is in the current frame
-                    if (agent->get_finish_time() <= instance->get_current_time_step() + n_value){
-
-                        // We add the agent in the list of available ones
-                        list_available_agents.push_back(agent);
-                    }
-                }
-
-                // We initialize the list of pair task-releaseTime
-                vector<pair<int,int> > list_release_time_per_task;
-
-                // For each open task
-                for (Task * task : instance->get_list_open_tasks()){
-
-                    // We compute the h value from the current agent
-                    list_release_time_per_task.push_back(pair<int,int> (task->get_release_date(), task->get_id()));
-                }
-
-                // We sort the task per release time
-                sort(list_release_time_per_task.begin(),list_release_time_per_task.end());
-
-                // We initialize the boolean value
-                bool assignment_found = false;
-
-                // While some tasks are still to check
-                while (!list_release_time_per_task.empty()){
-
-                    // We get the first task to check
-                    Task * current_task = instance->get_task(list_release_time_per_task[0].second);
-
-                    // We get the associated h value
-                    int current_h_value = instance->get_h_values_per_node()[current_agent->get_current_location()][
-                            current_task->get_pickup_node()];
-
-                    // We remove the task from the list
-                    list_release_time_per_task.erase(list_release_time_per_task.begin());
-
-                    // We initialize the best value
-                    int best_agent = -1;
-
-                    // For every available agent
-                    for (Agent * agent_to_check : list_available_agents){
-
-                        if (current_h_value > instance->get_h_values_per_node()[agent_to_check->get_path()[
-                                agent_to_check->get_finish_time()]][current_task->get_pickup_node()] +
-                                              (agent_to_check->get_finish_time() -
-                                               instance->get_current_time_step())){
-
-                            // We update the current best agent value
-                            best_agent = agent_to_check->get_id();
-
-                            // We update the current h value
-                            current_h_value = instance->get_h_values_per_node()[agent_to_check->get_path()[
-                                    agent_to_check->get_finish_time()]][current_task->get_pickup_node()] +
-                                              (agent_to_check->get_finish_time() -
-                                               instance->get_current_time_step());
-                        }
-                    }
-
-                    // We check if another agent is better that the current one
-                    if (best_agent != -1){
-
-                        // We remove this agent from the list of available ones
-                        list_available_agents.erase(find(list_available_agents.begin(),list_available_agents.end(),
-                                                         instance->get_agent(best_agent)));
 
                         // We continue with the next open goal
                         continue;
@@ -1027,330 +1558,6 @@ void Resolution_Method::solve_Greedy_Heuristic_With_Exchange(Instance * instance
     }
 }
 
-void Resolution_Method::solve_Set_Partitioning_Heuristic(Instance * instance){
-
-    while (instance->get_nb_task_scheduled() < instance->get_list_tasks().size() &&
-           instance->get_current_time_step() <= instance->get_max_horizon()) {
-
-        // We update the list of open goals for the current time step
-        for (int id_task : instance->get_id_released_tasks_per_time_step()[instance->get_current_time_step()]) {
-            if (find(instance->get_list_open_tasks().begin(),
-                     instance->get_list_open_tasks().end(),
-                     instance->get_list_tasks()[id_task]) == instance->get_list_open_tasks().end() &&
-                instance->get_list_tasks()[id_task]->get_id_assigned_agent() == -1){
-
-                instance->get_list_open_tasks().push_back(instance->get_task(id_task));
-            }
-        }
-
-        // We initialize the list of available agents
-        vector<Agent *> list_available_agents;
-
-        // We get the list of available agents
-        for (Agent * agent : instance->get_list_agents()){
-            if (agent->get_finish_time() == instance->get_current_time_step()){
-
-                // We add the agent in the list
-                list_available_agents.push_back(agent);
-
-                // We update the agent current location
-                agent->set_current_location(agent->get_path()[instance->get_current_time_step()]);
-            }
-        }
-
-        // We update the instance's value
-        instance->get_nb_agent_available_per_time_step().push_back(list_available_agents.size());
-
-        // We initialize the list of chosen assignments
-        vector<pair<int,int> > list_chosen_assignments;
-
-        // We solve the assignment using the set partitioning
-        compute_set_partitioning_assignment(instance,instance->get_list_open_tasks(),list_available_agents,
-                                            list_chosen_assignments);
-
-        // We try the found assignments
-        for (pair<int,int> & pair : list_chosen_assignments){
-
-            // We try the assignment and apply it if possible
-            if(check_if_assignment_feasible(instance,
-                                            instance->get_agent(pair.first),
-                                            instance->get_task(pair.second))){
-
-                // We remove the agent from the available ones
-                list_available_agents.erase(find(list_available_agents.begin(),list_available_agents.end(),
-                                                 instance->get_agent(pair.first)));
-            }
-        }
-
-        // We check if some agents are still available and some goals are still open
-        if (!instance->get_list_open_tasks().empty() && !list_available_agents.empty()){
-
-            // We initialize the lists
-            vector<pair<int,int> > list_pair_possible_assignment, list_h_value_per_pair;
-
-            // We initialize the current index
-            int current_index = -1;
-
-            // For each task in the list of open ones
-            for (Task * task : instance->get_list_open_tasks()){
-
-                // For each agent in the list of available agents
-                for (Agent * agent : list_available_agents){
-
-                    // We increment the current index
-                    ++ current_index;
-
-                    // We create the corresponding pair
-                    list_pair_possible_assignment.push_back(pair<int,int> (agent->get_id(),task->get_id()));
-
-                    // We add the h value in the list
-                    list_h_value_per_pair.push_back( pair<int,int> (
-                            instance->get_h_values_per_node()[agent->get_current_location()][task->get_pickup_node()],
-                            current_index));
-                }
-            }
-
-            // We sort the list by h value
-            sort(list_h_value_per_pair.begin(),list_h_value_per_pair.end());
-
-            // While the lists are not empty
-            while (!list_h_value_per_pair.empty() && !list_available_agents.empty() &&
-                   !instance->get_list_open_tasks().empty()){
-
-                // We get the index of the first pair in the list
-                int index_to_check = list_h_value_per_pair[0].second;
-
-                // We remove this value from the list
-                list_h_value_per_pair.erase(list_h_value_per_pair.begin());
-
-                // We check that the agent is still available
-                if (find(list_available_agents.begin(),list_available_agents.end(),
-                         instance->get_agent(list_pair_possible_assignment[index_to_check].first))
-                    == list_available_agents.end()) continue;
-
-                // We check that the task is still available
-                if (find(instance->get_list_open_tasks().begin(), instance->get_list_open_tasks().end(),
-                         instance->get_task(list_pair_possible_assignment[index_to_check].second))
-                    == instance->get_list_open_tasks().end()) continue;
-
-                // We try the assignment and apply it if possible
-                if(check_if_assignment_feasible(instance,
-                                                instance->get_agent(list_pair_possible_assignment[index_to_check].first),
-                                                instance->get_task(list_pair_possible_assignment[index_to_check].second))){
-
-                    // We remove the agent from the available ones
-                    list_available_agents.erase(find(list_available_agents.begin(),list_available_agents.end(),
-                                                     instance->get_agent(
-                                                             list_pair_possible_assignment[index_to_check].first)));
-                }
-            }
-        }
-
-        // For each remaining agent
-        for (Agent * agent_remaining : list_available_agents){
-
-            // We initialize the boolean value
-            bool move = false;
-
-            // We check if the agent has to move from its current position
-            for (vector<Task*>::iterator it = instance->get_list_open_tasks().begin();
-                 it != instance->get_list_open_tasks().end(); it++) {
-
-                // We check if the delivery location correponds with the agent's current location
-                if ((*it)->get_delivery_node() == agent_remaining->get_current_location()) {
-                    move = true;
-                    break;
-                }
-            }
-
-            // We check if a move is necessary
-            if (move) {
-
-                // We move the agent
-                compute_move_to_endpoint(instance,agent_remaining);
-
-                if (allow_modification_endpoint){
-
-                    // We update the finish time of the agent
-                    agent_remaining->set_finish_time(instance->get_current_time_step() + 1);
-                }
-            }
-            else {
-
-                // We update the finish time of the agent
-                agent_remaining->set_finish_time(agent_remaining->get_finish_time() + 1);
-            }
-        }
-
-        // We increment the current time step
-        instance->set_current_time_step(instance->get_current_time_step() + 1);
-    }
-}
-
-void Resolution_Method::compute_set_partitioning_assignment(Instance * instance,
-                                                                     vector<Task *> & list_open_goals,
-                                                                     vector<Agent *> & list_available_agents,
-                                                                     vector<pair<int,int> > & chosen_assignments){
-
-    // -----------------------------------------------------------------------------
-    // ENVIRONMENT
-    // -----------------------------------------------------------------------------
-
-    IloEnv env;
-    IloModel model(env);
-
-    // We get the general values
-    int nb_task = list_open_goals.size();
-    int nb_agent = list_available_agents.size();
-    int nb_required_assignment = 0;
-
-    // We compute the required number of assignment
-    if (nb_agent <= nb_task){
-        nb_required_assignment = nb_agent;
-    }
-    else {
-        nb_required_assignment = nb_task;
-    }
-
-    // We check that both values are greater than 0
-    if (nb_agent == 0 || nb_task == 0) {
-        return;
-    }
-
-    try {
-
-        // -----------------------------------------------------------------------------
-        // DECISION VARIABLES
-        // -----------------------------------------------------------------------------
-
-        // Xij variables
-        IloArray<IloBoolVarArray> xij(env, nb_task);
-        for(int i = 0; i < nb_task; i++){
-            xij[i] = IloBoolVarArray(env);
-            for (int j = 0; j < nb_agent; ++j){
-                string name_current = "Assignment_" + to_string(i) + "_" + to_string(j) + "";
-                xij[i].add(IloBoolVar(env, name_current.c_str()));
-            }
-        }
-
-        // Delta variable
-        IloIntVar Delta(env);
-
-        // -----------------------------------------------------------------------------
-        // OBJECTIVE FUNCTION
-        // -----------------------------------------------------------------------------
-
-        // We add the objective function to the problem
-        model.add(IloMinimize(env, Delta));
-
-        // -----------------------------------------------------------------------------
-        // CONSTRAINTS
-        // -----------------------------------------------------------------------------
-
-        // At most 1 assignment per agent + Link between variables
-
-        // For each agent
-        for (int current_agent = 0; current_agent < nb_agent; ++current_agent){
-
-            // We create the Ilo Expression
-            IloExpr constraint_agent(env);
-
-            // We create the Ilo Expression for the link between variables
-            IloExpr constraint_link(env);
-
-            // For each task
-            for (int current_task = 0; current_task < nb_task; ++current_task){
-
-                // We add the task in the agent's constraint
-                constraint_agent += xij[current_task][current_agent];
-
-                // We add the task and its value to the link constraint
-                constraint_link += instance->get_h_values_per_node()[
-                                           list_available_agents[current_agent]->get_current_location()][
-                                           list_open_goals[current_task]->get_pickup_node()] *
-                                   xij[current_task][current_agent];
-            }
-
-            // We add the constraint in the model
-            model.add(constraint_agent <= 1);
-
-            // We add the link constrain in the model
-            model.add(Delta >= constraint_link);
-        }
-
-        // At most 1 assignment per task + Required number of assignment
-
-        // We create the Ilo Expression for the required number of assignments
-        IloExpr constraint_required_assignment(env);
-
-        // For each task
-        for (int current_task = 0; current_task < nb_task; ++current_task){
-
-            // We create the Ilo Expression
-            IloExpr constraint_task(env);
-
-            // For each agent
-            for (int current_agent = 0; current_agent < nb_agent; ++current_agent){
-
-                // We add the agent in the task's constraint
-                constraint_task += xij[current_task][current_agent];
-
-                // We add the value in the assignments' constraint
-                constraint_required_assignment += xij[current_task][current_agent];
-            }
-
-            // We add the constraint in the model
-            model.add(constraint_task <= 1);
-        }
-
-        // We add the required assignments' constraint in the model
-        model.add(constraint_required_assignment == nb_required_assignment);
-
-        // -----------------------------------------------------------------------------
-        // RESOLUTION
-        // -----------------------------------------------------------------------------
-
-        // We create the cplex
-        IloCplex cplex(model);
-
-        cplex.setOut(env.getNullStream());
-        cplex.setParam(IloCplex::TiLim, 3600);
-        cplex.setParam(IloCplex::Threads, 1);
-        //cplex.exportModel("Model.lp");
-
-        if (cplex.solve()){
-
-            //cout << "A solution exists and the value is " << cplex.getObjValue() << endl;
-
-            // Sortir les selected values
-            for (int current_task = 0; current_task < nb_task; ++current_task){
-
-                // For each agent
-                for (int current_agent = 0; current_agent < nb_agent; ++current_agent){
-
-                    // We check if the assignment is used
-                    if (cplex.getValue(xij[current_task][current_agent]) > 0.5){
-
-                        chosen_assignments.push_back(pair<int,int> (list_available_agents[current_agent]->get_id(),
-                                                                    list_open_goals[current_task]->get_id()));
-                    }
-                }
-            }
-        }
-        else {
-            cout << "Infeasible problem in the set partitioning" << endl;
-        }
-    }
-    catch (IloException& e) {
-        cerr << "Concert exception caught: " << e << endl;
-    }
-    catch (...) {
-        cerr << "Unknown exception caught" << endl;
-    }
-
-    env.end();
-}
-
 void Resolution_Method::solve_Greedy_Heuristic_Wait(Instance * instance){
 
     while (instance->get_nb_task_scheduled() < instance->get_list_tasks().size() &&
@@ -1563,7 +1770,6 @@ bool Resolution_Method::apply_TOTP(Instance * instance, Agent * agent){
         if (this->solve_type == 8){
 
             return this->check_if_assignment_feasible(instance,agent,task);
-
         }
         else {
             // We call the A start algorithm to the pickup location
@@ -2326,6 +2532,12 @@ bool Resolution_Method::compute_move_to_endpoint(Instance * instance, Agent * ag
                 // We update the finish time of the agent
                 agent->set_finish_time(current_node->timestep);
 
+                // We update the deadline value
+                instance->get_deadline_per_not_feasible_endpoint()[agent->get_id()] = current_node->timestep;
+
+                // We update the used enpoint
+                instance->get_list_not_possible_endpoints()[agent->get_id()] = current_node->loc;
+
                 // We release the created nodes
                 releaseClosedListNodes(allNodes_table);
 
@@ -2612,4 +2824,365 @@ void Resolution_Method::releaseClosedListNodes(map<unsigned int, Node*> & allNod
 
     // We clear the table
     allNodes_table.clear();
+}
+
+int Resolution_Method::get_h_value_next_goals(vector<int> & list_h_values_between_goals_to_reach, int current_index){
+
+    // We check if there is a next goal
+    if (current_index+1 == list_h_values_between_goals_to_reach.size()){
+        return 0;
+    }
+
+    // We initialize the sum
+    int sum_value = 0;
+
+    // We compute the sum of the h values for the following goals
+    for (int k = current_index+1; k < list_h_values_between_goals_to_reach.size(); ++k){
+        sum_value += list_h_values_between_goals_to_reach[k];
+    }
+
+    // We return the computed value
+    return sum_value;
+}
+
+void Resolution_Method::compute_path(Instance * instance, Agent * agent, vector<pair<int,int> > & list_tasks,
+                                     int final_node){
+
+    // TODO : In this version, the final node corresponds to the initial node of the agent
+
+    // We initialize the list of goals to visit
+    vector<int> list_goals_to_reach;
+    vector<int> list_release_time_per_goal;
+
+    // We insert the initial node in the list of goals to reach
+    list_goals_to_reach.push_back(final_node);
+
+    // We add the initial release time
+    list_release_time_per_goal.push_back(0);
+
+    // We compute the list of goals to visit
+    for (pair<int,int> & pair_to_add : list_tasks){
+
+        // We add the task's pickup location
+        list_goals_to_reach.push_back(instance->get_task(pair_to_add.second)->get_pickup_node());
+
+        // We add the task's delivery location
+        list_goals_to_reach.push_back(instance->get_task(pair_to_add.second)->get_delivery_node());
+
+        // We add the release times
+        list_release_time_per_goal.push_back(instance->get_task(pair_to_add.second)->get_release_date());
+        list_release_time_per_goal.push_back(instance->get_task(pair_to_add.second)->get_release_date());
+    }
+
+    // We add the final node
+    list_goals_to_reach.push_back(final_node);
+
+    // We add the final release time
+    list_release_time_per_goal.push_back(0);
+
+    // We create the list of h values
+    vector<int> list_h_values_between_goals_to_reach;
+
+    // We compute the h values between each pair of node to reach
+    for (int it_1 = 0; it_1 < list_goals_to_reach.size()-1; ++it_1){
+
+        // We compute the h value between the consecutive goals
+        list_h_values_between_goals_to_reach.push_back(
+                instance->get_h_values_per_node()[list_goals_to_reach[it_1]][list_goals_to_reach[it_1+1]]);
+    }
+
+    // We create the first search node
+    Complex_Node * start = new Complex_Node(list_goals_to_reach[0], 0,
+                                            this->get_h_value_next_goals(list_h_values_between_goals_to_reach,-1),
+                                            NULL, 0, 0, false);
+
+    // We initialize the values
+    complex_heap_open_t open_list;
+    map<string, Complex_Node*> allNodes_table; // key = type*g_val*map_size + loc
+
+    // We add the first node in the list
+    open_list.push(start);
+    start->in_openlist = true;
+    instance->add_created_search_node();
+    allNodes_table.insert(make_pair(to_string(final_node)+"_0_0", start)); // g_val = 0 --> key = loc
+
+    // We initialize the value of the best node
+    Complex_Node * best_node = NULL;
+
+    // While some nodes are still in the open list
+    while (!open_list.empty()) {
+
+        // We take the first node in the list
+        Complex_Node * current_node = open_list.top();
+        open_list.pop();
+
+        // We increment the number of checked node
+        instance->add_checked_search_node();
+
+        // We update the open list value for the current node
+        current_node->in_openlist = false;
+
+        // We check the timestep of the current node
+        if (current_node->timestep >= instance->get_max_horizon() - 1) continue;
+
+        // We check if we have reached a goal and that the release time is respected
+        if (current_node->location == list_goals_to_reach[current_node->type+1] &&
+                current_node->timestep >= list_release_time_per_goal[current_node->type+1]){
+
+                // CASE : Final goal
+            if (current_node->type == list_goals_to_reach.size()-2){
+
+                //cout << "Final goal found " << endl;
+
+                // We initialize the boolean value
+                bool end_found = true;
+
+                // We check that the current node is node used by an agent during the following time step
+                for (Agent * agent_to_check : instance->get_list_agents()){
+
+                    // We check if it is the same agent
+                    if (agent_to_check == agent) continue;
+
+                    // For each following time step
+                    for (int ts = current_node->timestep + 1; ts < instance->get_max_horizon(); ++ts){
+
+                        // We check if the agent use the current node
+                        if (agent_to_check->get_path()[ts] == current_node->location){
+
+                            // We update the boolean value
+                            end_found = false;
+                        }
+                    }
+                }
+
+                // We check if the final node has been found
+                if (end_found){
+
+                    // We update the value of the best node
+                    best_node = current_node;
+
+                    // We stop the search
+                    break;
+                }
+            }
+                // CASE : Transitional goal
+            else {
+
+                //cout << "Transitional goal found from " << current_node->type << " to " << current_node->type+1<< endl;
+
+                // We compute the successor values
+                int next_g_val = current_node->g_val;
+                int next_h_val = get_h_value_next_goals(list_h_values_between_goals_to_reach,current_node->type);
+
+                // We generate the corresponding node
+                Complex_Node * next = new Complex_Node(current_node->location, next_g_val, next_h_val, current_node,
+                                                       current_node->timestep, current_node->type+1, false);
+
+                // We check if the current successor has been checked before
+                map<string, Complex_Node * >::iterator it = allNodes_table.find(
+                        to_string(next->location)+"_"+to_string(next->g_val)+"_"+to_string(next->type));
+
+                if (it == allNodes_table.end()) //undiscovered
+                {  // add the newly generated node to open_list and hash table
+
+                    // We udate open list value for the node
+                    next->in_openlist = true;
+
+                    // We insert the current node in the list of all the nodes
+                    allNodes_table.insert(pair<string, Complex_Node*>(
+                            to_string(next->location)+"_"+to_string(next->g_val)+"_"+to_string(next->type), next));
+
+                    // We add the node to the open list
+                    open_list.push(next);
+
+                    // We increment the number of created node
+                    instance->add_created_search_node();
+                }
+
+                else //discovered
+                {
+                    // We delete the created node
+                    delete(next);
+                }
+
+                continue;
+            }
+        }
+
+        // We intialize the successor id
+        int successor_id;
+
+        // We create the list of possible moves
+        int action[5] = {0, 1, -1, instance->get_nb_column(), -(instance->get_nb_column())};
+
+        for (int i = 0; i < 5;i++) {
+
+            // We check if the move is feasible
+            if (i == 1 && current_node->location % (instance->get_nb_column()) == instance->get_nb_column() - 1) {
+                continue;
+            }
+            if (i == 2 && current_node->location % (instance->get_nb_column()) == 0) {
+                continue;
+            }
+            if (i == 3 && current_node->location / (instance->get_nb_column()) == instance->get_nb_row() - 1) {
+                continue;
+            }
+            if (i == 4 && current_node->location / (instance->get_nb_column()) == 0) {
+                continue;
+            }
+
+            // We get the location of the successor
+            successor_id = current_node->location + action[i];
+
+            // We initialize the current time step value
+            int next_timestep = current_node->timestep + 1;
+
+            // We check if the successor is accessible
+            if (!isConstrained(instance, agent, current_node->location, successor_id, next_timestep))
+            {
+
+                // We compute the successor g value
+                int next_g_val = current_node->g_val + 1;
+                int next_h_val = instance->get_h_values_per_node()
+                                 [successor_id][list_goals_to_reach[current_node->type+1]] +
+                                 this->get_h_value_next_goals(list_h_values_between_goals_to_reach,current_node->type);
+
+                // TODO Check if at the final node, the h value is not always 0
+
+                // We generate the corresponding node
+                Complex_Node * next = new Complex_Node(successor_id, next_g_val, next_h_val, current_node,
+                                                       next_timestep, current_node->type, false);
+
+                // We check if the current successor has been checked before
+                map<string, Complex_Node* >::iterator it = allNodes_table.find(
+                        to_string(next->location)+"_"+to_string(next->g_val)+"_"+to_string(next->type));
+
+                if (it == allNodes_table.end()) //undiscovered
+                {  // add the newly generated node to open_list and hash table
+
+                    // We udate open list value for the node
+                    next->in_openlist = true;
+
+                    // We insert the current node in the list of all the nodes
+                    allNodes_table.insert(pair<string, Complex_Node*>(
+                            to_string(next->location)+"_"+to_string(next->g_val)+"_"+to_string(next->type), next));
+
+                    // We add the node to the open list
+                    open_list.push(next);
+
+                    // We increment the number of created node
+                    instance->add_created_search_node();
+                }
+
+                else //discovered
+                {
+                    // We delete the created node
+                    delete(next);
+                }
+            }
+        }
+    }
+
+    // We check if a best complex node has been found
+    if (best_node != NULL){
+
+        // We update the agent path
+        Update_Path(agent,*best_node);
+
+        // We initialize the previous task end time
+        int previous_task_end = 0;
+
+        // For each task assigned to the agent
+        for (pair<int,int> & pair_to_add : list_tasks){
+
+            // We get the current task
+            Task * task = instance->get_task(pair_to_add.second);
+
+            // We get the release time of the task
+            int current_release_time = task->get_release_date();
+
+            // We create the boolean values
+            bool pickup_found = false, delivery_found = false;
+
+            // We compute the pickup time
+            for (int ts = previous_task_end; ts < agent->get_path().size(); ++ts){
+
+                // We check if the task is released
+                if (ts < current_release_time) continue;
+
+                // We check if the location corresponds
+                if (agent->get_path()[ts] == task->get_pickup_node()){
+
+                    // We set the task pickup date
+                    task->set_picked_date(ts);
+
+                    // We update the previous task end
+                    previous_task_end = ts;
+
+                    // We update the boolean value
+                    pickup_found = true;
+
+                    // We stop the process
+                    break;
+                }
+            }
+
+            // We check that the pcikup has been found
+            if (!pickup_found){
+                cout << "Problem, the pickup value has not been found" << endl;
+                task->write();
+                cout << "previous_task_end : " << previous_task_end << endl;
+                task->write();
+                for (int ts = previous_task_end; ts < task->get_delivered_date(); ++ts){
+                    cout << "Position " << ts << " : " << agent->get_path()[ts] << endl;
+                }
+                cout << endl;
+                getchar();
+            }
+
+            // We compute the delivery time
+            for (int ts = previous_task_end; ts < agent->get_path().size(); ++ts){
+
+                // We check if the location corresponds
+                if (agent->get_path()[ts] == task->get_delivery_node()){
+
+                    // We set the task pickup date
+                    task->set_delivered_date(ts);
+
+                    // We update the previous task end
+                    previous_task_end = ts;
+
+                    // We update the boolean value
+                    delivery_found = true;
+
+                    // We stop the process
+                    break;
+                }
+            }
+
+            // We check that the delivery has been found
+            if (!delivery_found){
+                cout << "Problem, the delivery value has not been found" << endl;
+                task->write();
+                cout << "previous_task_end : " << previous_task_end << endl;
+                task->write();
+                for (int ts = previous_task_end; ts < task->get_delivered_date(); ++ts){
+                    cout << "Position " << ts << " : " << agent->get_path()[ts] << endl;
+                }
+                cout << endl;
+                getchar();
+            }
+        }
+
+        // We update the finish time for the agent
+        agent->set_finish_time(best_node->timestep);
+
+        // We release the nodes
+        releaseClosedListComplexNodes(allNodes_table);
+
+    }
+    else {
+
+        cout << "Problem, no best node found for the agent " << agent->get_id() << endl;
+    }
 }

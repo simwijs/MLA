@@ -42,11 +42,16 @@ private:
     void releaseClosedListComplexNodes(map<string, Complex_Node*> &allNodes_table);
     bool isConstrained(Instance * instance, Agent * agent, int curr_id, int next_id, int next_timestep);
     void solve_TOTP(Instance * instance);
+    void solve_multi_task_TOTP(Instance * instance);
+    void solve_multi_task_TOTP_2(Instance * instance);
+    bool compute_multi_task_path(Instance * instance, Agent * agent, vector<int> & list_id_task,
+    int start_node);
+    bool compute_multi_task_path_2(Instance * instance, Agent * agent, vector<int> & list_id_task,
+                                 int start_node, bool apply_path);
     void solve_Greedy_Heuristic(Instance * instance);
     void solve_Decentralized(Instance * instance, int n_value = 0);
     void solve_Decentralized_ST_Focused(Instance * instance, int n_value = 0);
     void solve_Greedy_Heuristic_With_Exchange(Instance * instance);
-    void solve_Set_Partitioning_Heuristic(Instance * instance);
     void solve_Greedy_Heuristic_Wait(Instance * instance);
     bool apply_TOTP(Instance * instance, Agent * agent);
     bool apply_TOTP_2(Instance * instance, Agent * agent);
@@ -60,6 +65,8 @@ private:
     void compute_set_partitioning_assignment(Instance * instance, vector<Task *> & list_open_goals,
                                              vector<Agent *> & list_available_agents,
                                              vector<pair<int,int> > & chosen_assignments);
+    void compute_path(Instance * instance, Agent * agent, vector<pair<int,int> > & list_tasks,int final_node);
+    int get_h_value_next_goals(vector<int> & list_h_values_between_goals_to_reach, int current_index);
 public:
 
     // General Methods

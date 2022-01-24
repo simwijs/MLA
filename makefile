@@ -34,7 +34,7 @@ OS = $(shell uname -s)
 #-----------------------------------------------------------------------------
 # default flags
 #-----------------------------------------------------------------------------
-INCLUDESFLAGS 	= -I$(INCDIR) -I/Users/floriangrenouilleau/Applications/IBM/ILOG/CPLEX_Studio1271/cplex/include -I/Users/floriangrenouilleau/Applications/IBM/ILOG/CPLEX_Studio1271/concert/include -I/Users/floriangrenouilleau/Applications/IBM/ILOG/CPLEX_Studio1271/cpoptimizer/include -I./include/boost/include
+INCLUDESFLAGS 	= -I$(INCDIR) -I./include/boost/include
 FLAGS 			=
 CXXFLAGS		=
 LIBS  			=
@@ -82,7 +82,7 @@ clean:
 	@rm -rf $(BINDIR)
 
 $(EXEC): $(MAINOBJFILES) 
-	$(LINKCXX) $(CXXFLAGS) -o $@ $^ -L/Users/floriangrenouilleau/Applications/IBM/ILOG/CPLEX_Studio1271/cplex/lib/x86-64_osx/static_pic -lilocplex -lcplex -L/Users/floriangrenouilleau/Applications/IBM/ILOG/CPLEX_Studio1271/cpoptimizer/lib/x86-64_osx/static_pic -lcp -L/Users/floriangrenouilleau/Applications/IBM/ILOG/CPLEX_Studio1271/concert/lib/x86-64_osx/static_pic -lconcert -lm -lpthread
+	$(LINKCXX) $(CXXFLAGS) -o $@ $^ -lm -lpthread
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	@echo "-> compiling $(OBJDIR) $@"
