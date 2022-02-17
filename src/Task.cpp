@@ -17,3 +17,46 @@ void Task::write(){
     cout << "Task delivery time " << this->delivered_date << endl;
     cout << "Task Assigned Agent " << this->id_assigned_agent << endl;
 }
+
+int Task::get_service_time() {
+    if (!finished) throw std::runtime_error("Cannot get service time when the task isn't finished");
+
+    return delivered_date - release_date;
+}
+
+void Batch::add_task(Task *t) {
+    if (release_date == -1) {
+        release_date = t->get_release_date();
+    }
+    tasks.push_back(t);
+}
+
+int Batch::get_service_time() {
+    if (!is_finished()) throw std::runtime_error("Cannot get service time when the batch isn't finished");
+    int total = 0;
+    for (auto t : tasks) {
+        total += t->get_service_time();
+    }
+    return total;
+}
+
+bool Batch::is_finished() {
+
+    for (auto t: tasks) {
+        if (t->get_delivered_date() == -1) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void Batch::try_finish() {
+    if (!is_finished()) return;
+
+    for (auto t : tasks) {
+        if (t->get_delivered_date() > get_delivered_date()) {
+            delivered_date = t->get_delivered_date();
+        }
+    }
+
+}

@@ -65,11 +65,15 @@ void Data_Reader::read_task_file(Instance * instance){
             file >> value;
             file >> value;
 
+            // Read the batch id
+            file >> value;
+            int batch_id= stoi(value);
+
             // We create a new task in the instance's list
             instance->get_list_tasks().push_back(new Task(task,release_date,
                                                           instance->get_list_pair_node_endpoint()[pickup_node].second,
                                                           instance->get_list_pair_node_endpoint()[
-                                                                  delivery_node].second));
+                                                                  delivery_node].second, batch_id));
         }
 
         // We close the file
