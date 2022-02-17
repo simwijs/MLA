@@ -22,6 +22,7 @@ private:
         nb_created_search_nodes = 0, nb_checked_search_nodes = 0, max_distance_multi_task = 0, max_size_multi_task = 1;
     string map_file_name, task_file_name;
     vector<Task*> list_tasks;
+    vector<Batch*> batches;
     vector<Agent*> list_agents;
     vector<Task*> list_open_tasks;
     vector<bool> list_map_nodes;
@@ -37,6 +38,9 @@ private:
     double compute_average_impact_traffic();
     double compute_average_nb_agent_avail();
     double compute_max_service_time();
+    double compute_average_batch_service_time();
+    double compute_min_batch_service_time();
+    double compute_max_batch_service_time();
     double compute_ninth_decile_service_time();
 
 public:
@@ -104,6 +108,7 @@ public:
     double get_computation_time(){ return this->computation_time;}
     vector<Task*> & get_list_tasks(){ return this->list_tasks;}
     vector<Task*> & get_list_open_tasks(){ return this->list_open_tasks;}
+    vector<Batch*> & get_batches(){ return this->batches;}
     vector<Agent*> & get_list_agents(){ return this->list_agents;}
     string & get_map_file_name(){ return this->map_file_name;}
     string & get_task_file_name(){ return this->task_file_name;}

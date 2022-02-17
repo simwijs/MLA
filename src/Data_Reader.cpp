@@ -45,7 +45,8 @@ void Data_Reader::read_task_file(Instance * instance){
 
         // We read the number of task
         int nb_tasks = stoi(line);
-
+        // Initial batch
+        int current_batch = -1;
         // For each task
         for (int task = 0; task < nb_tasks; ++task){
 
@@ -69,11 +70,17 @@ void Data_Reader::read_task_file(Instance * instance){
             file >> value;
             int batch_id= stoi(value);
 
+            // We create the batch if it isn't created already
+            if (batch_id > current_batch) {
+                current_batch++;
+                instance->get_batches().push_back(new Batch(batch_id));
+            }
+            // We add the task to the batch
+            Task* task_obj = new Task(task,release_date, instance->get_list_pair_node_endpoint()[pickup_node].second,
+                                                          instance->get_list_pair_node_endpoint()[delivery_node].second, batch_id);
+            instance->get_batches()[batch_id]->add_task(task_obj);
             // We create a new task in the instance's list
-            instance->get_list_tasks().push_back(new Task(task,release_date,
-                                                          instance->get_list_pair_node_endpoint()[pickup_node].second,
-                                                          instance->get_list_pair_node_endpoint()[
-                                                                  delivery_node].second, batch_id));
+            instance->get_list_tasks().push_back(task_obj);
         }
 
         // We close the file

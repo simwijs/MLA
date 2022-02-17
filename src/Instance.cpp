@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <bits/stdc++.h>
 
 void Instance::compute_h_values(vector<int> & h_values, int start_location) {
 
@@ -201,21 +202,25 @@ void Instance::apply_assignment(int id_agent, int id_task, int arrive_start, int
     //cout << "Assign the task " << id_task << " to the agent " << id_agent << " from the time step " <<
          //arrive_start << " to the time step " << arrive_goal << endl;
 
+    Task* task = this->list_tasks[id_task];
     // We update the assigned agent
-    this->list_tasks[id_task]->set_id_assigned_agent(id_agent);
+    task->set_id_assigned_agent(id_agent);
 
     // We update the dates
-    this->list_tasks[id_task]->set_picked_date(arrive_start);
-    this->list_tasks[id_task]->set_delivered_date(arrive_goal);
+    task->set_picked_date(arrive_start);
+    task->set_delivered_date(arrive_goal);
+
+    // Try finishing the batch the task belongs to
+    this->batches[task->get_batch_id()]->try_finish();
 
     // We remove the task for the open tasks' list
     this->get_list_open_tasks().erase(find(this->list_open_tasks.begin(),
                                            this->list_open_tasks.end(),
-                                           this->list_tasks[id_task]));
+                                          task));
 
     // We check that the agent's path correspond
-    if (this->list_agents[id_agent]->get_path()[arrive_start] != this->list_tasks[id_task]->get_pickup_node() ||
-            this->list_agents[id_agent]->get_path()[arrive_goal] != this->list_tasks[id_task]->get_delivery_node()){
+    if (this->list_agents[id_agent]->get_path()[arrive_start] !=task->get_pickup_node() ||
+            this->list_agents[id_agent]->get_path()[arrive_goal] !=task->get_delivery_node()){
 
         cout << "Problem, the agent's path does not correspond" << endl;
     }
@@ -275,6 +280,39 @@ double Instance::compute_average_service_time(){
 
     return sum / (double) this->list_tasks.size();
 }
+
+double Instance::compute_average_batch_service_time() {
+    int total = 0;
+    int size = batches.size();
+    for (auto b : batches) {
+        total += b->get_service_time();
+    }
+
+    return total / (double) size;
+}
+
+double Instance::compute_min_batch_service_time() {
+    int min = INT_MAX;
+    for (auto b : batches) {
+        int st = b->get_service_time();
+        if (st < min) {
+            min = st;
+        }
+    }
+    return min;
+}
+
+double Instance::compute_max_batch_service_time() {
+    int max = 0;
+    for (auto b : batches) {
+        int st = b->get_service_time();
+        if (st > max) {
+            max = st;
+        }
+    }
+    return max;
+}
+
 
 double Instance::compute_average_impact_traffic(){
 
@@ -441,7 +479,10 @@ void Instance::output_solution(char** argv){
     file << this->get_list_tasks().size() << ";";
     file << this->get_current_time_step() << ";";
     file << this->computation_time << ";";
-    file << compute_average_service_time() << ";";
+    file << this->compute_average_service_time() << ";";
+    file << this->compute_average_batch_service_time() << ";";
+    file << this->compute_min_batch_service_time() << ";";
+    file << this->compute_max_batch_service_time() << ";";
     file << argv[3] << ";";
     file << this->wait_value << ";";
     file << compute_average_impact_traffic() << ";";

@@ -523,9 +523,6 @@ bool Resolution_Method::compute_multi_task_path(Instance * instance, Agent * age
                 // We check if the location corresponds
                 if (agent->get_path()[ts] == task->get_delivery_node()){
 
-                    // We set the task pickup date
-                    task->set_delivered_date(ts);
-
                     // We apply the assignment
                     instance->apply_assignment(agent->get_id(), task->get_id(), previous_task_end, ts);
 
