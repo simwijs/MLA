@@ -6,7 +6,8 @@
 #include <iostream>
 #include <fstream>
 
-void Data_Reader::read_instance(Instance * instance){
+void Data_Reader::read_instance(Instance *instance)
+{
 
     // We read the map of the problem
     read_map_file(instance);
@@ -15,16 +16,18 @@ void Data_Reader::read_instance(Instance * instance){
     read_task_file(instance);
 
     // We compute the h values
-    for (int node = 0; node < instance->get_list_map_nodes().size(); ++node){
+    for (int node = 0; node < instance->get_list_map_nodes().size(); ++node)
+    {
 
         // We create the vector
-        instance->get_h_values_per_node().push_back(vector<int> ());
+        instance->get_h_values_per_node().push_back(vector<int>());
 
         // We check if the node is an available point
-        if (instance->get_list_map_nodes()[node]){
+        if (instance->get_list_map_nodes()[node])
+        {
 
             // We compute the h values for that node
-            instance->compute_h_values(instance->get_h_values_per_node()[node],node);
+            instance->compute_h_values(instance->get_h_values_per_node()[node], node);
         }
     }
 
@@ -32,15 +35,17 @@ void Data_Reader::read_instance(Instance * instance){
     instance->update_release_tasks_per_time_step();
 }
 
-void Data_Reader::read_task_file(Instance * instance){
+void Data_Reader::read_task_file(Instance *instance)
+{
 
     // We open the file
     ifstream file(instance->get_task_file_name());
 
-    if (file.is_open()) {
+    if (file.is_open())
+    {
 
         // We initialize the value
-        string line,value;
+        string line, value;
         getline(file, line);
 
         // We read the number of task
@@ -48,7 +53,8 @@ void Data_Reader::read_task_file(Instance * instance){
         // Initial batch
         int current_batch = -1;
         // For each task
-        for (int task = 0; task < nb_tasks; ++task){
+        for (int task = 0; task < nb_tasks; ++task)
+        {
 
             // We get the release date
             file >> value;
@@ -68,17 +74,18 @@ void Data_Reader::read_task_file(Instance * instance){
 
             // Read the batch id
             file >> value;
-            int batch_id= stoi(value);
+            int batch_id = stoi(value);
 
             // We create the batch if it isn't created already
-            if (batch_id > current_batch) {
+            if (batch_id > current_batch)
+            {
                 current_batch++;
                 instance->get_batches().push_back(new Batch(batch_id));
             }
             // We add the task to the batch
-            Task* task_obj = new Task(task,release_date, instance->get_list_pair_node_endpoint()[pickup_node].second,
-                                                          instance->get_list_pair_node_endpoint()[delivery_node].second, batch_id);
-            instance->get_batches()[batch_id]->add_task(task_obj);
+            Task *task_obj = new Task(task, release_date, instance->get_list_pair_node_endpoint()[pickup_node].second,
+                                      instance->get_list_pair_node_endpoint()[delivery_node].second, batch_id);
+            instance->get_batches()[current_batch]->add_task(task_obj);
             // We create a new task in the instance's list
             instance->get_list_tasks().push_back(task_obj);
         }
@@ -88,15 +95,17 @@ void Data_Reader::read_task_file(Instance * instance){
     }
 }
 
-void Data_Reader::read_map_file(Instance * instance){
+void Data_Reader::read_map_file(Instance *instance)
+{
 
     // We open the file
     ifstream file(instance->get_map_file_name());
 
-    if (file.is_open()) {
+    if (file.is_open())
+    {
 
         // We initialize the value
-        string line,value;
+        string line, value;
 
         // We read the number of row
         file >> value;
@@ -121,65 +130,72 @@ void Data_Reader::read_map_file(Instance * instance){
         instance->set_max_horizon(max_horizon);
 
         // We read the end of the line
-        getline(file,line);
+        getline(file, line);
 
         // We initialize the values
         int nb_found_agents = 0, current_node_id = -1, nb_found_endpoint = 0;
 
         // For each row
-        for (int row = 0; row < instance->get_nb_row(); ++row){
+        for (int row = 0; row < instance->get_nb_row(); ++row)
+        {
 
             // We get the corresponding line
-            getline(file,line);
+            getline(file, line);
 
             // For each column
-            for (int column = 0; column < instance->get_nb_column(); ++column){
+            for (int column = 0; column < instance->get_nb_column(); ++column)
+            {
 
                 // We increment the id of the current node
-                ++ current_node_id;
+                ++current_node_id;
 
                 // We get the next node value
                 value = line.at(column);
 
                 // We get the type of the node
-                if (value == "."){
+                // if (value == "."){
 
-                    // We update the values for the instance
-                    instance->get_list_map_nodes().push_back(true);
-                    instance->get_list_endpoints().push_back(false);
-                }
-                else if (value == "e"){
+                //     // We update the values for the instance
+                //     instance->get_list_map_nodes().push_back(true);
+                //     instance->get_list_endpoints().push_back(false);
+                // }
+                if (value == "e" || value == ".")
+                {
 
                     // We update the values for the instance
                     instance->get_list_map_nodes().push_back(true);
                     instance->get_list_endpoints().push_back(true);
 
                     // We add the pair endpoint-node
-                    instance->get_list_pair_node_endpoint().push_back(pair<int,int> (
-                            nb_found_endpoint, row*instance->get_nb_column() + column));
+                    instance->get_list_pair_node_endpoint().push_back(pair<int, int>(
+                        nb_found_endpoint, row * instance->get_nb_column() + column));
 
                     // We increment the number of found endpoint
-                    ++ nb_found_endpoint;
-
+                    ++nb_found_endpoint;
                 }
-                else if (value == "r"){
+                else if (value == "r")
+                {
 
                     // We update the values for the instance
                     instance->get_list_map_nodes().push_back(true);
                     instance->get_list_endpoints().push_back(true);
+                    instance->get_list_pair_node_endpoint().push_back(pair<int, int>(
+                        nb_found_endpoint, row * instance->get_nb_column() + column));
 
                     // We create a new agent for the problem
                     instance->get_list_agents().push_back(new Agent(nb_found_agents,
-                                                                    row*instance->get_nb_column() + column,
+                                                                    row * instance->get_nb_column() + column,
                                                                     max_horizon));
 
-                    instance->get_list_not_possible_endpoints().push_back(row*instance->get_nb_column() + column);
+                    instance->get_list_not_possible_endpoints().push_back(row * instance->get_nb_column() + column);
                     instance->get_deadline_per_not_feasible_endpoint().push_back(0);
 
                     // We increment the number of found agents
-                    ++ nb_found_agents;
+                    ++nb_found_agents;
+                    ++nb_found_endpoint;
                 }
-                else {
+                else
+                {
 
                     // We update the values for the instance
                     instance->get_list_map_nodes().push_back(false);
@@ -189,19 +205,21 @@ void Data_Reader::read_map_file(Instance * instance){
         }
 
         // We check that the number of created agents correspond
-        if (nb_agents != instance->get_nb_agent()){
+        if (nb_agents != instance->get_nb_agent())
+        {
             cout << "Problem, the number of agents does not correspond" << endl;
             getchar();
         }
 
         // We check that the number of created endpoints correspond
-        if (nb_found_endpoint != instance->get_nb_endpoint()){
-            cout << "Problem, the number of endpoints does not correspond" << endl;
-            getchar();
-        }
+        // if (nb_found_endpoint != instance->get_nb_endpoint()){
+        //     cout << "Problem, the number of endpoints does not correspond" << endl;
+        //     getchar();
+        // }
 
         // We check that the number of node correspond
-        if (instance->get_nb_row()*instance->get_nb_column() != instance->get_list_map_nodes().size()){
+        if (instance->get_nb_row() * instance->get_nb_column() != instance->get_list_map_nodes().size())
+        {
             cout << "Problem, the number of nodes does not correspond" << endl;
             getchar();
         }

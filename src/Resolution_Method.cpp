@@ -1140,7 +1140,6 @@ void Resolution_Method::solve_Decentralized(Instance * instance, int n_value){
 }
 
 void Resolution_Method::solve_Greedy_Heuristic(Instance * instance){
-
     while (instance->get_nb_task_scheduled() < instance->get_list_tasks().size() &&
            instance->get_current_time_step() <= instance->get_max_horizon()) {
 
@@ -1178,7 +1177,6 @@ void Resolution_Method::solve_Greedy_Heuristic(Instance * instance){
 
         // We initialize the current index
         int current_index = -1;
-
         // For each task in the list of open ones
         for (Task * task : instance->get_list_open_tasks()){
 
@@ -1197,30 +1195,28 @@ void Resolution_Method::solve_Greedy_Heuristic(Instance * instance){
                         current_index));
             }
         }
-
         // We sort the list by h value
         sort(list_h_value_per_pair.begin(),list_h_value_per_pair.end());
-
         // While the lists are not empty
         while (!list_h_value_per_pair.empty() && !list_available_agents.empty() &&
                 !instance->get_list_open_tasks().empty()){
+            // std::cout << "Available agents: " << list_available_agents.size()
+            // << "Open tasks " << instance->get_list_open_tasks().size() << std::endl << std::flush;
+
 
             // We get the index of the first pair in the list
             int index_to_check = list_h_value_per_pair[0].second;
 
             // We remove this value from the list
             list_h_value_per_pair.erase(list_h_value_per_pair.begin());
-
             // We check that the agent is still available
             if (find(list_available_agents.begin(),list_available_agents.end(),
                      instance->get_agent(list_pair_possible_assignment[index_to_check].first))
                 == list_available_agents.end()) continue;
-
             // We check that the task is still available
             if (find(instance->get_list_open_tasks().begin(), instance->get_list_open_tasks().end(),
                      instance->get_task(list_pair_possible_assignment[index_to_check].second))
                 == instance->get_list_open_tasks().end()) continue;
-
             // We try the assignment and apply it if possible
             if(check_if_assignment_feasible(instance,
                                          instance->get_agent(list_pair_possible_assignment[index_to_check].first),
@@ -1232,7 +1228,6 @@ void Resolution_Method::solve_Greedy_Heuristic(Instance * instance){
                                                          list_pair_possible_assignment[index_to_check].first)));
             }
         }
-
         // For each remaining agent
         for (Agent * agent_remaining : list_available_agents){
 
@@ -2110,7 +2105,6 @@ int Resolution_Method::compute_max_reach_delivery_node(Instance * instance, Agen
 }
 
 bool Resolution_Method::check_if_assignment_feasible(Instance * instance, Agent * agent, Task * task){
-
     // We get the current location
     int current_location = agent->get_current_location();
 
@@ -2168,7 +2162,6 @@ bool Resolution_Method::check_if_assignment_feasible(Instance * instance, Agent 
 
     // While some nodes are still in the open list
     while (!open_list.empty()) {
-
         // We take the first node in the list
         Complex_Node * current_node = open_list.top();
         open_list.pop();
