@@ -556,6 +556,23 @@ void Instance::output_moves_for_visualization(){
             file << "      t: " << ts << endl;
         }
     }
+    file.close();
+}
+
+void Instance::output_tasks_for_visualization(std::string filepath) {
+    fstream file;
+    file.open (filepath, fstream::out);
+    file << "tasks:" << endl;
+    for (int t = 0; t < this->list_tasks.size(); t++) {
+        Task* task = this->list_tasks[t];
+        file << "   task" << t << ":" << endl;
+
+        file << "   - start: " << task->get_picked_date() << endl;;
+        file << "     finish: " << task->get_delivered_date() << endl;
+        file << "     batch: " << task->get_batch_id() << endl;
+    }
+
+    file.close();
 }
 
 void Instance::create_instances_first_set(int nb_agent_for_map,int nb_task_for_instance, double frequency_for_instance){

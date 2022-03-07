@@ -60,6 +60,7 @@ int main(int argc, char** argv) {
         // We write the files for the visualization
         instance->output_map_for_visualization();
         instance->output_moves_for_visualization();
+        instance->output_tasks_for_visualization();
 
         // We create all the instances (NEED TO USE A 50 AGENTS INSTANCE)
 

@@ -73,6 +73,8 @@ public:
     void output_solution(char** argv);
     void output_map_for_visualization();
     void output_moves_for_visualization();
+    void output_tasks_for_visualization(std::string filepath="task_output.yaml");
+
     void generate_agents(int nb_agent_to_generate);
     void add_created_search_node(){++ nb_created_search_nodes;}
     void add_checked_search_node(){++ nb_checked_search_nodes;}

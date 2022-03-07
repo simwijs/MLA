@@ -2159,9 +2159,12 @@ bool Resolution_Method::check_if_assignment_feasible(Instance * instance, Agent 
 
     // We initialize the value of the best node
     Complex_Node * best_node = NULL;
-
+    int counter = 0;
     // While some nodes are still in the open list
     while (!open_list.empty()) {
+        // Temporary fix for deadlocks when other agents have walled in a pickup
+        if (counter >= 1000) break;
+        counter++;
         // We take the first node in the list
         Complex_Node * current_node = open_list.top();
         open_list.pop();
@@ -2202,7 +2205,6 @@ bool Resolution_Method::check_if_assignment_feasible(Instance * instance, Agent 
 
             if (it == allNodes_table.end()) //undiscovered
             {  // add the newly generated node to open_list and hash table
-
                 // We udate open list value for the node
                 next->in_openlist = true;
 
