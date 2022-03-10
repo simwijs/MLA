@@ -1200,9 +1200,6 @@ void Resolution_Method::solve_Greedy_Heuristic(Instance * instance){
         // While the lists are not empty
         while (!list_h_value_per_pair.empty() && !list_available_agents.empty() &&
                 !instance->get_list_open_tasks().empty()){
-            // std::cout << "Available agents: " << list_available_agents.size()
-            // << "Open tasks " << instance->get_list_open_tasks().size() << std::endl << std::flush;
-
 
             // We get the index of the first pair in the list
             int index_to_check = list_h_value_per_pair[0].second;

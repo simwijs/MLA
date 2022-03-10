@@ -83,8 +83,7 @@ void Data_Reader::read_task_file(Instance *instance)
                 instance->get_batches().push_back(new Batch(batch_id));
             }
             // We add the task to the batch
-            Task *task_obj = new Task(task, release_date, instance->get_list_pair_node_endpoint()[pickup_node].second,
-                                      instance->get_list_pair_node_endpoint()[delivery_node].second, batch_id);
+            Task *task_obj = new Task(task, release_date, pickup_node, delivery_node, batch_id);
             instance->get_batches()[current_batch]->add_task(task_obj);
             // We create a new task in the instance's list
             instance->get_list_tasks().push_back(task_obj);
@@ -153,13 +152,14 @@ void Data_Reader::read_map_file(Instance *instance)
                 value = line.at(column);
 
                 // We get the type of the node
-                // if (value == "."){
+                if (value == ".")
+                {
 
-                //     // We update the values for the instance
-                //     instance->get_list_map_nodes().push_back(true);
-                //     instance->get_list_endpoints().push_back(false);
-                // }
-                if (value == "e" || value == ".")
+                    // We update the values for the instance
+                    instance->get_list_map_nodes().push_back(true);
+                    instance->get_list_endpoints().push_back(false);
+                }
+                else if (value == "e" || value == "d")
                 {
 
                     // We update the values for the instance
@@ -179,8 +179,6 @@ void Data_Reader::read_map_file(Instance *instance)
                     // We update the values for the instance
                     instance->get_list_map_nodes().push_back(true);
                     instance->get_list_endpoints().push_back(true);
-                    instance->get_list_pair_node_endpoint().push_back(pair<int, int>(
-                        nb_found_endpoint, row * instance->get_nb_column() + column));
 
                     // We create a new agent for the problem
                     instance->get_list_agents().push_back(new Agent(nb_found_agents,
@@ -192,7 +190,6 @@ void Data_Reader::read_map_file(Instance *instance)
 
                     // We increment the number of found agents
                     ++nb_found_agents;
-                    ++nb_found_endpoint;
                 }
                 else
                 {
@@ -212,10 +209,11 @@ void Data_Reader::read_map_file(Instance *instance)
         }
 
         // We check that the number of created endpoints correspond
-        // if (nb_found_endpoint != instance->get_nb_endpoint()){
-        //     cout << "Problem, the number of endpoints does not correspond" << endl;
-        //     getchar();
-        // }
+        if (nb_found_endpoint != instance->get_nb_endpoint())
+        {
+            cout << "Problem, the number of endpoints does not correspond" << endl;
+            getchar();
+        }
 
         // We check that the number of node correspond
         if (instance->get_nb_row() * instance->get_nb_column() != instance->get_list_map_nodes().size())
