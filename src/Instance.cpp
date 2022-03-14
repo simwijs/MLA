@@ -540,11 +540,11 @@ void Instance::output_map_for_visualization(){
     }
 }
 
-void Instance::output_moves_for_visualization(){
+void Instance::output_moves_for_visualization(std::string filepath){
 
     // We open the existing file
     fstream file;
-    file.open ("output.yaml", fstream::out);
+    file.open (filepath, fstream::out);
 
     // We write the agents
     file << "schedule:" << endl;

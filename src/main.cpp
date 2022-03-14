@@ -59,8 +59,29 @@ int main(int argc, char** argv) {
 
         // We write the files for the visualization
         instance->output_map_for_visualization();
-        instance->output_moves_for_visualization();
-        instance->output_tasks_for_visualization();
+
+        // Get the filenames for output
+        char* mapptr = new char[instance->get_map_file_name().size() + 1];
+        strcpy(mapptr, instance->get_map_file_name().c_str());
+        char* ptr = strtok(mapptr, "/");
+        std::string latestMap = "";
+        std::string latestTask = "";
+        while (ptr != NULL) {
+            latestMap = std::string(ptr);
+            ptr = strtok(NULL, "/");
+        }
+
+        char* taskptr = new char[instance->get_task_file_name().size() + 1];
+        strcpy(taskptr, instance->get_task_file_name().c_str());
+        ptr = strtok(taskptr, "/");
+        while (ptr != NULL) {
+            latestTask = std::string(ptr);
+            ptr = strtok(NULL, "/");
+        }
+
+
+        instance->output_moves_for_visualization("./output/output-" + latestMap + "--" + latestTask + ".yaml");
+        instance->output_tasks_for_visualization("./output/task_output-" + latestMap + "--" + latestTask + ".yaml");
 
         // We create all the instances (NEED TO USE A 50 AGENTS INSTANCE)
 
