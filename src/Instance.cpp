@@ -466,11 +466,11 @@ void Instance::show_h_value_between_tasks_per_agent(){
     getchar();
 }
 
-void Instance::output_solution(char** argv){
+void Instance::output_solution(char** argv, std::string output_file){
 
     // We open the existing file
     fstream file;
-    file.open ("Instances_Summary.txt", fstream::in | fstream::out | fstream::app);
+    file.open (output_file, fstream::in | fstream::out | fstream::app);
 
     // We add the values
     file << this->get_map_file_name() << ";";

@@ -70,7 +70,7 @@ public:
     bool check_solution_feasible();
     void apply_assignment(int id_agent, int id_task, int arrive_start, int arrive_goal);
     void compute_final_makespan();
-    void output_solution(char** argv);
+    void output_solution(char** argv, std::string output_file="Instances_Summary.txt");
     void output_map_for_visualization();
     void output_moves_for_visualization(std::string filepath="output.yaml");
     void output_tasks_for_visualization(std::string filepath="task_output.yaml");

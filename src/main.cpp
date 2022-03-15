@@ -44,6 +44,8 @@ int main(int argc, char** argv) {
 
     // We update the instance's makespan
     instance->compute_final_makespan();
+    
+    std::string output_file = argc > 5 ? argv[5] : "Instances_Summary.txt";
 
     // We check that the found solution is feasible
     if (instance->check_solution_feasible()){
@@ -52,7 +54,7 @@ int main(int argc, char** argv) {
         cout << "Makespan : " << instance->get_current_time_step() << endl;
 
         // We create the output of the solution
-        instance->output_solution(argv);
+        instance->output_solution(argv, output_file);
 
         // We write the h value between consecutive tasks per agent
         //instance->show_h_value_between_tasks_per_agent();
