@@ -473,25 +473,25 @@ void Instance::output_solution(char** argv, std::string output_file){
     file.open (output_file, fstream::in | fstream::out | fstream::app);
 
     // We add the values
-    file << this->get_map_file_name() << ";";
-    file << this->get_task_file_name() << ";";
-    file << this->get_nb_agent() << ";" ;
-    file << this->get_list_tasks().size() << ";";
-    file << this->get_current_time_step() << ";";
-    file << this->computation_time << ";";
-    file << this->compute_average_service_time() << ";";
-    file << this->compute_average_batch_service_time() << ";";
-    file << this->compute_min_batch_service_time() << ";";
-    file << this->compute_max_batch_service_time() << ";";
-    file << argv[3] << ";";
-    file << this->wait_value << ";";
-    file << compute_average_impact_traffic() << ";";
-    file << this->nb_created_search_nodes << ";";
-    file << this->nb_checked_search_nodes << ";";
-    file << this->compute_max_service_time() << ";";
-    file << this->compute_ninth_decile_service_time() << ";";
-    file << this->max_distance_multi_task << ";";
-    file << this->max_size_multi_task << ";";
+    file << this->get_map_file_name() << ",";
+    file << this->get_task_file_name() << ",";
+    file << this->get_nb_agent() << "," ;
+    file << this->get_list_tasks().size() << ",";
+    file << this->get_current_time_step() << ",";
+    file << this->compute_average_service_time() << ",";
+    file << this->compute_average_batch_service_time() << ",";
+    file << this->compute_min_batch_service_time() << ",";
+    file << this->compute_max_batch_service_time() << ",";
+    file << this->computation_time << ",";
+    // file << argv[3] << ",";
+    // file << this->wait_value << ",";
+    // file << compute_average_impact_traffic() << ",";
+    // file << this->nb_created_search_nodes << ",";
+    // file << this->nb_checked_search_nodes << ",";
+    // file << this->compute_max_service_time() << ",";
+    // file << this->compute_ninth_decile_service_time() << ",";
+    // file << this->max_distance_multi_task << ",";
+    // file << this->max_size_multi_task << ",";
 
     file << endl;
 
