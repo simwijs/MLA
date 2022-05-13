@@ -482,7 +482,7 @@ void Instance::output_solution(char** argv, std::string output_file){
     file << this->compute_average_batch_service_time() << ",";
     file << this->compute_min_batch_service_time() << ",";
     file << this->compute_max_batch_service_time() << ",";
-    file << this->computation_time << ",";
+    file << this->computation_time;
     // file << argv[3] << ",";
     // file << this->wait_value << ",";
     // file << compute_average_impact_traffic() << ",";
