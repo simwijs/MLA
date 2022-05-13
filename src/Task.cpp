@@ -33,11 +33,13 @@ void Batch::add_task(Task *t) {
 
 int Batch::get_service_time() {
     if (!is_finished()) throw std::runtime_error("Cannot get service time when the batch isn't finished");
-    int total = 0;
-    for (auto t : tasks) {
-        total += t->get_service_time();
+
+    if (delivered_date == -1 || release_date == -1) {
+      throw std::runtime_error(
+          "The appear or finished timestep is not set. Cannot get service "
+          "time");
     }
-    return total;
+    return delivered_date - release_date;
 }
 
 bool Batch::is_finished() {
