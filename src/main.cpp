@@ -51,8 +51,8 @@ int main(int argc, char **argv)
     if (instance->check_solution_feasible())
     {
 
-        cout << "Final solution feasible" << endl;
-        cout << "Makespan : " << instance->get_current_time_step() << endl;
+        // cout << "Final solution feasible" << endl;
+        // cout << "Makespan : " << instance->get_current_time_step() << endl;
 
         // We create the output of the solution
         instance->output_solution(argv, output_file);

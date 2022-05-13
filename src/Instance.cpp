@@ -497,6 +497,18 @@ void Instance::output_solution(char** argv, std::string output_file){
 
     // We close the file
     file.close();
+
+    // We add the values
+    std::cout << this->get_map_file_name() << "," 
+        << this->get_task_file_name() << ","
+        << this->get_nb_agent() << "," 
+        << this->get_list_tasks().size() << ","
+        << this->get_current_time_step() << ","
+        << this->compute_average_service_time() << ","
+        << this->compute_average_batch_service_time() << ","
+        << this->compute_min_batch_service_time() << ","
+        << this->compute_max_batch_service_time() << ","
+        << this->computation_time << endl;
 }
 
 void Instance::output_map_for_visualization(){
