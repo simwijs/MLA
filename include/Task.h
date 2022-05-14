@@ -50,20 +50,22 @@ public:
 class Batch {
 
 private:
-    int id, delivered_date, release_date;
+    int id, delivered_date, release_date, ble;
     std::vector<Task*> tasks;
 
 public:
 
-    Batch(int id): id(id), release_date(-1), delivered_date(-1) {};
+    Batch(int id): id(id), release_date(-1), delivered_date(-1), ble(-1) {};
 
     void set_release_date(int value) {this->release_date = value;};
     void add_task(Task *t);
-
+    
+    int get_ble() { return this->ble;};
     int get_batch_id(){ return this->id;};
     int get_delivered_date(){ return this->delivered_date;};
     int get_release_date(){ return this->release_date;};
     int get_size(){ return this->tasks.size();};
+    void set_ble(int ble) { this->ble = ble; if (ble < 0) { this->ble = 0;}};
     void try_finish();
     bool is_finished();
     int get_service_time();

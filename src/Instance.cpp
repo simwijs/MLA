@@ -210,8 +210,16 @@ void Instance::apply_assignment(int id_agent, int id_task, int arrive_start, int
     task->set_picked_date(arrive_start);
     task->set_delivered_date(arrive_goal);
 
+    Batch* batch = this->batches[task->get_batch_id()];
     // Try finishing the batch the task belongs to
-    this->batches[task->get_batch_id()]->try_finish();
+    batch->try_finish();
+    if (batch->is_finished() && batch->get_ble() == -1) {
+        int ble = current_batch_index - batch->get_batch_id();
+        batch->set_ble(ble);
+        current_batch_index++;
+        finished_batches.push_back(batch);
+    }
+    
 
     // We remove the task for the open tasks' list
     this->get_list_open_tasks().erase(find(this->list_open_tasks.begin(),
@@ -313,6 +321,30 @@ double Instance::compute_max_batch_service_time() {
     return max;
 }
 
+
+double Instance::compute_total_ble() { 
+    int total_ble = 0;
+    for (auto b : finished_batches) {
+        total_ble += b->get_ble();
+    }
+    return total_ble;
+}
+
+double Instance::compute_average_ble() { 
+    if (finished_batches.size() == 0) return 0;
+    int total_ble = 0;
+    for (auto b : finished_batches) {
+        total_ble += b->get_ble();
+    }
+    double able = total_ble / (double)finished_batches.size();
+    return able;
+}
+
+double Instance::compute_bowe() { 
+    double bst = compute_average_batch_service_time();
+    double ble = compute_average_ble();
+    return (ble + 1) * bst;
+}
 
 double Instance::compute_average_impact_traffic(){
 
@@ -482,7 +514,10 @@ void Instance::output_solution(char** argv, std::string output_file){
     file << this->compute_average_batch_service_time() << ",";
     file << this->compute_min_batch_service_time() << ",";
     file << this->compute_max_batch_service_time() << ",";
-    file << this->computation_time;
+    file << this->computation_time << ",";
+    file << this->compute_total_ble() << ",";
+    file << this->compute_average_ble() << ",";
+    file << this->compute_bowe() << ",";
     // file << argv[3] << ",";
     // file << this->wait_value << ",";
     // file << compute_average_impact_traffic() << ",";
@@ -508,7 +543,10 @@ void Instance::output_solution(char** argv, std::string output_file){
         << this->compute_average_batch_service_time() << ","
         << this->compute_min_batch_service_time() << ","
         << this->compute_max_batch_service_time() << ","
-        << this->computation_time << endl;
+        << this->computation_time << ","
+        << this->compute_total_ble() << ","
+        << this->compute_average_ble() << ","
+        << this->compute_bowe() << endl;
 }
 
 void Instance::output_map_for_visualization(){

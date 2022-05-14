@@ -19,10 +19,12 @@ private:
 
     // Attributes
     int nb_row, nb_column, nb_endpoint, nb_agent, max_horizon, current_time_step, nb_task_scheduled, wait_value,
-        nb_created_search_nodes = 0, nb_checked_search_nodes = 0, max_distance_multi_task = 0, max_size_multi_task = 1;
+        nb_created_search_nodes = 0, nb_checked_search_nodes = 0, max_distance_multi_task = 0, max_size_multi_task = 1,
+        current_batch_index = 0;
     string map_file_name, task_file_name;
     vector<Task*> list_tasks;
     vector<Batch*> batches;
+    vector<Batch*> finished_batches;
     vector<Agent*> list_agents;
     vector<Task*> list_open_tasks;
     vector<bool> list_map_nodes;
@@ -42,6 +44,9 @@ private:
     double compute_min_batch_service_time();
     double compute_max_batch_service_time();
     double compute_ninth_decile_service_time();
+    double compute_total_ble();
+    double compute_average_ble();
+    double compute_bowe();
 
 public:
 
